@@ -215,7 +215,7 @@
                                     </div>
                                 </li>
                                 @endif
-                                @hasanyrole('SuperAdmin|HRMSADMIN|User')
+                                @hasanyrole('SuperAdmin|HRMSADMIN')
                                 @can('leave.show')
                                 <li class="nav-item">
                                     <a
@@ -274,6 +274,16 @@
                                         href="{{route('hr.admin.emergency')}}" role="button">
                                         <div class="d-flex align-items-center">
                                             <span class="nav-link-text">Emergency Contact</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a
+                                        class="nav-link {{ Request::is('hr/amdin/files') ? 'active' : '' }}"
+                                        href="{{ route('hr.admin.files') }}">
+                                        <div class="d-flex align-items-center">
+                                            <span class="nav-link-text">Attachments</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
@@ -559,7 +569,7 @@
                                                 </a>
                                                 <!-- more inner pages-->
                                             </li>
-                                            <li class="nav-item">
+                                            {{-- <li class="nav-item">
                                                 <a
                                                     class="nav-link {{ Request::is('hr/admin/setting/elementset/assignment') ? 'active' : '' }}"
                                                     href="{{ route('hr.admin.setting.elementset.assignment') }}">
@@ -568,7 +578,7 @@
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->
-                                            </li>
+                                            </li> --}}
                                             @hasanyrole('Payroll|SuperAdmin')
                                             <li class="nav-item">
                                                 <a

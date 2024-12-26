@@ -14,6 +14,42 @@ $(document).ready(function () {
         $("#cover-spin").hide();
     });
 
+    $("body").on("click", "#bank_attachment_list", function () {
+        $("#cover-spin").show();
+        id = $(this).data("bank_id");
+
+        $.ajax({
+            url: "/hr/admin/bank/mv/attachment/" + id,
+            method: "GET",
+            async: true,
+            success: function (response) {
+                g_response = response.view;
+                $("#employeeBankAttachmentView").empty("").append(g_response);
+                $("#bank_attachment_list_modal").modal("show");
+                $("#cover-spin").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+                $("#cover-spin").hide();
+
+            },
+        });
+    });
+
+    $("body").on("click", "#employee_bank_file_upload", function () {
+        console.log('employee_bank_file_upload')
+        bankId = $(this).data("bank_id");
+        employeeId = $(this).data("employee_id");
+
+        $("#bank_id").val(bankId);
+        $("#employee_id").val(employeeId);
+
+        $("#cover-spin").show();
+        $("#employee_bank_file_upload_modal").modal("show");
+        $("#cover-spin").hide();
+    });
+
     $("body").on("click", "#edit_employee_bank", function () {
         $("#cover-spin").show();
         // console.log("inside #edit_employee");
@@ -87,13 +123,55 @@ $(document).ready(function () {
             }
         });
     });
-
-
 });
 
-$(function () {
-    $("#task_table").bootstrapTable();
-});
+    // delete files
+    $("body").on("click", "#delete_employee_file", function (e) {
+        var id = $(this).data("id");
+        var tableID = $(this).data("table");
+        e.preventDefault();
+        // alert("tableID: "+tableID);
+        var link = $(this).attr("href");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Delete This Data?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/hr/admin/files/delete/" + id,
+                    type: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (!result["error"]) {
+                            toastr.success(result["message"]);
+                            // divToRemove.remove();
+                            // $("#fileCount").html("File ("+result["count"]+")");
+                            // console.log('before table refrest for #'+tableID);
+                            $("#bank_attachment_list_modal").modal("hide");
+                            $("#" + tableID).bootstrapTable("refresh");
+                            // Swal.fire(
+                            //     'Deleted!',
+                            //     'Your file has been deleted.',
+                            //     'success'
+                            //   )
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                    },
+                });
+            }
+        });
+    });
 
 ("use strict");
 
@@ -187,7 +265,7 @@ function attributeFormatter(value, row, index) {
 }
 
 function actions2Formatter(value, row, index) {
-    console.log("employees.js inside actions2Formatter");
+    // console.log("employees.js inside actions2Formatter");
     html = "";
     html =
         html +

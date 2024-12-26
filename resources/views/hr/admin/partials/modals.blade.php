@@ -1559,6 +1559,78 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="employee_bank_file_upload_modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top">
+        <div class="modal-content bg-100">
+            <div class="modal-header bg-modal-header">
+                <h3 class=" text-white mb-0" id="staticBackdropLabel">Upload Bank File</h3>
+                <button class="btn p-1" type="button" data-bs-dismiss="modal" aria-label="Close"><span class="fas fa-times fs--1 text-danger"></span></button>
+            </div>
+            <form id="fileUploadForm" class="needs-validation form-submit-event" novalidate="" action="{{ route('hr.admin.file.store') }}" method="POST" enctype='multipart/form-data'>
+                @csrf
+                <div class="modal-body">
+                    <div class="modal-body px-0">
+                        <div class="row g-4">
+                            <div class="col-lg-12">
+                                <input type="hidden" id="bank_id" name="bank_id" value="">
+                                <input type="hidden" id="employee_id" name="employee_id" value="">
+                                <input type="hidden" name="model_name" value="BANK">
+                                <input type="hidden" name="table" value="employee_bank_table">
+                                <div class="mb-4">
+                                    <input class="form-control" type="file" name="file_name" id="fileupld" required />
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label class="form-label" for="file_description">Description</label>
+                                    <textarea class="form-control" name="description" maxlength="500" id="file_description" rows="3" required></textarea>
+                                    <!-- <div class="invalid-feedback">This field is required.</div> -->
+                                </div>
+                                <div class="form-group">
+                                    <div class="progress">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated bg-success" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                                <!-- <div class="mb-4">
+                                        <label class="text-1000 fw-bold mb-2">Status</label>
+                                        <select class="form-select" name="active_flag" id="activeFlag" required>
+                                            <option value="" >Select</option>
+                                            <option value="1" selected>Active</option>
+                                            <option value="2">Inactive</option>
+                                        </select>
+                                    </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-danger" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary" type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="bank_attachment_list_modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="mb-0" id="add_employee_modal_label"><?= get_label('edit_employee_bank', 'Edit employee bank') ?></h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <?php
+            $workspace_id = session()->get('workspace_id');
+            $is_workspace_id_set = ($workspace_id) ? true : false;
+            //
+            ?>
+            <form class="row g-3  px-3 needs-validation form-submit-event" id="edit_employee_bank_form" novalidate="" action="{{ route ('hr.admin.bank.update') }}" method="POST">
+                @csrf
+                <div id="employeeBankAttachmentView"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endif
 
 @if (Request::is('hr/admin/emergency') || Request::is('tracki/employee/profile*'))
@@ -2411,7 +2483,7 @@
 
                 <div class="modal-body">
 
-                    
+
                     <div class="col-md-12 mb-3">
                         <label for="entity_name" class="form-label"><?= get_label('title', 'Title') ?> <span class="asterisk">*</span></label>
                         <input type="text" class="form-control" name="title" id="edit_elementset_title" required placeholder="<?= get_label('please_enter_title', 'Please enter title') ?>" />

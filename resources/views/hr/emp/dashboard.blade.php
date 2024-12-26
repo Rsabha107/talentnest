@@ -775,8 +775,6 @@
                                                             <th class="sort align-middle white-space-nowrap text-start pe-3" scope="col" data-sort="workded" style="width:10%;">WORKED</th>
                                                             <th class="sort align-middle white-space-nowrap text-start pe-3" scope="col" data-sort="leaves" style="width:10%;">LEAVES</th>
                                                             <th class="sort align-middle white-space-nowrap text-start pe-3" scope="col" data-sort="unpaid" style="width:10%;">UNPAID</th>
-
-                                                            <th class="sort text-end align-middle pe-0 ps-5" scope="col"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody class="list" id="customer-order-table-body">
@@ -790,14 +788,6 @@
                                                             <td class="workded align-middle text-end fw-semibold pe-7 text-body-highlight">{{ $item->days_worked }}</td>
                                                             <td class="leaves align-middle text-end fw-semibold pe-7 text-body-highlight">{{ $item->leave_taken }}</td>
                                                             <td class="unpaid align-middle text-end fw-semibold pe-7 text-body-highlight">{{ $item->unpaid_leave_taken }}</td>
-                                                            <td class="align-middle white-space-nowrap text-end pe-0 ps-5">
-                                                                <div class="btn-reveal-trigger position-static">
-                                                                    <button class="btn btn-sm dropdown-toggle dropdown-caret-none transition-none btn-reveal fs-10" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span class="fas fa-ellipsis-h fs-10"></span></button>
-                                                                    <div class="dropdown-menu dropdown-menu-end py-2"><a class="dropdown-item" href="#!">View</a><a class="dropdown-item" href="#!">Export</a>
-                                                                        <div class="dropdown-divider"></div><a class="dropdown-item text-danger" href="#!">Remove</a>
-                                                                    </div>
-                                                                </div>
-                                                            </td>
                                                         </tr>
                                                         @endforeach
 

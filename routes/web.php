@@ -55,6 +55,7 @@ use App\Http\Controllers\EmployeeTimeSheetInvoice;
 use App\Http\Controllers\EntityController;
 use App\Http\Controllers\FunctionalAreaController;
 use App\Http\Controllers\GenderController;
+use App\Http\Controllers\hr\Admin\EmployeeAttachmentController as AdminEmployeeAttachmentController;
 use App\Http\Controllers\hr\Manager\ManagerController as ManagerManagerController;
 use App\Http\Controllers\hr\Manager\ManagerTimesheetController as ManagerManagerTimesheetController;
 use App\Http\Controllers\hr\Pay\PayrollBankController as PayPayrollBankController;
@@ -259,7 +260,19 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::post('/hr/admin/bank/store', 'store')->name('hr.admin.bank.store');
             Route::get('/hr/admin/bank/mv/edit/{id}', 'getEmpEditView')->name('hr.admin.bank.rv.edit');
             Route::post('/hr/admin/bank/bank/update', 'update')->name('hr.admin.bank.update');
-            Route::get('tracki/employee/bank/delete/{id}', 'delete')->name('hr.admin.bank.delete');
+            Route::get('hr/admin/bank/delete/{id}', 'delete')->name('hr.admin.bank.delete');
+            Route::get('/hr/admin/bank/mv/attachment/{id}', 'getAttachmentView')->name('hr.admin.bank.rv.attachment');
+        });
+
+        // Bank Routes
+        Route::controller(AdminEmployeeAttachmentController::class)->group(function () {
+            Route::post('hr/admin/file/store', 'store')->name('hr.admin.file.store');
+            Route::get('/hr/admin/files', 'index')->name('hr.admin.files')->middleware('permission:employee.file.list');
+            Route::get('/hr/admin/files/list', 'list')->name('hr.admin.files.list')->middleware('permission:employee.file.list');
+            Route::get('/hr/admin/files/get/{id}', 'get')->name('hr.admin.files.get');
+            Route::post('/hr/admin/files/update', 'update')->name('hr.admin.files.update');
+            Route::delete('/hr/admin/files/delete/{id}', 'delete')->name('hr.admin.files.delete');
+            Route::get('/hr/admin/file/serve/{file}', 'serve')->name('hr.admin.file.serve');
         });
 
 
@@ -361,7 +374,7 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::get('/hr/admin/letter/generate/show/{id}',  'show')->name('hr.admin.letter.generate.show');
         });
 
-        //*****************************************************Setting All routes
+        //              *****************************************************Setting All routes********************************
 
         //Address Type route
         Route::controller(SettingAddressTypeController::class)->group(function () {
@@ -566,14 +579,14 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
         });
 
         // Element set assignments routes
-        Route::controller(SettingElementSetAssignmentController::class)->group(function () {
-            Route::get('/hr/admin/setting/elementset/assignment', 'index')->name('hr.admin.setting.elementset.assignment');
-            Route::get('/hr/admin/setting/elementset/assignment/list/{id}', 'list')->name('hr.admin.setting.elementset.assignment.list');
-            Route::get('/hr/admin/setting/elementset/assignment/get/{id}', 'get')->name('hr.admin.setting.elementset.assignment.get');
-            Route::post('/hr/admin/setting/elementset/assignment/update', 'update')->name('hr.admin.setting.elementset.assignment.update');
-            Route::delete('/hr/admin/setting/elementset/assignment/delete/{id}', 'delete')->name('hr.admin.setting.elementset.assignment.delete');
-            Route::post('/hr/admin/setting/elementset/assignment/store', 'store')->name('hr.admin.setting.elementset.assignment.store');
-        });
+        // Route::controller(SettingElementSetAssignmentController::class)->group(function () {
+        //     Route::get('/hr/admin/setting/elementset/assignment', 'index')->name('hr.admin.setting.elementset.assignment');
+        //     Route::get('/hr/admin/setting/elementset/assignment/list/{id?}', 'list')->name('hr.admin.setting.elementset.assignment.list');
+        //     Route::get('/hr/admin/setting/elementset/assignment/get/{id}', 'get')->name('hr.admin.setting.elementset.assignment.get');
+        //     Route::post('/hr/admin/setting/elementset/assignment/update', 'update')->name('hr.admin.setting.elementset.assignment.update');
+        //     Route::delete('/hr/admin/setting/elementset/assignment/delete/{id}', 'delete')->name('hr.admin.setting.elementset.assignment.delete');
+        //     Route::post('/hr/admin/setting/elementset/assignment/store', 'store')->name('hr.admin.setting.elementset.assignment.store');
+        // });
 
         //Pay Cyle routes
         Route::controller(SettingPayCycleController::class)->group(function () {
@@ -601,8 +614,7 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
         });
     });
 
-    // HRMS *********************************************************************** EMP All Route
-    // Route::middleware(['auth',  'role:HRMS', 'roles:user', 'prevent-back-history', 'auth.session'])->group(function () {
+    // HRMS *********************************************************************** EMP All Route *****************************************************
     Route::middleware(['auth', 'otp', 'XssSanitizer', 'role:HRMS', 'roles:user', 'prevent-back-history', 'auth.session'])->group(function () {
 
         // Employee All Route 

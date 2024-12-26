@@ -4,6 +4,7 @@ namespace App\Http\Controllers\hr\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\EmployeeAttachment;
 use App\Models\EmployeeBank;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,20 +30,6 @@ class EmployeeBankController extends Controller
         // dd(FacadesRoute::currentRouteName());
         // dd(FacadesRequest::url());
         return view('hr.admin.bank.list', compact('employees'));
-    }
-
-
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * add a new resource.
-     */
-    public function add()
-    {
-        //
     }
 
     /**
@@ -108,7 +95,7 @@ class EmployeeBankController extends Controller
         $op = $op->isActive('N');
 
         // dd($op);
-        $user_id = ($user->hasRole('SuperAdmin')||$user->hasRole('HRMSADMIN')) ? 0 : $user->employee_id;
+        $user_id = ($user->hasRole('SuperAdmin') || $user->hasRole('HRMSADMIN')) ? 0 : $user->employee_id;
 
         $op = $op->when($user_id, function ($query, $user_id) {
             return $query->where('employee_id', $user_id);
@@ -156,16 +143,28 @@ class EmployeeBankController extends Controller
                 '<a href="javascript:void(0)" class="btn btn-sm" data-table="employee_bank_table" data-id="' .
                 $op->id .
                 '" id="deleteEmployeeBank" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
-                '<i class="bx bx-trash text-danger"></i></a></div></div>';
+                '<i class="bx bx-trash text-danger"></i></a>';
 
+            $actions_3dots = '
+                        <button class="btn btn-sm ms-auto dropdown-toggle dropdown-caret-none transition-none  btn-reveal" type="button" data-bs-toggle="dropdown" data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><svg class="svg-inline--fa fa-ellipsis" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="ellipsis" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" data-fa-i2svg=""><path fill="currentColor" d="M8 256a56 56 0 1 1 112 0A56 56 0 1 1 8 256zm160 0a56 56 0 1 1 112 0 56 56 0 1 1 -112 0zm216-56a56 56 0 1 1 0 112 56 56 0 1 1 0-112z"></path></svg><!-- <span class="fas fa-ellipsis-h"></span> Font Awesome fontawesome.com --></button>
+                        <div class="dropdown-menu dropdown-menu-end">
+                            <a class="dropdown-item" href="javascript:void(0)" id="employee_bank_file_upload" data-employee_id=' .$op->employees?->id .' data-bank_id=' .$op->id .'>Upload Document</a>
+                        </div>
+            ';
+
+            $icons = (($op->attachments?->count()) ? '<button class="btn p-0 text-body-tertiary fs-10 me-2" id="bank_attachment_list" data-bank_id='.$op->id.'><span class="fas fa-paperclip me-1"></span>' . $op->attachments?->count() . '</button>' : "");
+
+            $ic = $op->attachments?->count();
+
+            $actions = $actions.$actions_3dots.'</div></div>';
             // $profile_url = route('tracki.employee.profile', encrypt($op->employees->id));
             $profile_url = route('hr.admin.employee.profile', encrypt($op->employees->id));
-
 
             return [
                 'id1' => '<div class="ms-3">' . $op->id . '</div>',
                 'id' => $op->id,
                 'image' => $image,
+                'icon' => $icons,
                 'full_name' => '<div class="ms-1">' . $op->employees?->full_name . '</div>',
                 'employee_number' => '<div class="align-middle white-space-wrap fw-bold fs-9"><a href="' . $profile_url . '">' . $op->employees->employee_number . '</a></div>',
                 'bank_branch_name' => '<div class="ms-1">' . $op->bank_branch_name . '</div>',
@@ -182,22 +181,6 @@ class EmployeeBankController extends Controller
             "rows" => $op->items(),
             "total" => $total,
         ]);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
@@ -267,11 +250,27 @@ class EmployeeBankController extends Controller
         $employees = Employee::all();
         $employee_bank = EmployeeBank::findOrFail($id);
 
-        $view = view('/tracki/employee/bank/mv/edit', [
+        $view = view('hr/admin/bank/mv/edit', [
             'employee_bank' => $employee_bank,
             'employees' => $employees,
         ])->render();
 
         return response()->json(['view' => $view]);
     }
+
+    public function getAttachmentView($id)
+    {
+        // dd($id);
+        $bank_attachment = EmployeeAttachment::where('model_id','=',$id)
+                                                 ->where('model_name', 'BANK')->get();
+
+        // $bank_attachment = EmployeeAttachment::all();
+
+        $view = view('/hr/admin/bank/mv/attachment', [
+            'bank_attachment' => $bank_attachment,
+        ])->render();
+
+        return response()->json(['view' => $view]);
+    }
+
 }

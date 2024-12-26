@@ -4,19 +4,17 @@
     <div class="card-body">
         <div class="table-responsive text-nowrap">
             {{$slot}}
+            @if (is_countable($statuses) && count($statuses) > 0)
             <input type="hidden" id="data_type" value="status">
             <div class="mx-2 mb-2">
-                <table id="gender_table"
+                <table id="employee_file_table"
                     data-toggle="table"
                     data-classes="table table-hover  fs-9 mb-0 border-top border-translucent"
                     data-loading-template="loadingTemplate"
-                    data-url="{{ route('hr.admin.setting.gender.list')}}"
+                    data-url="{{ route('hr.admin.files.list')}}"
                     data-icons-prefix="bx"
                     data-icons="icons"
                     data-show-export="true"
-                    data-show-columns-toggle-all="true"
-                    data-show-toggle="true"
-                    data-show-fullscreen="true"
                     data-show-refresh="true"
                     data-total-field="total"
                     data-trim-on-search="false"
@@ -35,16 +33,27 @@
                     <thead>
                         <tr>
                             <!-- <th data-checkbox="true"></th> -->
-                            <!-- <th data-sortable="true" data-field="id1"><?= get_label('id', 'ID') ?></th> -->
-                            <th data-sortable="true" data-field="title"><?= get_label('title', 'Title') ?></th>
-                            <th data-sortable="true" data-field="total"><?= get_label('total_employee', 'Total Employee') ?></th>
+                            <!-- <th class="text-wrap" data-sortable="true" data-field="id"><?= get_label('id', 'Id') ?></th> -->
+                            <th data-sortable="true" data-field="image" data-align="center"></th>
+                            <th data-sortable="true" data-field="employee_number"><?= get_label('employee_number', '#') ?></th>
+                            <th data-sortable="true" data-field="full_name"><?= get_label('full_name', 'Name') ?></th>
+                            <th data-sortable="true" data-field="original_file_name"><?= get_label('file', 'File') ?></th>
+                            <th data-sortable="true" data-field="description"><?= get_label('description', 'Description') ?></th>
+                            <th data-sortable="true" data-field="type"><?= get_label('attachement_type', 'Type') ?></th>
+                            <th data-sortable="true" data-field="file_size"><?= get_label('size', 'Size') ?></th>
                             <th data-sortable="true" data-field="created_at" data-visible="false"><?= get_label('created_at', 'Created at') ?></th>
                             <th data-sortable="true" data-field="updated_at" data-visible="false"><?= get_label('updated_at', 'Updated at') ?></th>
-                            <th class="align-middle text-end" data-formatter="actionsFormatter"><?= get_label('actions', 'Actions') ?></th>
+                            <th data-field="actions"><?= get_label('actions', 'Actions') ?></th>
                         </tr>
                     </thead>
                 </table>
             </div>
+            @else
+            <?php
+            $type = 'Attachments'; ?>
+            <x-empty-state-card :type="$type" />
+
+            @endif
         </div>
     </div>
 </div>

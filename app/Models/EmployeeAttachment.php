@@ -16,5 +16,10 @@ class EmployeeAttachment extends Model
     {
         return $query->where('archived', $flag);
     }
+
+    public function employees()
+    {
+        return $this->belongsTo(Employee::class, 'employee_id');
+    }
     
 }

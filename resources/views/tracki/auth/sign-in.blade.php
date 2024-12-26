@@ -99,7 +99,7 @@
                             <label class="form-label" for="password">Password</label>
                             <div class="form-icon-container" data-password="data-password">
                                 <input class="form-control form-icon-input pe-6" name="password" id="password" type="password" placeholder="Password" data-password-input="data-password-input" required autocomplete="current-password" /><span class="fas fa-key text-body fs-9 form-icon"></span>
-                                <button class="btn px-3 py-0 h-100 position-absolute top-0 end-0 fs-7 text-body-tertiary"></button>
+                                <div class="btn px-3 py-0 h-100 position-absolute top-0 end-0 fs-7 text-body-tertiary mt-1" data-password-toggle="data-password-toggle"><span class="uil uil-eye show"></span><span class="uil uil-eye-slash hide"></span></div>
                             </div>
                             @error('password') <span class="text-danger">{{$message}}</span> @enderror
                         </div>

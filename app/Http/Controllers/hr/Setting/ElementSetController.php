@@ -15,7 +15,7 @@ class ElementSetController extends Controller
     public function index()
     {
         $elementsets = ElementSet::all();
-        return view('hr.admin.setting.element_set.list', compact('elementsets'));
+        return view('hr.admin.setting.elementset.list', compact('elementsets'));
     }
 
     public function list()
@@ -160,6 +160,6 @@ class ElementSetController extends Controller
     } // taskFileDelete
 
     public function AssignElements(){
-        return view('hr.admin.setting.elementset.assign_elements');
+        return view('hr.admin.setting.elementset.assignment');
     }
 }

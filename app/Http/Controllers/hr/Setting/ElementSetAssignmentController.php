@@ -17,17 +17,18 @@ class ElementSetAssignmentController extends Controller
     {
         // $elementset_id = ElementSet::find($id);
         // $elementset_assignments = ElementSetAssignment::find($elementset_id);
-        // return view('tracki.setting.element_set_assignment.list', compact('elementset_assignments'));
-        return to_route('hr.admin.setting.elementset.assignment.list', ['id' => 1]);
+        $elementset_assignments = ElementSetAssignment::all();
+        return view('hr.admin.setting.elementsetassignment.list', compact('elementset_assignments'));
+        // return to_route('hr.admin.setting.elementset.assignment.list');
     }
 
     public function list($id = null)
     {
-        dd($id);
+        // dd($id);
         $search = request('search');
         $sort = (request('sort')) ? request('sort') : "id";
         $order = (request('order')) ? request('order') : "DESC";
-        $op = ElementSet::orderBy($sort, $order);
+        $op = ElementSetAssignment::orderBy($sort, $order);
 
         // dd($op);
         if ($search) {

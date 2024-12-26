@@ -1,25 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\hr\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Models\Employee;
 use App\Models\EmployeeAttachment;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class EmployeeAttachmentController extends Controller
 {
     //
     public function index()
     {
-        return view('tracki.employee.files.list');
+        $employees = Employee::all();
+        $model_names = EmployeeAttachment::distinct()->get('model_name');
+        return view('hr.admin.files.list', compact('employees','model_names'));
     }
 
     public function get($id)
     {
-        $op = EmployeeAttachment::findOrFail($id);
+        $op = EmployeeAttachment::all();
         return response()->json(['op' => $op]);
     }
 
@@ -82,14 +88,19 @@ class EmployeeAttachmentController extends Controller
             if ($request->file('file_name')) {
                 $file = $request->file('file_name');
                 $filename = rand() . date('ymdHis') . $file->getClientOriginalName();
-                $file->move(public_path('storage/upload/event_files'), $filename);
+                Storage::disk('private')->putFileAs('bank', $file, $filename);
+                // $file->store('private');
+                // Storage::putFileAs();
                 $data->file_name = $filename;
                 $data->original_file_name = $file->getClientOriginalName();
                 $data->file_extension = $file->getClientOriginalExtension();
                 $data->file_size = $_FILES['file_name']['size']; //$request->file('file_name')->getSize();
-                $data->file_path = '/storage/upload/event_files/';
+                $data->file_path = '/app/userfiles/bank/';
                 $data->user_id = $id;
                 $data->employee_id = $request->employee_id;
+                $data->model_id = $request->bank_id;
+                $data->model_name = $request->model_name;
+                $data->description = $request->description;
             }
 
             $data->save();
@@ -114,7 +125,34 @@ class EmployeeAttachmentController extends Controller
             ]);
         }
         // return redirect()->back();
-    } //fileStore
+    } //store
+
+
+    public function serve(EmployeeAttachment $file)
+    {
+        // if(Auth::user() && Auth::id() === $file->user->id) {
+        // Here we don't use the Storage facade that assumes the storage/app folder
+        // So filename should be a relative path inside storage to your file like 'app/userfiles/report1253.pdf'
+
+        // $contents = Storage::disk('private')->url('app/userfiles/bank/'.$file->file_name);
+
+        // $size = Storage::disk('private')->size($file->file_name);
+        // dd($size);
+        // dd($contents);
+        if (auth()->check()) {
+            $filepath = storage_path($file->file_path . $file->file_name);
+            // dd($filepath);
+            // return response()->file($contents);
+            // return Storage::download('storage/app/userfiles/bank/'.$file->filename);
+            return response()->file($filepath);
+        } else {
+            return abort('404');
+        }
+
+        // }else{
+        // return abort('404');
+        // }
+    }
 
 
     public function list($id = null)
@@ -123,13 +161,11 @@ class EmployeeAttachmentController extends Controller
         $sort = (request('sort')) ? request('sort') : "id";
         $order = (request('order')) ? request('order') : "DESC";
         // $op = EmployeeAttachment::orderBy($sort, $order);
+        $employee = (request()->employee) ? request()->employee : "";
+        $attachment_type = (request()->attachment_type) ? request()->attachment_type : "";
 
-        Log::alert('list id: ' . $id);
-        if ($id) {
-            $op = EmployeeAttachment::where('employee_id', $id)->orderBy($sort, $order);
-        } else {
-            $op = EmployeeAttachment::orderBy($sort, $order);
-        }
+
+        $op = EmployeeAttachment::orderBy($sort, $order);
 
         // dd($op);
         if ($search) {
@@ -137,6 +173,19 @@ class EmployeeAttachmentController extends Controller
                 $query->where('name', 'like', '%' . $search . '%');
             });
         }
+
+        if ($employee) {
+            $op = $op->where(function ($query) use ($employee) {
+                $query->where('employee_id', 'like', '%' . $employee . '%');
+            });
+        }
+
+        if ($attachment_type) {
+            $op = $op->where(function ($query) use ($attachment_type) {
+                $query->where('model_name', 'like', '%' . $attachment_type . '%');
+            });
+        }
+
         $total = $op->count();
 
         //apply scope
@@ -144,17 +193,17 @@ class EmployeeAttachmentController extends Controller
 
         $op = $op->paginate(request("limit"))->through(function ($op) {
 
-            if ($op->file_path) {
+            if ($op->employees?->emp_files?->file_path) {
                 $image = ' <div class="avatar avatar-m ">
-                                <a  href="#" role="button">
-                                    <img class="rounded-circle pull-up" src="' . $op->file_path . $op->file_name . '" alt="" />
+                                <a  href="#" role="button" title="' . $op->employees?->full_name . '">
+                                    <img class="rounded-circle pull-up" src="' . $op->employees?->emp_files?->file_path . $op->employees?->emp_files?->file_name . '" alt="" />
                                 </a>
                             </div>';
             } else {
                 $image = '  <div class="avatar avatar-m  me-1" id="project_team_members_init">
-                                <a class="dropdown-toggle dropdown-caret-none d-inline-block" href="#" role="button">
+                                <a class="dropdown-toggle dropdown-caret-none d-inline-block" href="#" role="button" title="' . $op->employees?->full_name . '">
                                     <div class="avatar avatar-m  rounded-circle pull-up">
-                                        <div class="avatar-name rounded-circle me-2"><i class="fa-solid fa-file"></i></div>
+                                        <div class="avatar-name rounded-circle me-2"><span>' . generateInitials($op->employees?->full_name) . '</span></div>
                                     </div>
                                 </a>
                             </div>';
@@ -166,11 +215,17 @@ class EmployeeAttachmentController extends Controller
                 '" id="delete_employee_file" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
                 '<i class="bx bx-trash text-danger"></i></a></div></div>';
 
+            $profile_url = route('hr.admin.employee.profile', encrypt($op->employees->id));
+
             return [
                 'id' => $op->id,
                 'id1' => '<div class="ms-3">' . $op->id . '</div>',
                 'image' => $image,
-                'original_file_name' => '<div class="align-middle white-space-wrap fw-bold fs-8 ms-3"><a href="' . asset('/storage/upload/event_files/') . '/' . $op->file_name . '" target="_blank"> ' . $op->original_file_name . '</a></div>',
+                'full_name' => '<div class="ms-1">' . $op->employees?->full_name . '</div>',
+                'description' => '<div class="ms-1">' . $op->description . '</div>',
+                'type' => '<div class="ms-1">' . $op->model_name . '</div>',
+                'employee_number' => '<div class="align-middle white-space-wrap fw-bold fs-9"><a href="' . $profile_url . '">' . $op->employees->employee_number . '</a></div>',
+                'original_file_name' => '<div class="align-middle white-space-wrap fw-bold fs-8 ms-3"><a href="' . route('hr.admin.file.serve', $op->id) . '" target="_blank"> ' . $op->original_file_name . '</a></div>',
                 'file_size' => '<div class="align-middle white-space-wrap fw-bold fs-8 ms-3">' . $op->file_size . '</div>',
                 'actions' => $actions,
                 'created_at' => format_date($op->created_at,  'H:i:s'),
@@ -186,17 +241,17 @@ class EmployeeAttachmentController extends Controller
 
     public function delete($id)
     {
+        Log::info('AdminEmployeeAttachementController::delete');
         $fileDetails = EmployeeAttachment::find($id);
+        Log::info($fileDetails->file_name);
+        $filepath = storage_path($fileDetails->file_path . $fileDetails->file_name);
 
-        // dd($fileDetails);
-        Log::info('file to delete: ' . 'upload/event_files/' . $fileDetails->file_name);
-
-        // $url = \File::allFiles(public_path('upload/event_files/'.$fileDetails->file_name));
-        // dd($url);
-
-        if (File::exists(public_path('storage/upload/event_files/' . $fileDetails->file_name))) {
-            File::delete(public_path('storage/upload/event_files/' . $fileDetails->file_name));
+        if (File::exists($filepath)) {
+            File::delete($filepath);
         }
+        // if (File::exists(public_path('storage/upload/event_files/' . $fileDetails->file_name))) {
+        //     File::delete(public_path('storage/upload/event_files/' . $fileDetails->file_name));
+        // }
 
         EmployeeAttachment::where('id', '=', $id)->delete();
 
@@ -204,9 +259,6 @@ class EmployeeAttachmentController extends Controller
             'message'       => 'File deleted successfully',
             'alert-type'    => 'success'
         );
-
-        // dd($taskId);
-
         return response()->json([
             'error' => false,
             'message' => 'file ' . $fileDetails->original_file_name . ' deleted successfully',

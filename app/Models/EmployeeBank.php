@@ -21,4 +21,9 @@ class EmployeeBank extends Model
     {
         return $this->belongsTo(Employee::class, 'employee_id');
     }
+
+    public function attachments()
+    {
+        return $this->hasMany(EmployeeAttachment::class, 'model_id')->where('model_name', 'BANK');
+    }
 }

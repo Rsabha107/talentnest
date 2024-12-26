@@ -19,6 +19,7 @@
                 <thead>
                     <tr>
                         <th data-checkbox="true" data-halign="left" data-align="center" data-visible="false"></th>
+                        <th data-sortable="true" data-field="icon" data-align="center"></th>
                         <th data-sortable="true" data-field="image" data-align="center"></th>
                         <!-- <th data-sortable="true" data-field="id1"><?= get_label('id', 'ID') ?></th> -->
                         <!-- <th data-sortable="true" data-field="id"><?= get_label('id', 'ID') ?></th> -->
