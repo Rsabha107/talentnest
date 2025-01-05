@@ -30,7 +30,7 @@ class Task extends Model
 
     public function project()
     {
-        return $this->belongsTo(Event::class, 'event_id');
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     public function department()
@@ -45,7 +45,7 @@ class Task extends Model
 
     public function assigned_to()
     {
-        return $this->belongsTo(Person::class, 'assignment_id');
+        return $this->belongsTo(Employee::class, 'assignment_id');
     }
 
     public function status()

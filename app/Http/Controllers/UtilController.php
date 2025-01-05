@@ -7,6 +7,7 @@ use App\Models\Event;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\Person;
+use App\Models\Project;
 use App\Models\Status;
 use App\Models\Task;
 use App\Models\TaskFileUpload;
@@ -22,10 +23,10 @@ class UtilController extends Controller
     {
         // Log::info('UtilController::getEventBudgetDetails with id: '.$id);
         // dd($id);
-        $eventBudget = Event::find($id)?->budget_allocation;
+        $eventBudget = Project::find($id)?->budget_allocation;
         $totalTaskBudgetUsed = DB::table('tasks')
             ->select(DB::raw("sum(tasks.actual_budget_allocated) as sum_actual_budget"))
-            ->where('event_id', '=', $id)
+            ->where('project_id', '=', $id)
             ->get();
 
         $data_arr = [];

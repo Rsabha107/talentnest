@@ -38,7 +38,7 @@ function refreshTaskNotes(val) {
     var g_response;
     // alert('refreshTaskNotes')
     $.ajax({
-        url: "/tracki/task/notes/" + val,
+        url: "/projects/admin/task/notes/" + val,
         method: "GET",
         async: false,
         success: function (response) {
@@ -58,7 +58,7 @@ function refreshTaskSubtask(val) {
     var g_response;
     // alert('refreshTaskNotes')
     $.ajax({
-        url: "/tracki/task/subtask/" + val,
+        url: "/projects/admin/task/subtask/" + val,
         method: "GET",
         async: false,
         success: function (response) {
@@ -109,7 +109,6 @@ $(document).ready(function () {
         var action = $(this).data("action");
         var type = $(this).data("type");
 
-        var form_action = "/tracki/task/" + action;
         // set the form action with the source var
         // $("#add_task_form").attr("action", form_action);
 
@@ -135,7 +134,7 @@ $(document).ready(function () {
         // }
 
         $.ajax({
-            url: "/tracki/task/mv/edit/" + id,
+            url: "/projects/admin/task/mv/edit/" + id,
             method: "GET",
             async: true,
             success: function (response) {
@@ -143,7 +142,7 @@ $(document).ready(function () {
                 $("#edit_task_modal_form").empty("").append(g_response);
 
                 $.ajax({
-                    url: "/tracki/task/get/" + id,
+                    url: "/projects/admin/task/get/" + id,
                     type: "get",
                     headers: {
                         "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
@@ -287,7 +286,7 @@ $(document).ready(function () {
         // console.log("id: " + id);
         // console.log("table: " + table);
 
-        $.get("/tracki/task/status/" + id + "/edit", function (data) {
+        $.get("/projects/admin/task/status/" + id + "/edit", function (data) {
             //  console.log('event name: ' + data);
             $.each(data, function (index, value) {
                 // console.log(value[0]);
@@ -825,7 +824,7 @@ $("body").on("click", "#task-note-tab", function (event) {
     // $("#taskTabNotes").empty("").append(refreshTaskNotes(tab_value));
 
     $.ajax({
-        url: "/tracki/task/notes/" + tab_value,
+        url: "/projects/admin/task/notes/" + tab_value,
         method: "GET",
         async: true,
         success: function (response) {
@@ -850,7 +849,7 @@ $("body").on("click", "#task-subtask-tab", function (event) {
     // $("#taskTabNotes").empty("").append(refreshTaskNotes(tab_value));
 
     $.ajax({
-        url: "/tracki/task/subtask/" + tab_value,
+        url: "/projects/admin/task/subtask/" + tab_value,
         method: "GET",
         async: true,
         success: function (response) {
@@ -876,7 +875,7 @@ $("body").on("click", "#task-file-tab", function (event) {
     // $("#taskTabNotes").empty("").append(refreshTaskNotes(tab_value));
 
     $.ajax({
-        url: "/tracki/task/files/" + tab_value,
+        url: "/projects/admin/task/files/" + tab_value,
         method: "GET",
         async: true,
         success: function (response) {
@@ -922,7 +921,7 @@ $("body").on("click", "#taskCardView", function (event) {
     // alert($edit_task_id)
 
     $.ajax({
-        url: "/tracki/task/overview/"+ taskId ,
+        url: "/projects/admin/task/overview/"+ taskId ,
         method: "GET",
         success: function (response) {
             console.log(response);
@@ -1029,7 +1028,7 @@ $("body").on("click", "#taskCardView", function (event) {
             });
 
             $.ajax({
-                url: "/tracki/task/notes/" + taskId,
+                url: "/projects/admin/task/notes/" + taskId,
                 method: "GET",
                 async: true,
                 success: function (response) {
@@ -1040,7 +1039,7 @@ $("body").on("click", "#taskCardView", function (event) {
             });
 
             $.ajax({
-                url: "/tracki/task/subtask/" + taskId,
+                url: "/projects/admin/task/subtask/" + taskId,
                 method: "GET",
                 async: true,
                 success: function (response) {
@@ -1051,7 +1050,7 @@ $("body").on("click", "#taskCardView", function (event) {
             });
 
             $.ajax({
-                url: "/tracki/task/files/" + taskId,
+                url: "/projects/admin/task/files/" + taskId,
                 method: "GET",
                 async: true,
                 success: function (response) {
@@ -1144,7 +1143,7 @@ $("body").on("click", "#taskCardView", function (event) {
                 }
 
                 $.ajax({
-                    url: "/tracki/task/files/" + taskId,
+                    url: "/projects/admin/task/files/" + taskId,
                     method: "GET",
                     async: true,
                     success: function (response) {
@@ -1241,7 +1240,7 @@ $(function () {
 function queryParams(p) {
     return {
         status: $("#task_status_filter").val(),
-        person_id: $("#tasks_person_filter").val(),
+        person_id: $("#tasks_employee_filter").val(),
         // client_id: $("#tasks_client_filter").val(),
         project_id: $("#tasks_project_filter").val(),
         department_id: $("#tasks_department_filter").val(),
@@ -1434,7 +1433,7 @@ function buttons() {
 }
 
 $(
-    "#task_status_filter,#tasks_person_filter,#tasks_project_filter,#tasks_department_filter"
+    "#task_status_filter,#tasks_employee_filter,#tasks_project_filter,#tasks_department_filter"
 ).on("change", function (e) {
     e.preventDefault();
     console.log("tasks.js on change");

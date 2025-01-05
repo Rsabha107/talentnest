@@ -9,7 +9,7 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Phoenix</title>
+    <title>Projects Management</title>
 
     <!-- ===============================================-->
     <!--    Favicons-->
@@ -93,15 +93,15 @@
     <!-- ===============================================-->
     <main class="main" id="top">
 
-        @include('hr.admin.body.sidebar')
-        @include('hr.admin.body.header')
+        @include('projects.admin.body.sidebar')
+        @include('projects.admin.body.header')
 
         {{-- // start of content --}}
         <div class="content">
             @yield('main')
-            @include('hr.admin.partials.modals')
-            @include('hr.admin.partials.labels')
-            @include('hr.admin.body.footer')
+            @include('projects.admin.partials.modals')
+            @include('projects.admin.partials.labels')
+            @include('projects.admin.body.footer')
         </div>
         {{-- // end of content --}}
 
@@ -196,6 +196,8 @@
 
             // showing the offcanvas for the task creation
             // console.log('before select2-with-image')
+    // $(".js-example-basic-multiple2").select2();
+
             $('#statusSelect104').select2({
                 width: "100%",
                 templateSelection: iformat,

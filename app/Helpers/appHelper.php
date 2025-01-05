@@ -5,6 +5,7 @@
 use App\Models\Employee;
 use App\Models\EmployeeLeave;
 use App\Models\Event;
+use App\Models\Project;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -239,7 +240,7 @@ if (!function_exists('get_project_progress')) {
 
     function get_project_progress($id)
     {
-        $project = Event::findOrFail($id);
+        $project = Project::findOrFail($id);
 
         $progress_value = 0;
         $task_count = $project->tasks->count();
@@ -253,6 +254,6 @@ if (!function_exists('get_project_progress')) {
         // Log::info('Helper::appHelper $task_progress_sum: '.$task_progress_sum);
         // Log::info('Helper::appHelper $progress_value: '.$progress_value);
 
-        return $progress_value;
+        return $progress_value * 100;
     }
 }

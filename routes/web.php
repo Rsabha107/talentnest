@@ -98,6 +98,8 @@ use App\Http\Controllers\PayrollBankController;
 use App\Http\Controllers\PayrollTimesheetController;
 use App\Http\Controllers\PrefixController;
 use App\Http\Controllers\PriorityController;
+use App\Http\Controllers\ProjectMgt\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\ProjectMgt\Admin\TaskController as AdminTaskController;
 use App\Http\Controllers\RandomController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\SubtaskController;
@@ -131,46 +133,6 @@ use App\Models\EmployeeSponsorship;
 // ****************** ADMIN *********************
 Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function () {
     Route::middleware(['auth', 'roles:admin', 'role:SuperAdmin', 'prevent-back-history', 'XssSanitizer'])->group(function () {
-
-        // // Role
-        // Route::get('/tracki/sec/roles/add', function () {
-        //     return view('/tracki/sec/roles/add');
-        // })->name('tracki.sec.roles.add');
-        // Route::get('/tracki/sec/roles/roles/list', [RoleController::class, 'listRole'])->name('tracki.sec.roles.list');
-        // Route::post('updaterole', [RoleController::class, 'updateRole'])->name('tracki.sec.roles.update');
-        // Route::post('createrole', [RoleController::class, 'createRole'])->name('tracki.sec.roles.create');
-        // Route::get('/tracki/sec/roles/{id}/edit', [RoleController::class, 'editRole'])->name('tracki.sec.roles.edit');
-        // Route::get('/tracki/sec/roles/{id}/delete', [RoleController::class, 'deleteRole'])->name('tracki.sec.roles.delete');
-
-        // group
-        // Route::get('/tracki/sec/groups/add', function () {
-        //     return view('/tracki/sec/groups/add');
-        // })->name('tracki.sec.groups.add');
-        // Route::get('/tracki/sec/groups/groups/list', [RoleController::class, 'listGroup'])->name('tracki.sec.groups.list');
-        // Route::post('updategroup', [RoleController::class, 'updateGroup'])->name('tracki.sec.groups.update');
-        // Route::post('creategroup', [RoleController::class, 'createGroup'])->name('tracki.sec.groups.create');
-        // Route::get('/tracki/sec/groups/{id}/edit', [RoleController::class, 'editGroup'])->name('tracki.sec.groups.edit');
-        // Route::get('/tracki/sec/groups/{id}/delete', [RoleController::class, 'deleteGroup'])->name('tracki.sec.groups.delete');
-
-        // // Permission
-        // Route::get('/tracki/sec/permissions/list', [RoleController::class, 'listPermission'])->name('tracki.sec.perm.list');
-        // Route::post('updatepermission', [RoleController::class, 'updatePermission'])->name('tracki.sec.perm.update');
-        // Route::post('createpermission', [RoleController::class, 'createPermission'])->name('tracki.sec.perm.create');
-        // Route::get('/tracki/sec/perm/{id}/edit', [RoleController::class, 'editPermission'])->name('tracki.sec.perm.edit');
-        // Route::get('/tracki/sec/perm/{id}/delete', [RoleController::class, 'deletePermission'])->name('tracki.sec.perm.delete');
-        // Route::get('/tracki/sec/permissions/add', [RoleController::class, 'addPermission'])->name('tracki.sec.perm.add');
-
-        // Route::get('/tracki/sec/perm/import', [RoleController::class, 'ImportPermission'])->name('tracki.sec.perm.import');
-        // Route::post('importnow', [RoleController::class, 'ImportNowPermission'])->name('tracki.sec.perm.import.now');
-
-
-        // // Roles in Permission
-        // Route::get('/tracki/sec/rolesetup/list', [RoleController::class, 'listRolePermission'])->name('tracki.sec.rolesetup.list');
-        // Route::post('updaterolesetup', [RoleController::class, 'updateRolePermission'])->name('tracki.sec.rolesetup.update');
-        // Route::post('createrolesetup', [RoleController::class, 'createRolePermission'])->name('tracki.sec.rolesetup.create');
-        // Route::get('/tracki/sec/rolesetup/{id}/edit', [RoleController::class, 'editRolePermission'])->name('tracki.sec.rolesetup.edit');
-        // Route::get('/tracki/sec/rolesetup/{id}/delete', [RoleController::class, 'deleteRolePermission'])->name('tracki.sec.rolesetup.delete');
-        // Route::get('/tracki/sec/rolesetup/add', [RoleController::class, 'addRolePermission'])->name('tracki.sec.rolesetup.add');
 
         // Add User
         Route::get('/tracki/auth/signup', [AdminController::class, 'signUp'])->name('tracki.auth.signup');
@@ -232,6 +194,56 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
         });  //
     });  //
 
+
+    // PROJECT MANAGEMENT ******************************************************************** Admin All Route
+    Route::middleware(['auth', 'otp', 'XssSanitizer', 'role:SuperAdmin|PROJECTMGT', 'roles:admin', 'prevent-back-history', 'auth.session'])->group(function () {
+
+        // Project Routes
+        Route::controller(AdminProjectController::class)->group(function () {
+            Route::get('/projects/admin/project/', 'index')->name('projects.admin.project')->middleware('permission:project.show');
+            Route::get('/projects/admin/project/list/{id?}', 'list')->name('projects.admin.project.list')->middleware('permission:project.show');
+            Route::get('/projects/admin/project/employee/list/{id?}', 'employeeList')->name('projects.admin.employee.project.list')->middleware('permission:project.show');
+            Route::get('/projects/admin/project/d/{id}', 'detail')->name('projects.admin.project.d')->middleware('permission:project.show');
+            Route::get('/projects/admin/project/mv', 'projectCardMV')->name('projects.admin.project.mv');
+            Route::post('/project/store', 'createProject')->name('project.create');
+            Route::post('/project/update', 'updateProject')->name('project.update');
+            Route::get('/projects/admin/project/get/{id}', 'getProject')->name('tracki.project.get');
+        });
+
+        // Task Routes
+        Route::controller(AdminTaskController::class)->group(function () {
+            Route::get('/projects/admin/task/list/{id?}', 'list')->name('projects.admin.task.list')->middleware('permission:project.show');
+            Route::get('/projects/admin/task/employee/list/{id?}', 'employeeList')->name('projects.admin.employee.task.list')->middleware('permission:project.show');
+            Route::get('/projects/admin/task/overview/{id}', 'taskOverview')->name('projects.admin.task.overview')->middleware('permission:task.show');
+            Route::get('/projects/admin/task/notes/{id}', 'getTaskNotesView')->name('projects.admin.task.notes')->middleware('permission:task.show');
+            Route::get('/projects/admin/task/subtask/{id}', 'getTaskSubView')->name('projects.admin.task.subtask')->middleware('permission:task.show');
+            Route::get('/projects/admin/task/files/{id}', 'getTaskFilesView')->name('projects.admin.task.files')->middleware('permission:task.show');
+            Route::get('/projects/admin/task', 'index')->name('projects.admin.task')->middleware('permission:task.show');
+
+            //task file upload
+            Route::post('/projects/admin/task/file/store', 'taskFileStore')->name('projects.admin.task.file.store');
+            Route::delete('/projects/admin/task/file/{id}/delete', 'taskFileDelete')->name('projects.admin.task.file.delete');
+
+
+            //add task note
+            Route::post('/projects/admin/task/note/store', 'taskNoteStore')->name('projects.admin.task.note.store');
+            Route::delete('/projects/admin/task/note/{id}/delete', 'deleteTaskNote')->name('projects.admin.task.note.delete');
+
+            //************************************ Subtask Methods *************************************************** */
+            Route::post('/projects/admin/task/subtask', 'store')->name('projects.admin.task.subtask.store');
+            Route::get('/projects/admin/task/subtask/{id}/overview', 'overview')->name('projects.admin.task.subtask.overview');
+            Route::put('/projects/admin/task/subtask/update_status', 'updateStatus')->name('projects.admin.task.subtask.update_status');
+
+
+            Route::post('/projects/admin/task/status/update', 'updateTaskStatus')->name('projects.admin.task.status.update');
+            Route::post('/projects/admin/task/store', 'updateTaskStatus')->name('projects.admin.task.store');
+            Route::get('/projects/admin/task/mv/edit/{id}', 'getTaskView')->name('projects.admin.task.mv.edit');
+            Route::get('/projects/admin/task/get/{id}', 'getTask')->name('projects.admin.task.get');
+
+            Route::post('/projects/admin/task/update', 'updateTask')->name('projects.admin.task.update');
+        });
+    });
+
     // HRMS ******************************************************************** Admin All Route
     Route::middleware(['auth', 'otp', 'XssSanitizer', 'role:SuperAdmin|HRMSADMIN', 'roles:admin', 'prevent-back-history', 'auth.session'])->group(function () {
 
@@ -264,7 +276,7 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::get('/hr/admin/bank/mv/attachment/{id}', 'getAttachmentView')->name('hr.admin.bank.rv.attachment');
         });
 
-        // Bank Routes
+        // file Routes
         Route::controller(AdminEmployeeAttachmentController::class)->group(function () {
             Route::post('hr/admin/file/store', 'store')->name('hr.admin.file.store');
             Route::get('/hr/admin/files', 'index')->name('hr.admin.files')->middleware('permission:employee.file.list');

@@ -1,5 +1,5 @@
-<div class="card mb-4">
-    <div class="card-body">
+<!-- <div class="card mb-4">
+    <div class="card-body"> -->
         <div class="table-responsive text-nowrap">
             {{$slot}}
 
@@ -41,5 +41,5 @@
             </table>
 
         </div>
-    </div>
-</div>
+    <!-- </div>
+</div> -->
