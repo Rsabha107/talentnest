@@ -40,8 +40,8 @@
                         <label class="form-label" for="inputEmail4">Title</label>
                         <input name="name" id="add_project_name" class="form-control" type="text" placeholder="" required>
                     </div>
-                    <div class="mb-3 row">
-                        <div class="mb-3 col-md-6">
+                    {{-- <div class="mb-3 row"> --}}
+                        <div class="mb-3 col-md-12">
                             <label class="form-label" for="inputAddress2">Venues (multiple)</label>
                             <select required class="form-select js-select-venues-multiple" id="add_project_venue" name="venue_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
                                 <option value="">Select venues</option>
@@ -52,7 +52,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-12">
                             <label class="form-label" for="inputAddress2">Functional Areas (multiple)</label>
                             <select class="form-select js-select-fa-multiple" id="add_project_fa" name="functional_area_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
                                 <option value="">Select functional areas</option>
@@ -63,9 +63,9 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
-                    <div class="mb-3 row">
-                        <div class="mb-3 col-md-6">
+                    {{-- </div> --}}
+                    {{-- <div class="mb-3 row"> --}}
+                        <div class="mb-3 col-md-12">
                             <label class="form-label" for="inputAddress2">Assign to (multiple)</label>
                             <select required class="form-select js-select-assign-multiple" id="add_project_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
                                 <option value="">Select employees</option>
@@ -76,7 +76,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-12">
                             <label class="form-label" for="inputAddress2">Tags (multiple)</label>
                             <select class="form-select js-select-tags-multiple" id="add_project_tag" name="tag_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
                                 <option value="">Select tags</option>
@@ -87,7 +87,7 @@
                                 @endforeach
                             </select>
                         </div>
-                    </div>
+                    {{-- </div> --}}
                     <div class="mb-3 row">
                         <div class="col-sm-3 col-md-3">
                             <label class="form-label" for="inputAddress">Project type</label>
@@ -1303,22 +1303,19 @@
             <form class="row g-3  px-3 needs-validation form-submit-event" id="add_task_form" novalidate="" action="{{ route ('projects.admin.task.store') }}" method="POST">
                 @csrf
 
-                <input type="hidden" id="add_task_id_h" name="id" value="">
+                @if (!$projects instanceof \Illuminate\Database\Eloquent\Collection)
+                    <input type="hidden" id="add_task_id_h" name="project_id" value="{{ $project->id }}">
+                @endif
                 <input type="hidden" id="add_task_table_h" name="table" value="">
                 <!-- <input type="hidden" id="add_task_event_id" name="event_id" value=""> -->
 
-
                 <div class="modal-body">
 
+                @if ($projects instanceof \Illuminate\Database\Eloquent\Collection)
 
-                    <div class="mb-3 col-md-12">
-                        <label class="form-label" for="inputEmail4">Title</label>
-                        <input name="name" id="add_task_name" class="form-control" type="text" placeholder="" required>
-                    </div>
-                    @if (Request::is('tracki/task/manage'))
-                    <div class="col-12">
+                    <div class="mb-3 col-12">
                         <label class="form-label" for="inputAddress">Project</label>
-                        <select name="event_id" id="add_task_event_id" onChange="getProjectUsers(this.value);" class="form-select" id="floatingSelectRating" required>
+                        <select name="project_id" id="add_task_event_id" onChange="getProjectUsers(this.value);" class="form-select" id="floatingSelectRating" required>
                             <option selected="selected" value="">Select...</option>
                             @foreach ($projects as $key => $item )
                             @if (Request::old('id') == $item->id )
@@ -1333,9 +1330,12 @@
                             @endforeach
                         </select>
                     </div>
-                    @elseif (Request::is('tracki/task/*/list'))
-                    <input type="hidden" id="add_task_event_id" name="event_id" value="">
-                    @endif
+@endif
+                    <div class="mb-3 col-md-12">
+                        <label class="form-label" for="inputEmail4">Title</label>
+                        <input name="name" id="add_task_name" class="form-control" type="text" placeholder="" required>
+                    </div>
+
                     <div class="mb-3 row">
 
                         <div class="col-md-6">
@@ -1366,6 +1366,7 @@
                                 @endforeach
                             </select>
                         </div>
+
                         <div class="col-md-6">
                             <label class="form-label" for="inputAddress">Department</label>
                             <select name="department_assignment_id" id="add_task_department_id" class="form-select" id="floatingSelectRating" required>
@@ -1388,7 +1389,7 @@
                     <div class="col-12 mb-2">
                         <label class="form-label" for="inputAddress2">Assigned to (multiple)</label>
 
-                        <select required class="form-select js-example-basic-multiple" id="add_task_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('type_to_search', 'Type to search') ?>">
+                        <select required class="form-select js-select-assign-multiple" id="add_task_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('type_to_search', 'Type to search') ?>">
                             <!-- <select name="assignment_to_id[]" class="form-select" data-choices="data-choices" size="1" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' id="floatingSelectRating" required> -->
                             <option value="">Select Assinged to</option>
                             @foreach ($employees as $key => $item )

@@ -24,6 +24,12 @@ class FunctionalArea extends Model
         return $this->hasMany(Employee::class, 'functional_area_id');
     }
 
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_funtional_area', 'functional_area_id', 'project_id');
+    }
+
+
     protected static function booted(){
 
         // Log::info(auth()->user()->functional_area_id);

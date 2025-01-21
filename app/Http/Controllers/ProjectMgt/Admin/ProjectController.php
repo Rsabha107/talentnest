@@ -47,6 +47,7 @@ class ProjectController extends Controller
             ->orderBy('projects.start_date')->get();
 
             // dd($project_data);
+        $projects = $project_data;
         $employees = Employee::all();
         $tags = Tag::all();
         $project_type = ProjectType::all();
@@ -65,6 +66,7 @@ class ProjectController extends Controller
 
         return view('projects.admin.project.list', compact(
             'project_data',
+            'projects',
             'employees',
             'tags',
             'project_type',
@@ -91,7 +93,7 @@ class ProjectController extends Controller
         $order = (request('order')) ? request('order') : "DESC";
 
         $project_id = (request()->project_id) ? request()->project_id : "";
-        $status = (request()->status) ? request()->status : "";
+        $status = (request()->project_status) ? request()->project_status : "";
         $functional_area = (request()->functional_area) ? request()->functional_area : "";
         $venue_id = (request()->venue_id) ? request()->venue_id : "";
         $entity = (request()->entity) ? request()->entity : "";
@@ -105,6 +107,17 @@ class ProjectController extends Controller
         if ($venue_id) {
             $venue = Venue::find($venue_id);
             $ops = $venue->projects()->orderBy($sort, $order);
+            // $ops = $ops->where(function ($query) use ($venue_id) {
+            //     $query->where('venue_id', 'like', '%' . $venue_id . '%');
+            // });
+        } else {
+            $ops = Project::orderBy($sort, $order);
+        }
+
+        if ($functional_area) {
+            // dd($functional_area);
+            $fa = FunctionalArea::find($functional_area);
+            $ops = $fa->projects()->orderBy($sort, $order);
             // $ops = $ops->where(function ($query) use ($venue_id) {
             //     $query->where('venue_id', 'like', '%' . $venue_id . '%');
             // });
@@ -143,11 +156,6 @@ class ProjectController extends Controller
             });
         }
 
-        if ($entity) {
-            $ops = $ops->where(function ($query) use ($entity) {
-                $query->where('entity_id', 'like', '%' . $entity . '%');
-            });
-        }
 
         if ($active_archived) {
             $ops = $ops->where(function ($query) use ($active_archived) {
@@ -862,6 +870,7 @@ class ProjectController extends Controller
         return view('projects.admin.project.d', [
             'count' => $count,
             'projectData' => $projectData,
+            'project' => $projectData,
             'employees' => $employees,
             'project_progress' => $project_progress,
             'eventCategoryName' => $eventCategoryName,

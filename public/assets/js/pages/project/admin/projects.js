@@ -44,6 +44,8 @@ $(document).ready(function () {
     $(".js-select-tags-multiple").select2();
     $(".js-select-assign-multiple").select2();
     $(".js-select-venues-multiple").select2();
+    $(".js-example-basic-multiple").select2();
+
 
     // $("#projectCards").html("project cards projectCards");
 
@@ -685,77 +687,107 @@ $(document).ready(function () {
     });
 });
 
+$("body").on("click", "#add_task", function () {
+    console.log("inside #add_task");
+
+    // reset all values
+    $("#add_task_form")[0].reset();
+    $("#add_task_assigned_to").val([]).change();
+    $("#add_task_form")[0].classList.remove("was-validated");
+    var id = $(this).data("id");
+    var event_id = $(this).data("projectid");
+    var table = $(this).data("table");
+    var action = $(this).data("action");
+    var type = $(this).data("type");
+
+    // set the form action with the source var
+    // $("#add_task_form").attr("action", form_action);
+
+    console.log(id + " " + table);
+    $("#add_task_table_h").val(table);
+    $("#add_task_event_id").val(event_id);
+
+    // $("#workspace_modal").modal("show");
+    console.log("Add");
+    $("#add_task_modal_label").html("Add new task");
+    $("#add_task_modal").modal("show");
+});
+
 ("use strict");
 
-function queryParams(p) {
-    return {
-        status: $("#project_status_filter").val(),
-        project_id: $("#project_filter").val(),
-        venue_id: $("#project_venue_filter").val(),
-        // client_id: $("#tasks_client_filter").val(),
-        department_id: $("#tasks_department_filter").val(),
-        show_page: $("#tasks_show_page_hidden").val(),
-        show_page_id: $("#tasks_show_page_id_hidden").val(),
-        task_start_date_from: $("#task_start_date_from").val(),
-        task_start_date_to: $("#task_start_date_to").val(),
-        task_end_date_from: $("#task_end_date_from").val(),
-        task_end_date_to: $("#task_end_date_to").val(),
-        page: p.offset / p.limit + 1,
-        limit: p.limit,
-        sort: p.sort,
-        order: p.order,
-        offset: p.offset,
-        search: p.search,
-    };
-}
-window.icons = {
-    refresh: "bx-refresh",
-    toggleOn: "bx-toggle-right",
-    toggleOff: "bx-toggle-left",
-    fullscreen: "bx-fullscreen",
-    columns: "bx-list-ul",
-    export_data: "bx-list-ul",
-    paginationSwitch: "bx-list-ul",
-};
+// function queryParams(p) {
+//     return {
+//         project_status: $("#project_status_filter").val(),
+//         task_status: $("#tasks_status_filter").val(),
+//         project_id: $("#project_filter").val(),
+//         venue_id: $("#project_venue_filter").val(),
+//         person_id: $("#tasks_employee_filter").val(),
+//         // client_id: $("#tasks_client_filter").val(),
+//         department_id: $("#tasks_department_filter").val(),
+//         show_page: $("#tasks_show_page_hidden").val(),
+//         show_page_id: $("#tasks_show_page_id_hidden").val(),
+//         task_start_date_from: $("#task_start_date_from").val(),
+//         task_start_date_to: $("#task_start_date_to").val(),
+//         task_end_date_from: $("#task_end_date_from").val(),
+//         task_end_date_to: $("#task_end_date_to").val(),
+//         page: p.offset / p.limit + 1,
+//         limit: p.limit,
+//         sort: p.sort,
+//         order: p.order,
+//         offset: p.offset,
+//         search: p.search,
+//     };
+// }
+// window.icons = {
+//     refresh: "bx-refresh",
+//     toggleOn: "bx-toggle-right",
+//     toggleOff: "bx-toggle-left",
+//     fullscreen: "bx-fullscreen",
+//     columns: "bx-list-ul",
+//     export_data: "bx-list-ul",
+//     paginationSwitch: "bx-list-ul",
+// };
 
-function loadingTemplate(message) {
-    return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
-}
+// function loadingTemplate(message) {
+//     return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
+// }
 
-function customViewFormatter(data) {
-    var template = $("#profileTemplate").html();
-    var view = "";
-    $.each(data, function (i, row) {
-        view += template
-            .replace("%PROJECTID%", row.id)
-            .replace("%DELETEPROJECTID%", row.id)
-            .replace("%PROJECTNAME%", row.project_name_card)
-            .replace("%PROJECTSTATUS%", row.project_status)
-            .replace("%PROJECTFUND%", row.project_fund_category)
-            .replace("%BUDGET%", row.budget)
-            .replace("%CLIENT%", row.client)
-            .replace("%BALANCE%", row.balance)
-            .replace("%PROGRESS%", row.progress)
-            .replace("%PROGRESSBAR%", row.progress_bar_card)
-            .replace("%ASSIGNEDTO%", row.assigned_to)
-            .replace("%STARTDATE%", row.start_date)
-            .replace("%CARDDELRESTDIV%", row.card_delete_restore_div)
-            .replace("%ENDDATE%", row.end_date)
-            .replace("%TASKURL%", row.task_url)
-            .replace("%TASKCOUNT%", row.task_count);
-    });
+// function customViewFormatter(data) {
+//     var template = $("#profileTemplate").html();
+//     var view = "";
+//     $.each(data, function (i, row) {
+//         view += template
+//             .replace("%PROJECTID%", row.id)
+//             .replace("%DELETEPROJECTID%", row.id)
+//             .replace("%PROJECTNAME%", row.project_name_card)
+//             .replace("%PROJECTSTATUS%", row.project_status)
+//             .replace("%PROJECTFUND%", row.project_fund_category)
+//             .replace("%BUDGET%", row.budget)
+//             .replace("%CLIENT%", row.client)
+//             .replace("%BALANCE%", row.balance)
+//             .replace("%PROGRESS%", row.progress)
+//             .replace("%PROGRESSBAR%", row.progress_bar_card)
+//             .replace("%ASSIGNEDTO%", row.assigned_to)
+//             .replace("%STARTDATE%", row.start_date)
+//             .replace("%CARDDELRESTDIV%", row.card_delete_restore_div)
+//             .replace("%ENDDATE%", row.end_date)
+//             .replace("%TASKURL%", row.task_url)
+//             .replace("%TASKCOUNT%", row.task_count);
+//     });
 
-    return `<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 row-cols-xxl-4 g-3 mb-9">${view}</div>`;
-    // return `<div class="row mx-0">${view}</div>`
-}
+//     return `<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 row-cols-xxl-4 g-3 mb-9">${view}</div>`;
+//     // return `<div class="row mx-0">${view}</div>`
+// }
 
-$(
-    "#project_status_filter,#project_filter,#project_venue_filter,#tasks_department_filter"
-).on("change", function (e) {
-    e.preventDefault();
-    console.log("tasks.js on change");
-    $("#project_table").bootstrapTable("refresh");
-});
+// $(
+//     "#project_status_filter,#project_filter,#project_venue_filter,#tasks_department_filter"
+// ).on("change", function (e) {
+//     e.preventDefault();
+//     console.log("tasks.js on change");
+//     $("#project_table").bootstrapTable("refresh");
+// });
+
+
 
 $("#add_project_tag").on("select2:close", function (e) {
     e.preventDefault();

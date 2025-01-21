@@ -5,8 +5,8 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
 <div class="card mb-4">
     <div class="card-body">
         <div class="table-responsive text-nowrap">
-            <input type="hidden" id="data_type" value="alltasks">
-            <table table-stripped id="task_table"
+            <table table-stripped 
+                id="task_table"
                 data-toggle="table"
                 data-classes="table table-hover fs-9 mb-0 border-top border-translucent"
                 data-loading-template="loadingTemplate"
@@ -16,7 +16,6 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
                 data-show-export="true"
                 data-show-refresh="true"
                 data-show-columns-toggle-all="true"
-                
                 data-show-fullscreen="true"
                 data-total-field="total"
                 data-trim-on-search="false"
@@ -62,3 +61,49 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
         </div>
     </div>
 </div>
+
+<script>
+
+function queryParams(p) {
+    return {
+        status: $("#tasks_status_filter").val(),
+        person_id: $("#tasks_employee_filter").val(),
+        // client_id: $("#tasks_client_filter").val(),
+        project_id: $("#tasks_project_filter").val(),
+        department_id: $("#tasks_department_filter").val(),
+        show_page: $("#tasks_show_page_hidden").val(),
+        show_page_id: $("#tasks_show_page_id_hidden").val(),
+        task_start_date_from: $("#task_start_date_from").val(),
+        task_start_date_to: $("#task_start_date_to").val(),
+        task_end_date_from: $("#task_end_date_from").val(),
+        task_end_date_to: $("#task_end_date_to").val(),
+        page: p.offset / p.limit + 1,
+        limit: p.limit,
+        sort: p.sort,
+        order: p.order,
+        offset: p.offset,
+        search: p.search,
+    };
+}
+window.icons = {
+    refresh: "bx-refresh",
+    toggleOn: "bx-toggle-right",
+    toggleOff: "bx-toggle-left",
+    fullscreen: "bx-fullscreen",
+    columns: "bx-list-ul",
+    export_data: "bx-list-ul",
+    paginationSwitch: "bx-list-ul",
+};
+
+function loadingTemplate(message) {
+    return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
+}
+
+    $(
+        "#tasks_status_filter,#tasks_employee_filter,#tasks_project_filter,#tasks_department_filter"
+    ).on("change", function(e) {
+        e.preventDefault();
+        console.log("tasks.js on change");
+        $("#task_table").bootstrapTable("refresh");
+    });
+</script>

@@ -43,9 +43,9 @@
                     </select>
                 </div>
                 <div class="py-0">
-                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none" id="project_venue_filter">
+                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none" id="project_functional_area">
                         <option value="" selected>Filter by Functional Area</option>
-                        @foreach ($event_venue as $key => $item)
+                        @foreach ($functional_areas as $key => $item)
                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                         @endforeach
                     </select>

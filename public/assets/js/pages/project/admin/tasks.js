@@ -89,7 +89,7 @@ $(document).ready(function () {
         }, 0);
     });
 
-    $(".js-example-basic-multiple").select2();
+    $(".js-select-assign-multiple").select2();
 
     // $(function () {
     //     console.log('tooltip')
@@ -98,7 +98,7 @@ $(document).ready(function () {
 
     $("body").on("click", "#add_task", function () {
         console.log("inside #add_task");
-        console.log("source: " + x_source);
+
         // reset all values
         $("#add_task_form")[0].reset();
         $("#add_task_assigned_to").val([]).change();
@@ -124,7 +124,6 @@ $(document).ready(function () {
 
     $("body").on("click", "#edit_task", function () {
         console.log("inside #edit_task tasks.js");
-        // console.log("source: " + x_source);
         // $(".spinner-border").show();
         console.log($("#edit_task").data("id"));
         // var id = ($(this).data("id") == 'undefined')?$('#edit_task').data("id"):$(this).data("id");
@@ -658,6 +657,49 @@ $(document).ready(function () {
         }
         // alert('id: '+id);
         event.preventDefault();
+    });
+
+    $("body").on("click", "#delete_task", function (e) {
+        var id = $(this).data("id");
+        var tableID = $(this).data("table");
+        e.preventDefault();
+        // alert('in deleteStatus '+tableID);
+        var link = $(this).attr("href");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Delete This Data?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/projects/admin/task/delete/" + id ,
+                    type: "DELETE",
+                    headers: {
+                        "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
+                    },
+                    dataType: "json",
+                    success: function (result) {
+                        if (!result["error"]) {
+                            toastr.success(result["message"]);
+                            $("#" + tableID).bootstrapTable("refresh");
+                            // Swal.fire(
+                            //     'Deleted!',
+                            //     'Your file has been deleted.',
+                            //     'success'
+                            //   )
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                    },
+                });
+            }
+        });
     });
 
     // delete task item
@@ -1237,40 +1279,48 @@ $(function () {
 
 ("use strict");
 
-function queryParams(p) {
-    return {
-        status: $("#task_status_filter").val(),
-        person_id: $("#tasks_employee_filter").val(),
-        // client_id: $("#tasks_client_filter").val(),
-        project_id: $("#tasks_project_filter").val(),
-        department_id: $("#tasks_department_filter").val(),
-        show_page: $("#tasks_show_page_hidden").val(),
-        show_page_id: $("#tasks_show_page_id_hidden").val(),
-        task_start_date_from: $("#task_start_date_from").val(),
-        task_start_date_to: $("#task_start_date_to").val(),
-        task_end_date_from: $("#task_end_date_from").val(),
-        task_end_date_to: $("#task_end_date_to").val(),
-        page: p.offset / p.limit + 1,
-        limit: p.limit,
-        sort: p.sort,
-        order: p.order,
-        offset: p.offset,
-        search: p.search,
-    };
-}
-window.icons = {
-    refresh: "bx-refresh",
-    toggleOn: "bx-toggle-right",
-    toggleOff: "bx-toggle-left",
-    fullscreen: "bx-fullscreen",
-    columns: "bx-list-ul",
-    export_data: "bx-list-ul",
-    paginationSwitch: "bx-list-ul",
-};
+// function queryParams(p) {
+//     return {
+//         status: $("#task_status_filter").val(),
+//         person_id: $("#tasks_employee_filter").val(),
+//         // client_id: $("#tasks_client_filter").val(),
+//         project_id: $("#tasks_project_filter").val(),
+//         department_id: $("#tasks_department_filter").val(),
+//         show_page: $("#tasks_show_page_hidden").val(),
+//         show_page_id: $("#tasks_show_page_id_hidden").val(),
+//         task_start_date_from: $("#task_start_date_from").val(),
+//         task_start_date_to: $("#task_start_date_to").val(),
+//         task_end_date_from: $("#task_end_date_from").val(),
+//         task_end_date_to: $("#task_end_date_to").val(),
+//         page: p.offset / p.limit + 1,
+//         limit: p.limit,
+//         sort: p.sort,
+//         order: p.order,
+//         offset: p.offset,
+//         search: p.search,
+//     };
+// }
+// window.icons = {
+//     refresh: "bx-refresh",
+//     toggleOn: "bx-toggle-right",
+//     toggleOff: "bx-toggle-left",
+//     fullscreen: "bx-fullscreen",
+//     columns: "bx-list-ul",
+//     export_data: "bx-list-ul",
+//     paginationSwitch: "bx-list-ul",
+// };
 
-function loadingTemplate(message) {
-    return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
-}
+// function loadingTemplate(message) {
+//     return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
+// }
+
+// $(
+//     "#task_status_filter,#tasks_employee_filter,#tasks_project_filter,#tasks_department_filter"
+// ).on("change", function (e) {
+//     e.preventDefault();
+//     console.log("tasks.js on change");
+//     $("#task_table").bootstrapTable("refresh");
+// });
 
 function actionsFormatter(value, row, index) {
     return [
@@ -1432,10 +1482,3 @@ function buttons() {
     };
 }
 
-$(
-    "#task_status_filter,#tasks_employee_filter,#tasks_project_filter,#tasks_department_filter"
-).on("change", function (e) {
-    e.preventDefault();
-    console.log("tasks.js on change");
-    $("#task_table").bootstrapTable("refresh");
-});

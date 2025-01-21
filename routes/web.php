@@ -227,6 +227,8 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::get('/projects/admin/task/subtask/{id}', 'getTaskSubView')->name('projects.admin.task.subtask')->middleware('permission:task.show');
             Route::get('/projects/admin/task/files/{id}', 'getTaskFilesView')->name('projects.admin.task.files')->middleware('permission:task.show');
             Route::get('/projects/admin/task', 'index')->name('projects.admin.task')->middleware('permission:task.show');
+            Route::delete('/projects/admin/task/delete/{id}', 'destroy')->name('projects.admin.task.delete');
+
 
             //task file upload
             Route::post('/projects/admin/task/file/store', 'taskFileStore')->name('projects.admin.task.file.store');
@@ -245,7 +247,7 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
 
             Route::get('/projects/admin/task/status/edit/{id}', 'editTaskStatus')->name('projects.admin.task.status.edit');
             Route::post('/projects/admin/task/status/update', 'updateTaskStatus')->name('projects.admin.task.status.update');
-            Route::post('/projects/admin/task/store', 'updateTaskStatus')->name('projects.admin.task.store');
+            Route::post('/projects/admin/task/store', 'store')->name('projects.admin.task.store');
             Route::get('/projects/admin/task/mv/edit/{id}', 'getTaskView')->name('projects.admin.task.mv.edit');
             Route::get('/projects/admin/task/get/{id}', 'getTask')->name('projects.admin.task.get');
 
