@@ -1,4 +1,4 @@
-@if ((Request::is('projects/admin/project') || Request::is('tracki/users/create-new') || Request::is('tracki/task/*/list')) || Request::is('tracki/employee/profile*') && !Request::is('tracki/project/archive'))
+@if ((Request::is('projects/admin/project') || Request::is('projects/admin/project/d*') || Request::is('tracki/task/*/list')) || Request::is('tracki/employee/profile*') && !Request::is('tracki/project/archive'))
 
 <div class="modal fade" id="add_project_modal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-top">
@@ -12,16 +12,16 @@
             $is_workspace_id_set = ($workspace_id) ? true : false;
             //
             ?>
-            <form class="row g-3  px-3 needs-validation form-submit-event" id="add_project_form" novalidate="" action="{{ route ('project.create') }}" method="POST">
+            <form class="row g-3  px-3 needs-validation form-submit-event" id="add_project_form" novalidate="" action="{{ route ('project.store') }}" method="POST">
                 @csrf
 
                 <input type="hidden" name="id" id="add_project_id_h" value="">
-                <input type="hidden" name="table" id="add_project_table_h" value="task_table">
+                <input type="hidden" name="table" id="add_project_table_h" value="project_table">
                 <input type="hidden" name="redirect" id="add_project_redirect_h" value="">
 
                 <div class="modal-body">
 
-                    @if (!$is_workspace_id_set)
+                    {{-- @if (!$is_workspace_id_set)
                     <div class="col-12">
                         <!-- <label class="form-label" for="inputAddress">Workspace</label> -->
                         <label class="col-sm-2 col-form-label col-form-label-sm" for="colFormLabelSm">Workspace</label>
@@ -34,7 +34,7 @@
                             @endforeach
                         </select>
                     </div>
-                    @endif
+                    @endif --}}
 
                     <div class="mb-3 col-md-12">
                         <label class="form-label" for="inputEmail4">Title</label>
@@ -42,9 +42,33 @@
                     </div>
                     <div class="mb-3 row">
                         <div class="mb-3 col-md-6">
+                            <label class="form-label" for="inputAddress2">Venues (multiple)</label>
+                            <select required class="form-select js-select-venues-multiple" id="add_project_venue" name="venue_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
+                                <option value="">Select venues</option>
+                                @foreach ($event_venue as $key => $item )
+                                <option value="{{ $item->id  }}">
+                                    {{ $item->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label" for="inputAddress2">Functional Areas (multiple)</label>
+                            <select class="form-select js-select-fa-multiple" id="add_project_fa" name="functional_area_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
+                                <option value="">Select functional areas</option>
+                                @foreach ($functional_areas as $key => $item )
+                                <option value="{{ $item->id  }}">
+                                    {{ $item->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="mb-3 col-md-6">
                             <label class="form-label" for="inputAddress2">Assign to (multiple)</label>
-                            <select required class="form-select js-example-basic-multiple2" id="add_project_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
-                                <option value="">Select users</option>
+                            <select required class="form-select js-select-assign-multiple" id="add_project_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
+                                <option value="">Select employees</option>
                                 @foreach ($employees as $key => $item )
                                 <option value="{{ $item->id  }}">
                                     {{ $item->full_name }}
@@ -54,8 +78,8 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="inputAddress2">Tags (multiple)</label>
-                            <select class="form-select js-example-basic-multiple" id="add_project_tag" name="tag_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
-                                <option value="">Select tag</option>
+                            <select class="form-select js-select-tags-multiple" id="add_project_tag" name="tag_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
+                                <option value="">Select tags</option>
                                 @foreach ($tags as $key => $item )
                                 <option value="{{ $item->id  }}">
                                     {{ $item->title }}
@@ -130,24 +154,6 @@
                     </div>
 
                     <div class="mb-3 row">
-
-                        <div class="col-md-3">
-                            <label class="form-label" for="inputAddress">Venue</label>
-                            <select name="venue_id" class="form-select" id="add_project_venue" required>
-                                <option selected="selected" value="">Select...</option>
-                                @foreach ($event_venue as $key => $item )
-                                @if (Request::old('id') == $item->id )
-                                <option value="{{ $item->id  }}" selected>
-                                    {{ $item->name }}
-                                </option>
-                                @else
-                                <option value="{{ $item->id  }}">
-                                    {{ $item->name }}
-                                </option>
-                                @endif
-                                @endforeach
-                            </select>
-                        </div>
                         <div class="col-md-3">
                             <label class="form-label" for="inputAddress">Location</label>
                             <select name="location_id" class="form-select" id="add_project_location" required>
@@ -227,7 +233,7 @@
                     </div>
                     <div class="col-md-12">
                         <label class="form-label" for="gridCheck">Description</label>
-                        <textarea required name="description" class="form-control tinymce" id="add_project_description" data-tinymce="{}" placeholder=""></textarea>
+                        <textarea required name="description" class="form-control tinymce1" id="add_project_description" data-tinymce="{}" placeholder=""></textarea>
                     </div>
                 </div>
 
@@ -257,12 +263,12 @@
                 @csrf
 
                 <input type="hidden" name="id" id="add_edit_project_id_h" value="">
-                <input type="hidden" name="table" id="add_edit_project_table_h" value="task_table">
+                <input type="hidden" name="table" id="add_edit_project_table_h" value="project_table">
                 <input type="hidden" name="redirect" id="add_edit_project_redirect_h" value="">
 
                 <div class="modal-body">
 
-                    @if (!$is_workspace_id_set)
+                    {{-- @if (!$is_workspace_id_set)
                     <div class="col-12">
                         <!-- <label class="form-label" for="inputAddress">Workspace</label> -->
                         <label class="col-sm-2 col-form-label col-form-label-sm" for="colFormLabelSm">Workspace</label>
@@ -275,7 +281,7 @@
                             @endforeach
                         </select>
                     </div>
-                    @endif
+                    @endif --}}
 
                     <div class="mb-3 col-md-12">
                         <label class="form-label" for="inputEmail4">Title</label>
@@ -283,8 +289,32 @@
                     </div>
                     <div class="mb-3 row">
                         <div class="mb-3 col-md-6">
+                            <label class="form-label" for="inputAddress2">Venues (multiple)</label>
+                            <select required class="form-select js-select-venues-multiple" id="add_edit_project_venue" name="venue_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
+                                <option value="">Select venues</option>
+                                @foreach ($event_venue as $key => $item )
+                                <option value="{{ $item->id  }}">
+                                    {{ $item->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                            <label class="form-label" for="inputAddress2">Functional Areas (multiple)</label>
+                            <select class="form-select js-select-fa-multiple" id="add_edit_project_fa" name="functional_area_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
+                                <option value="">Select functional areas</option>
+                                @foreach ($functional_areas as $key => $item )
+                                <option value="{{ $item->id  }}">
+                                    {{ $item->name }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="mb-3 col-md-6">
                             <label class="form-label" for="inputAddress2">Assign to (multiple)</label>
-                            <select required class="form-select js-example-basic-multiple2" id="add_edit_project_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
+                            <select required class="form-select js-select-assign-multiple" id="add_edit_project_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Team', 'Team') ?>">
                                 <option value="">Select users</option>
                                 @foreach ($employees as $key => $item )
                                 <option value="{{ $item->id  }}">
@@ -295,7 +325,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="inputAddress2">Tags (multiple)</label>
-                            <select class="form-select js-example-basic-multiple" id="add_edit_project_tag" name="tag_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
+                            <select class="form-select js-select-tags-multiple" id="add_edit_project_tag" name="tag_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('Tags', 'Tags') ?>">
                                 <option value="">Select tag</option>
                                 @foreach ($tags as $key => $item )
                                 <option value="{{ $item->id  }}">
@@ -372,23 +402,6 @@
 
                     <div class="mb-3 row">
 
-                        <div class="col-md-3">
-                            <label class="form-label" for="inputAddress">Venue</label>
-                            <select name="venue_id" class="form-select" id="add_edit_project_venue" required>
-                                <option selected="selected" value="">Select...</option>
-                                @foreach ($event_venue as $key => $item )
-                                @if (Request::old('id') == $item->id )
-                                <option value="{{ $item->id  }}" selected>
-                                    {{ $item->name }}
-                                </option>
-                                @else
-                                <option value="{{ $item->id  }}">
-                                    {{ $item->name }}
-                                </option>
-                                @endif
-                                @endforeach
-                            </select>
-                        </div>
                         <div class="col-md-3">
                             <label class="form-label" for="inputAddress">Location</label>
                             <select name="location_id" class="form-select" id="add_edit_project_location" required>
@@ -468,7 +481,7 @@
                     </div>
                     <div class="col-md-12">
                         <label class="form-label" for="gridCheck">Description</label>
-                        <textarea required name="description" class="form-control tinymce" id="add_edit_project_description" data-tinymce="{}" placeholder=""></textarea>
+                        <textarea required name="description" class="form-control tinymce1" id="add_edit_project_description" data-tinymce="{}" placeholder=""></textarea>
                     </div>
                 </div>
 
@@ -726,7 +739,8 @@
 @endif
 
 
-@if (Request::is('tracki/setup/locations'))
+
+{{-- @if (Request::is('tracki/setup/locations'))
 <!-- locations modal -->
 <div class="modal fade" id="create_locations_modal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -970,7 +984,7 @@
         </div>
     </div>
 </div>
-@endif
+@endif --}}
 
 
 @if (Request::is('tracki/setup/workspace'))
@@ -1194,7 +1208,7 @@
 </div>
 @endif
 
-@if (Request::is('projects/admin/task*'))
+@if (Request::is('projects/admin/task*') || Request::is('projects/admin/project*'))
 
 <!-- this is the Add task Notes Modal -->
 <div class="modal fade" id="addTaskNoteModal" tabindex="-1" data-bs-backdrop="static" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -1406,7 +1420,7 @@
 
                     <div class="col-12">
                         <label class="form-label" for="gridCheck">Description</label>
-                        <textarea style="height: 200px;" required name="description" class="form-control tinymce" id="add_task_description" data-tinymce="{}" placeholder=""></textarea>
+                        <textarea style="height: 200px;" required name="description" class="form-control tinymce1" id="add_task_description" data-tinymce="{}" placeholder=""></textarea>
                     </div>
                 </div>
 
@@ -1557,7 +1571,7 @@
             </div>
             <div class="col-12">
                 <label class="form-label" for="gridCheck">Description</label>
-                <textarea required name="description" class="form-control tinymce" id="add_edit_task_description" data-tinymce="{}" placeholder=""></textarea>
+                <textarea required name="description" class="form-control tinymce1" id="add_edit_task_description" data-tinymce="{}" placeholder=""></textarea>
             </div>
             <div class="col-12 d-flex justify-content-end mt-6">
                 <button class="btn btn-phoenix-secondary action button-submit" type="submit" value="save" id="submit_btn">Save</button>
@@ -1683,7 +1697,7 @@
             </div>
             <div class="col-12">
                 <label class="form-label" for="gridCheck">Description</label>
-                <textarea required name="description" class="form-control tinymce" id="floatingProjectOverview" data-tinymce="{}" placeholder=""></textarea>
+                <textarea required name="description" class="form-control tinymce1" id="floatingProjectOverview" data-tinymce="{}" placeholder=""></textarea>
             </div>
             <div class="col-12 d-flex justify-content-end mt-6">
                 <button class="btn btn-phoenix-secondary action button-submit" type="submit" value="save" id="submit_btn">Save</button>

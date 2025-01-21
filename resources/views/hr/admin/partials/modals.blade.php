@@ -126,7 +126,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="inputEmail4">QID Expiry Date</label>
-                            <input class="form-control datetimepickerstarttoday" data-target="#floatingInputStartDate" name="civil_id_expiry" type="date" placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' required>
+                            <input class="form-control datetimepicker" data-target="#floatingInputStartDate" name="civil_id_expiry" type="date" placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' required>
                         </div>
 
                         <div class="mb-3 col-md-6">
@@ -136,7 +136,7 @@
                         </div>
                         <div class="mb-3 col-md-6">
                             <label class="form-label" for="inputEmail4">Passport Expiry Date</label>
-                            <input class="form-control datetimepickerstarttoday" data-target="#floatingInputStartDate" name="passport_expiry" type="date" placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' required>
+                            <input class="form-control datetimepicker" data-target="#floatingInputStartDate" name="passport_expiry" type="date" placeholder="dd/mm/yyyy" data-options='{"disableMobile":true,"dateFormat":"d/m/Y"}' required>
                         </div>
 
                         <div class="mb-3 col-md-6">
@@ -3561,10 +3561,6 @@
         <div class="modal-content bg-100">
             <div class="modal-header bg-modal-header">
                 <h3 class="mb-0" id="staticBackdropLabel">Add</h3>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel1"><?= get_label('create_departments', 'Create departments') ?></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form novalidate="" class="modal-content form-submit-event needs-validation" id="form_submit_event" action="{{route('hr.admin.setting.departments.store')}}" method="POST">

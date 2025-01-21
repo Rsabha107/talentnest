@@ -14,6 +14,16 @@ class Venue extends Model
 
     public function locations()
     {
-        return $this->belongsTo(Location::class, 'location_id');
+        return $this->belongsTo(EventLocation::class, 'location_id');
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(Project::class, 'project_venue', 'venue_id', 'project_id');
+    }
+
+    public function active_status()
+    {
+        return $this->belongsTo(GlobalStatus::class, 'active_flag');
     }
 }

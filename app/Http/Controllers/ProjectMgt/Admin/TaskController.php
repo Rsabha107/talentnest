@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\ProjectMgt\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\UtilController;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Project;
@@ -11,11 +12,19 @@ use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class TaskController extends Controller
 {
     //
+    protected $UtilController;
+
+    public function __construct(UtilController $UtilController)
+    {
+        $this->UtilController = $UtilController;
+    }
+
     public function index()
     {
         $projects = Project::all();
@@ -35,7 +44,7 @@ class TaskController extends Controller
         ]);
     } // End index
 
-    public function list($id=null)
+    public function list($id = null)
     {
         $workspace = session()->get('workspace_id');
         $user = User::findOrFail(auth()->user()->id);
@@ -149,21 +158,21 @@ class TaskController extends Controller
 
             $div_action = '<div class="font-sans-serif btn-reveal-trigger position-static">';
             $profile_action =
-                '<a href="' . route("hr.admin.employee.profile", encrypt($op->id)) . '" class="btn-table btn-sm me-2" id="employeeCardView" data-id="' .
+                '<a href="javascript:void(0)" class="btn btn-sm" id="taskCardView" data-id="' .
                 $op->id .
                 '" data-table="employee_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Employee Details">' .
                 '<i class="fa-solid fa-lightbulb text-warning"></i></a>';
             $update_action =
-                '<a href="javascript:void(0)" class="btn-table btn-sm me-2" id="edit_project" data-id=' . $op->id .
+                '<a href="javascript:void(0)" class="btn btn-sm" id="edit_task" data-id=' . $op->id .
                 ' data-table="project_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Update">' .
                 '<i class="fa-solid fa-pen-to-square text-primary"></i></a>';
             $duplicate_action =
-                '<a href="javascript:void(0)" class="btn-table btn-sm me-2" id="duplicate_employee" data-action="update" data-type="duplicate" data-id=' .
+                '<a href="javascript:void(0)" class="btn btn-sm" id="duplicate_employee" data-action="update" data-type="duplicate" data-id=' .
                 $op->id .
                 ' data-table="employee_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Duplicate">' .
                 '<i class="fa-solid fa-copy text-success"></i></a>';
             $delete_action =
-                '<a href="javascript:void(0)" class="btn-table btn-sm" data-table="project_table" data-id="' .
+                '<a href="javascript:void(0)" class="btn btn-sm" data-table="project_table" data-id="' .
                 $op->id .
                 '" id="delete" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
                 '<i class="fa-solid fa-trash text-danger"></i></a></div></div>';
@@ -174,6 +183,8 @@ class TaskController extends Controller
                 '<i class="fa-solid fa-rotate-left test-warning"></i></a></div></div>';
 
             $delete_restore = ('N' == 'N') ? $delete_action : $restore_action;
+            $details_url = route('projects.admin.project.d', $op->project_id);
+
 
             $actions = $div_action . $profile_action;
 
@@ -208,10 +219,21 @@ class TaskController extends Controller
                 }
             }
 
+            $assign_to = $assign_to .   '<div class="avatar avatar-m  me-1">
+                                            <a class="dropdown-toggle dropdown-caret-none d-inline-block"
+                                                href="javascript:void(0);" id="edit_task" data-table="task_table"
+                                                data-id="' . $op->id . '" role="button" title="edit">
+                                                <div class="avatar avatar-m  rounded-circle pull-up">
+                                                    <div class="avatar-name rounded-circle me-2 text-warning"><span>+</span></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        </div>';
+
             return [
                 'id1' => '<div class="ms-3">' . $op->id . '</div>',
                 'id' => $op->id,
-                'project_id' => '<div class="d-flex align-items-center"><div><a class="fw-bold mb-0 line-clamp-3" href="/tracki/task/' . $op->project_id . '/list">' . $op->project?->name . '</a>',
+                'project_id' => '<div class="d-flex align-items-center"><div><a class="fw-bold mb-0 line-clamp-3" href="' . $details_url . '">' . $op->project?->name . '</a>',
                 'name' => '<a class="fw-bold mb-0 line-clamp-3" id="taskCardView" href="javascript:void(0);"  data-id="' . $op->id . '" data-table="task_table">' . $op->name . '</a><div class="d-flex align-items-center">' .
                     '<p class="mb-0 text-body-highlight fw-semibold fs-10 me-2">' . $icons . '</p></div></div></div>',
                 'workspace_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->workspaces?->title . '</div>',
@@ -244,7 +266,7 @@ class TaskController extends Controller
         ]);
     } //list
 
-    public function employeeList($id=null)
+    public function employeeList($id = null)
     {
         $workspace = session()->get('workspace_id');
         $user = User::findOrFail(auth()->user()->id);
@@ -358,21 +380,21 @@ class TaskController extends Controller
 
             $div_action = '<div class="font-sans-serif btn-reveal-trigger position-static">';
             $profile_action =
-                '<a href="' . route("hr.admin.employee.profile", encrypt($op->id)) . '" class="btn-table btn-sm me-2" id="employeeCardView" data-id="' .
+                '<a href="javascript:void(0)" class="btn btn-sm" id="taskCardView" data-id="' .
                 $op->id .
                 '" data-table="employee_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Employee Details">' .
                 '<i class="fa-solid fa-lightbulb text-warning"></i></a>';
             $update_action =
-                '<a href="javascript:void(0)" class="btn-table btn-sm me-2" id="edit_project" data-id=' . $op->id .
+                '<a href="javascript:void(0)" class="btn btn-sm" id="edit_task" data-id=' . $op->id .
                 ' data-table="project_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Update">' .
                 '<i class="fa-solid fa-pen-to-square text-primary"></i></a>';
             $duplicate_action =
-                '<a href="javascript:void(0)" class="btn-table btn-sm me-2" id="duplicate_employee" data-action="update" data-type="duplicate" data-id=' .
+                '<a href="javascript:void(0)" class="btn btn-sm" id="duplicate_employee" data-action="update" data-type="duplicate" data-id=' .
                 $op->id .
                 ' data-table="employee_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Duplicate">' .
                 '<i class="fa-solid fa-copy text-success"></i></a>';
             $delete_action =
-                '<a href="javascript:void(0)" class="btn-table btn-sm" data-table="project_table" data-id="' .
+                '<a href="javascript:void(0)" class="btn btn-sm" data-table="project_table" data-id="' .
                 $op->id .
                 '" id="delete" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
                 '<i class="fa-solid fa-trash text-danger"></i></a></div></div>';
@@ -416,6 +438,17 @@ class TaskController extends Controller
                     </div>';
                 }
             }
+
+            $assign_to = $assign_to .   '<div class="avatar avatar-m  me-1">
+                                            <a class="dropdown-toggle dropdown-caret-none d-inline-block"
+                                                href="javascript:void(0);" id="edit_project" data-table="project_table"
+                                                data-id="' . $op->id . '" role="button" title="add">
+                                                <div class="avatar avatar-m  rounded-circle pull-up">
+                                                    <div class="avatar-name rounded-circle me-2 text-warning"><span>+</span></div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        </div>';
 
             return [
                 'id1' => '<div class="ms-3">' . $op->id . '</div>',
@@ -511,7 +544,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($id);
         $view = view('/projects/admin/task/overview/files', ['task' => $task])->render();
         return response()->json(['view' => $view]);
-    }// end getTaskFilesView
+    } // end getTaskFilesView
 
     public function getTaskView($id)
     {
@@ -541,4 +574,153 @@ class TaskController extends Controller
 
         return response()->json(['task' => $task, 'project' => $project, 'asg' => $task->employees]);
     } // getTask
+
+    public function updateTask(Request $request)
+    {
+        Log::info('TaskController::updateTask');
+        Log::info('request id: ' . $request->id);
+
+        $user_id = Auth::user()->id;
+
+        $task = Task::findOrFail($request->id);
+        // $util = new UtilController;
+
+        Log::info($request);
+        $task->name = $request->name;
+        Log::info('after name');
+        $task->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date);
+        // $task->start_time = $request->start_time;
+        $task->due_date = Carbon::createFromFormat('d/m/Y', $request->due_date);
+        // $task->due_date =  $request->end_time;
+        $task->budget_allocation = $request->budget_allocation;
+        $task->actual_budget_allocated = $request->actual_budget_allocated;
+        $task->department_assignment_id = $request->department_assignment_id;
+        $task->assignment_id = $request->assignment_id;
+        $task->description = $request->description;
+        $task->status_id = $request->status_id;
+        // $task->event_id = $request->event_id;
+        $task->color_id = $request->color_id;
+        // $task->event_id = $request->project_id;
+        $task->progress = 0; //$request->progress / 100;
+        $task->assignment_to_id = implode(',', $request->assignment_to_id);
+        $task->updated_by = $user_id;
+
+        $start_date_d = Carbon::createFromFormat('d/m/Y', $request->start_date);
+        $end_date_d = Carbon::createFromFormat('d/m/Y', $request->due_date);
+        $duration =  $start_date_d->diffInDays($end_date_d, false);
+
+        // Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
+
+        // dd($duration);
+        $completed_status = false;
+
+        Log::debug('status_id: ' . $request->status_id . ' config completed: ' . config('tracki.task_status.completed') . ' completed_status: ' . $completed_status);
+
+        // dd($duration);
+        $task->duration = $duration;
+
+        if ($request->status_id == config('tracki.task_status.completed')) {
+            $task->progress = 1;
+            $task->status_id = config('tracki.task_status.completed');
+            $completed_status = true;
+        }
+
+        if (config('tracki.show_task_progress')) {
+            if (!$completed_status) {
+                Log::info('insided is completed status is true');
+                if ($request->progress >= 100) {
+                    $task->status_id = config('tracki.task_status.completed');
+                } elseif ($request->progress == 0) {
+                    $task->status_id = config('tracki.task_status.active');
+                } else {
+                    $task->status_id = config('tracki.task_status.inprogress');
+                }
+            }
+        }
+
+
+
+        $task->duration = $duration;
+
+        Log::debug('status_id: ' . $request->status_id . ' task->progress: ' . $task->progress . ' completed_status: ' . $completed_status);
+
+        $task->save();
+
+        Log::debug('duration: ' . $duration);
+
+        $util_controller = new UtilController;
+        $update_project_status = $util_controller->updateProjectStatus($request->project_id);
+
+
+        $task->employees()->detach();
+
+        foreach ($request->assignment_to_id as $key => $data) {
+
+            $task->employees()->attach($request->assignment_to_id[$key]);
+        }
+
+
+        $notification = array(
+            'message'       => 'Task updated successfully',
+            'alert-type'    => 'success'
+        );
+
+        // Toastr::success('Has been add successfully :)','Success');
+        return response()->json([
+            'error' => false,
+            'message' => 'Task ' . $task->name . ' Task updated successfully ',
+        ]);
+        // return Redirect::route('tracki.task.list', $request->event_id)->with($notification);
+    } // updateTask
+
+    public function editTaskStatus($id)
+    {
+        //  dd('editTaskProgress');
+        $data = Task::find($id);
+        //dd($data);
+        $data_arr = [];
+
+        $data_arr[] = [
+            "id"        => $data->id,
+            "event_id"  => $data->event_id,
+            "status_id"  => $data->status_id,
+        ];
+
+        $response = ["retData"  => $data_arr];
+        return response()->json($response);
+    } // editTaskStatus
+
+    public function updateTaskStatus(Request $request)
+    {
+
+        $task = Task::findOrFail($request->id);
+        $status_title = Status::findOrFail($request->status_id);
+
+        Log::info($status_title->title);
+        if (($status_title->title == 'Completed') || ($status_title->title == 'Suspended')) {
+            $task->update([
+                'status_id' => $request->status_id,
+                'progress' => 1
+            ]);
+        } else {
+            $task->update([
+                'status_id' => $request->status_id,
+                'progress' => 0
+            ]);
+        }
+
+        $util_controller = new UtilController;
+        $update_project_status = $util_controller->updateProjectStatus($request->event_id);
+
+        $notification = array(
+            'message'       => 'Task status updated successfully',
+            'alert-type'    => 'success'
+        );
+
+        return response()->json(['error' => false, 'message' => 'Task Status updated successfully.', 'id' => $task->id]);
+
+        // Toastr::success('Has been add successfully :)','Success');
+        // return redirect()->back()->with($notification);
+        // deleteEvent
+    } //updateTaskStatus
 }

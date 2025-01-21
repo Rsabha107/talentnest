@@ -10,4 +10,9 @@ class ProjectType extends Model
     use HasFactory;
     protected $table="project_type";
 
+    public function active_status()
+    {
+        return $this->belongsTo(GlobalStatus::class, 'active_flag');
+    }
+
 }

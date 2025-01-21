@@ -362,10 +362,10 @@ class EmployeeDashboardController extends Controller
         //     ->having('value', '>', '0')
         //     ->get();
 
-        $employee_department_chart = Employee::join('department', 'department.id', '=', 'employees_all.department_id')
-            ->select('department.name as name', DB::raw("count(department.name) as value"))
+        $employee_department_chart = Employee::join('departments', 'departments.id', '=', 'employees_all.department_id')
+            ->select('departments.name as name', DB::raw("count(departments.name) as value"))
             ->where('administrator_flag', 'N')
-            ->groupBy('department.name')
+            ->groupBy('departments.name')
             ->having('value', '>', '0')
             ->get();
 

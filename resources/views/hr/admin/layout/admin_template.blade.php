@@ -100,6 +100,9 @@
         <div class="content">
             @yield('main')
             @include('hr.admin.partials.modals')
+            @if ((Request::is('projects/admin/setting/*')))
+                @include('projects.admin.partials.setup-modals')
+            @endif
             @include('hr.admin.partials.labels')
             @include('hr.admin.body.footer')
         </div>

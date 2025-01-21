@@ -126,7 +126,7 @@ $(document).ready(function () {
             $("#cover-spin").hide();
 
         } else {
-            // console.log("inside else");
+            console.log("inside else");
             $.ajax({
                 url: $(this).attr("action"),
                 type: "POST",
@@ -220,13 +220,13 @@ function update_subtask_status(e) {
         status = 0;
     }
     $.ajax({
-        url: "/tracki/task/subtask/update_status",
+        url: "/projects/admin/task/subtask/update_status",
         type: "POST", // Use POST method
         headers: {
             "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
         },
         data: {
-            _method: "PUT", // Specify the desired method
+            _method: "POST", // Specify the desired method
             id: id,
             status: status,
         },

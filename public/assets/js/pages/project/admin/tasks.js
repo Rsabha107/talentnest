@@ -123,7 +123,7 @@ $(document).ready(function () {
     });
 
     $("body").on("click", "#edit_task", function () {
-        console.log("inside #edit_task");
+        console.log("inside #edit_task tasks.js");
         // console.log("source: " + x_source);
         // $(".spinner-border").show();
         console.log($("#edit_task").data("id"));
@@ -141,67 +141,67 @@ $(document).ready(function () {
                 g_response = response.view;
                 $("#edit_task_modal_form").empty("").append(g_response);
 
-                $.ajax({
-                    url: "/projects/admin/task/get/" + id,
-                    type: "get",
-                    headers: {
-                        "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
-                    },
-                    dataType: "json",
-                    success: function (response) {
-                        console.log(response);
-                        console.log(response.asg);
-                        console.log(response.project.employees);
-                        $("#edit_task_assigned_to").empty();
+                // $.ajax({
+                //     url: "/projects/admin/task/get/" + id,
+                //     type: "get",
+                //     headers: {
+                //         "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
+                //     },
+                //     dataType: "json",
+                //     success: function (response) {
+                //         console.log(response);
+                //         console.log(response.asg);
+                //         console.log(response.project.employees);
+                //         $("#edit_task_assigned_to").empty();
 
-                        var formattedStartDate = moment(
-                            response.task.start_date
-                        ).format("DD/MM/YYYY");
-                        var formattedDueDate = moment(response.task.due_date).format(
-                            "DD/MM/YYYY"
-                        );
+                //         var formattedStartDate = moment(
+                //             response.task.start_date
+                //         ).format("DD/MM/YYYY");
+                //         var formattedDueDate = moment(response.task.due_date).format(
+                //             "DD/MM/YYYY"
+                //         );
 
-                        $("#edit_task_start_date").val(formattedStartDate);
-                        $("#edit_task_due_date").val(formattedDueDate);
+                //         $("#edit_task_start_date").val(formattedStartDate);
+                //         $("#edit_task_due_date").val(formattedDueDate);
 
-                        // var wsUsers = response.asg.map((users) => users.id);
-                        $.each(
-                            response.project.employees,
-                            function (index, user) {
-                                var option = $("<option>", {
-                                    value: user.id,
-                                    text: user.full_name,
-                                });
+                //         // var wsUsers = response.asg.map((users) => users.id);
+                //         $.each(
+                //             response.project.employees,
+                //             function (index, user) {
+                //                 var option = $("<option>", {
+                //                     value: user.id,
+                //                     text: user.full_name,
+                //                 });
 
-                                $("#edit_task_assigned_to").append(option);
-                            }
-                        );
+                //                 $("#edit_task_assigned_to").append(option);
+                //             }
+                //         );
 
-                        var wsUsers = response.task.employees.map(
-                            (users) => users.id
-                        );
-                        console.log(wsUsers);
+                //         var wsUsers = response.task.employees.map(
+                //             (users) => users.id
+                //         );
+                //         console.log(wsUsers);
 
-                        console.log("Name: " + response.task.description);
-                        // $("#edit_task_modal_label").html(
-                        //     "Edit task (" +
-                        //         response.task.name +
-                        //         ") Project: " +
-                        //         response.project.name
-                        // );
+                //         console.log("Name: " + response.task.description);
+                //         // $("#edit_task_modal_label").html(
+                //         //     "Edit task (" +
+                //         //         response.task.name +
+                //         //         ") Project: " +
+                //         //         response.project.name
+                //         // );
 
-                        console.log("populating edit_task_assigned_to");
-                        console.log(wsUsers);
-                        $("#edit_task_assigned_to").val([]).change();
-                        $("#edit_task_assigned_to").val(wsUsers);
-                        $("#edit_task_assigned_to").trigger("change");
+                //         console.log("populating edit_task_assigned_to");
+                //         console.log(wsUsers);
+                //         $("#edit_task_assigned_to").val([]).change();
+                //         $("#edit_task_assigned_to").val(wsUsers);
+                //         $("#edit_task_assigned_to").trigger("change");
 
-                        $("#edit_task_description").val(response.task.description);
-                        tinymce
-                            .get("edit_task_description")
-                            .setContent(response.task.description);
-                    },
-                });
+                //         $("#edit_task_description").val(response.task.description);
+                //         tinymce
+                //             .get("edit_task_description")
+                //             .setContent(response.task.description);
+                //     },
+                // });
 
                 $("#edit_task_modal").modal("show");
                 $("#cover-spin").hide();
@@ -286,7 +286,7 @@ $(document).ready(function () {
         // console.log("id: " + id);
         // console.log("table: " + table);
 
-        $.get("/projects/admin/task/status/" + id + "/edit", function (data) {
+        $.get("/projects/admin/task/status/edit/" + id, function (data) {
             //  console.log('event name: ' + data);
             $.each(data, function (index, value) {
                 // console.log(value[0]);
@@ -593,7 +593,7 @@ $(document).ready(function () {
                         html +=
                             '       <div class="d-flex mb-1"><span class="fa-solid fa-image me-2 text-body-tertiary fs-9"></span>';
                         html +=
-                            '         <p class="text-body-highlight mb-0 lh-1"><a href="../../../storage/upload/event_files/' +
+                            '         <p class="text-body-highlight mb-0 lh-1"><a href="../../../upload/event_files/' +
                             result["file_name"] +
                             '" target="_blank">' +
                             result["original_file_name"] +
@@ -909,7 +909,7 @@ $("body").on("click", "#task-file-tab", function (event) {
 $("body").on("click", "#taskCardView", function (event) {
     // event.preventDefault();
     var taskId = $(this).data("id");
-    console.log("click of taskCardView");
+    console.log("click of taskCardView tasks.js");
     $(".spinner-border").show();
     // console.log("task id: " + taskId);
 
@@ -1000,9 +1000,9 @@ $("body").on("click", "#taskCardView", function (event) {
                     console.log("id: " + asg.id);
 
                     html +=
-                        '<a href="/tracki/users/' +
+                        '<a href="/hr/admin/employee/profile/' +
                         asg.id +
-                        '/details" title="' +
+                        '" title="' +
                         asg.full_name +
                         '" role="button"> <div class="avatar avatar-m pull-up me-1">';
                     html +=
@@ -1100,7 +1100,7 @@ $("body").on("click", "#taskCardView", function (event) {
                     html +=
                         '       <div class="d-flex mb-1"><span class="fa-solid fa-image me-2 text-body-tertiary fs-9"></span>';
                     html +=
-                        '         <p class="text-body-highlight mb-0 lh-1"><a href="../../../storage/upload/event_files/' +
+                        '         <p class="text-body-highlight mb-0 lh-1"><a href="../../../upload/event_files/' +
                         files.file_name +
                         '" target="_blank">' +
                         files.original_file_name +

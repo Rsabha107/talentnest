@@ -130,7 +130,7 @@ $(document).ready(function () {
     });
 
 
-    // delete task item
+    // delete employee
     $("body").on("click", "#deleteEmployee", function (e) {
         var id = $(this).data("id");
         var tableID = $(this).data("table");
@@ -175,7 +175,7 @@ $(document).ready(function () {
         });
     });
 
-    // restore task item
+    // restore employee
     $("body").on("click", "#restoreEmployee", function (e) {
         var id = $(this).data("id");
         var tableID = $(this).data("table");

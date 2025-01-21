@@ -62,7 +62,7 @@ class UtilController extends Controller
         //     ->where('event_id', '=', $id)
         //     ->count();
 
-        $task = Task::where('event_id', '=', $id);
+        $task = Task::where('project_id', '=', $id);
 
         $taskCount = $task->count();
         $sumTaskProgress = $task->sum('progress');
@@ -119,16 +119,16 @@ class UtilController extends Controller
         // Log::info($is_project_completed);
         if ($is_project_completed['status']) {
             // Log::info('project: ' . $id . ' is ' . config('tracki.project_status.completed'));
-            Event::where('id', $id)
+            Project::where('id', $id)
                 ->update([
-                    'event_status' => config('tracki.project_status.completed'),
+                    'status_id' => config('tracki.project_status.completed'),
                 ]);
         } else {
             // Log::info('project: ' . $id . ' is ' . config('tracki.project_status.completed'));
 
-            Event::where('id', $id)
+            Project::where('id', $id)
                 ->update([
-                    'event_status' => config('tracki.project_status.inprogress'),
+                    'status_id' => config('tracki.project_status.inprogress'),
                 ]);
         }
     }

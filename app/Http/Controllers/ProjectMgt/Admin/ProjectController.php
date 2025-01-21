@@ -4,15 +4,16 @@ namespace App\Http\Controllers\ProjectMgt\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\UtilController;
-use App\Models\Audience;
 use App\Models\BudgetName;
 use App\Models\Client;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\EventAttendance;
+use App\Models\EventAudience;
 use App\Models\EventCategory;
+use App\Models\EventLocation;
+use App\Models\FunctionalArea;
 use App\Models\FundCategory;
-use App\Models\Location;
 use App\Models\Project;
 use App\Models\ProjectStatus;
 use App\Models\ProjectType;
@@ -42,20 +43,25 @@ class ProjectController extends Controller
     public function index()
     {
 
-        $project_data = Project::whereNull('archived')
+        $project_data = Project::where('archived', 'N')
             ->orderBy('projects.start_date')->get();
 
+            // dd($project_data);
         $employees = Employee::all();
         $tags = Tag::all();
         $project_type = ProjectType::all();
         $event_category = EventCategory::all();
         $clients = Client::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
         $project_status = Status::all();
+        // used for tasks modal
+        $departments = Department::all();
+        $functional_areas = FunctionalArea::all();
+        $users = User::all();
 
         return view('projects.admin.project.list', compact(
             'project_data',
@@ -69,7 +75,10 @@ class ProjectController extends Controller
             'event_location',
             'fund_category',
             'budget_name',
-            'project_status'
+            'project_status',
+            'departments',
+            'users',
+            'functional_areas'
         ));
     }  // End function index
 
@@ -81,15 +90,27 @@ class ProjectController extends Controller
         $sort = (request('sort')) ? request('sort') : "id";
         $order = (request('order')) ? request('order') : "DESC";
 
-        $ops = Project::orderBy($sort, $order);
-
+        $project_id = (request()->project_id) ? request()->project_id : "";
+        $status = (request()->status) ? request()->status : "";
         $functional_area = (request()->functional_area) ? request()->functional_area : "";
-        $department = (request()->department) ? request()->department : "";
+        $venue_id = (request()->venue_id) ? request()->venue_id : "";
         $entity = (request()->entity) ? request()->entity : "";
         $directorate = (request()->directorate) ? request()->directorate : "";
         $active_archived = (request()->active_archived) ? request()->active_archived : "";
 
         // dd(request()->all());
+
+        // $ops = Project::orderBy($sort, $order);
+
+        if ($venue_id) {
+            $venue = Venue::find($venue_id);
+            $ops = $venue->projects()->orderBy($sort, $order);
+            // $ops = $ops->where(function ($query) use ($venue_id) {
+            //     $query->where('venue_id', 'like', '%' . $venue_id . '%');
+            // });
+        } else {
+            $ops = Project::orderBy($sort, $order);
+        }
 
         if ($search) {
             $ops = $ops->where(function ($query) use ($search) {
@@ -97,17 +118,18 @@ class ProjectController extends Controller
             });
         }
 
-        if ($functional_area) {
-            $ops = $ops->where(function ($query) use ($functional_area) {
-                $query->where('functional_area_id', 'like', '%' . $functional_area . '%');
+        if ($project_id) {
+            $ops = $ops->where(function ($query) use ($project_id) {
+                $query->where('id', 'like', '%' . $project_id . '%');
             });
         }
 
-        if ($department) {
-            $ops = $ops->where(function ($query) use ($department) {
-                $query->where('department_id', 'like', '%' . $department . '%');
+        if ($status) {
+            $ops = $ops->where(function ($query) use ($status) {
+                $query->where('status_id', 'like', '%' . $status . '%');
             });
         }
+
 
         if ($directorate) {
             $ops = $ops->where(function ($query) use ($directorate) {
@@ -147,7 +169,7 @@ class ProjectController extends Controller
 
             $div_action = '<div class="font-sans-serif btn-reveal-trigger position-static">';
             $profile_action =
-                '<a href="' . route('projects.admin.project.d', $op->id) . '" class="btn-table btn-sm" id="employeeCardView" data-id="' .
+                '<a href="' . route('projects.admin.project.d', $op->id) . '" class="btn btn-sm" id="employeeCardView" data-id="' .
                 $op->id .
                 '" data-table="employee_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Employee Details">' .
                 '<i class="fa-solid far fa-lightbulb text-warning"></i></a>';
@@ -158,20 +180,22 @@ class ProjectController extends Controller
             $duplicate_action =
                 '<a href="javascript:void(0)" class="btn btn-sm" id="duplicate_employee" data-action="update" data-type="duplicate" data-id=' .
                 $op->id .
-                ' data-table="employee_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Duplicate">' .
+                ' data-table="project_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Duplicate">' .
                 '<i class="fa-solid fa-copy text-success"></i></a>';
             $delete_action =
                 '<a href="javascript:void(0)" class="btn btn-sm" data-table="project_table" data-id="' .
                 $op->id .
-                '" id="delete" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
+                '" id="delete_project" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
                 '<i class="fa-solid fa-trash text-danger"></i></a></div></div>';
             $restore_action =
-                '<a href="javascript:void(0)" class="btn btn-sm" data-table="employee_table" data-id="' .
+                '<a href="javascript:void(0)" class="btn btn-sm" data-table="project_table" data-id="' .
                 $op->id .
-                '" id="restoreEmployee" data-bs-toggle="tooltip" data-bs-placement="right" title="Restore">' .
+                '" id="restore_project" data-bs-toggle="tooltip" data-bs-placement="right" title="Restore">' .
                 '<i class="fa-solid fa-rotate-left test-warning"></i></a></div></div>';
 
-            $delete_restore = ('N' == 'N') ? $delete_action : $restore_action;
+            // $delete_restore = ('N' == 'N') ? $delete_action : $restore_action;
+            $delete_restore = ($op->archived == 'N') ? $delete_action : $restore_action;
+
 
             $actions = $div_action . $profile_action;
 
@@ -180,24 +204,24 @@ class ProjectController extends Controller
 
             $assign_to = '<div class="avatar-group">';
 
-            foreach ($op->employees as $key => $user) {
-                if ($user->emp_files?->file_path) {
+            foreach ($op->employees as $key => $emp) {
+                if ($emp->emp_files?->file_path) {
                     $assign_to = $assign_to . '<div class="avatar avatar-m ">
-                        <a href="' . route('hr.admin.employee.profile', encrypt($user->id)) . '"
-                            role="button" title="' . $user->full_name . '">
+                        <a href="' . route('hr.admin.employee.profile', encrypt($emp->id)) . '"
+                            role="button" title="' . $emp->full_name . '">
                             <img class="rounded-circle pull-up"
-                                src="' . $user->emp_files->file_path . $user->emp_files->file_name . '"
+                                src="' . $emp->emp_files->file_path . $emp->emp_files->file_name . '"
                                 alt="" />
                         </a>
                     </div>';
                 } else {
                     $assign_to = $assign_to . '<div class="avatar avatar-m  me-1">
                         <a class="dropdown-toggle dropdown-caret-none d-inline-block"
-                            href="' . route('hr.admin.employee.profile', encrypt($user->id)) . '"
-                            role="button" title="' . $user->name . '">
+                            href="' . route('hr.admin.employee.profile', encrypt($emp->id)) . '"
+                            role="button" title="' . $emp->full_name . '">
                             <div class="avatar avatar-m  rounded-circle pull-up">
                                 <div class="avatar-name rounded-circle me-2">
-                                    <span>' . generateInitials($user->full_name) . '</span>
+                                    <span>' . generateInitials($emp->full_name) . '</span>
                                 </div>
                             </div>
                         </a>
@@ -220,14 +244,28 @@ class ProjectController extends Controller
             $project_status = '<span class="badge badge-phoenix fs-10 mb-4 badge-phoenix-' . $op->status?->color . '">' . $op->status?->title . '</span>';
             $project_fund_category = '<span class="badge badge-phoenix fs-10 mb-4 badge-phoenix-' . $fund_category_color . '">' . $op->fundCategories?->name . '</span>';
 
-            $progress_bar = '                        <div class="progress bg-bg-' . $op->status->color . '-subtle">
+            $progress_bar = '<div class="align-middle white-space-nowrap ps-0 projectprogress">
+                          <p class="text-body-secondary fs-10 mb-0">' . get_project_progress($op->id) . '%</p>
+                          <div class="progress" style="height:3px;">
+                            <div class="progress-bar bg-success" style="width: ' . get_project_progress($op->id) . '%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="' . get_project_progress($op->id) . '" role="progressbar"></div>
+                          </div>
+                          </div>
+                        ';
+
+            $progress_bar_card = ' <div class="progress bg-bg-' . $op->status->color . '-subtle">
                             <div class="progress-bar rounded bg-' . $op->status->color . ' " role="progressbar"
                                 aria-label="Success example" style="width: ' . get_project_progress($op->id) . '%"
                                 aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>';
 
             $details_url = route('projects.admin.project.d', $op->id);
-            
+
+            $card_delete_restore_div = ($op->archived == 'N') ?
+                '<a class="dropdown-item text-danger" href="#!" id="delete_project" data-table="project_table"
+                                                data-id="' . $op->id . '" title="Delete" class="card-link">Delete</a>' :
+                '<a class="dropdown-item text-danger" href="#!" id="restore_project" data-table="project_table"
+                                                data-id="' . $op->id . '" title="Restore" class="card-link">Restore</a>';
+
             return [
                 'id1' => '<div class="ms-3">' . $op->id . '</div>',
                 'id' => $op->id,
@@ -248,13 +286,15 @@ class ProjectController extends Controller
                 'project_status' => '<span class="badge badge-phoenix fs--2 badge-phoenix-' . $op->status->color . ' "><span class="badge-label" id="editprojectStatus" data-id="' . $op->id . '" data-table="project_table">' . $op->status->title . '</span><span class="ms-1" data-feather="x" style="height:12.8px;width:12.8px;"></span></span>',
                 'project_fund_category' =>  $project_fund_category,
                 'progress_bar' =>  $progress_bar,
+                'progress_bar_card' =>  $progress_bar_card,
                 'task_count' =>  $op->tasks->count(),
                 'task_count' => '<div class="align-middle white-space-wrap fw-bold fs-9"><a href="' . $details_url . '">' . $op->tasks->count() . '</a></div>',
-                'task_url' => '<div class="mt-lg-3 mt-xl-0"><a href="'.route('projects.admin.project.d', $op->id).'"> <i class="fa-solid fa-list-check me-1"></i>
-                                    </a><p class="d-inline-block fw-bold mb-0"><a href="'.route('projects.admin.project.d', $op->id).'">' . $op->tasks->count() . '<span class="fw-normal"> Task</span>
+                'task_url' => '<div class="mt-lg-3 mt-xl-0"><a href="' . route('projects.admin.project.d', $op->id) . '"> <i class="fa-solid fa-list-check me-1"></i>
+                                    </a><p class="d-inline-block fw-bold mb-0"><a href="' . route('projects.admin.project.d', $op->id) . '">' . $op->tasks->count() . '<span class="fw-normal"> Task</span>
                                 </a></p>
                             </div>',
                 'actions' => $actions,
+                'card_delete_restore_div' => $card_delete_restore_div,
                 'created_at' => format_date($op->created_at,  'H:i:s'),
                 'updated_at' => format_date($op->updated_at, 'H:i:s'),
             ];
@@ -345,7 +385,7 @@ class ProjectController extends Controller
 
             $div_action = '<div class="font-sans-serif btn-reveal-trigger position-static">';
             $profile_action =
-                '<a href="' . route("hr.admin.employee.profile", encrypt($op->id)) . '" class="btn-table btn-sm" id="employeeCardView" data-id="' .
+                '<a href="' . route("hr.admin.employee.profile", encrypt($op->id)) . '" class="btn btn-sm" id="employeeCardView" data-id="' .
                 $op->id .
                 '" data-table="employee_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Employee Details">' .
                 '<i class="fa-solid far fa-lightbulb text-warning"></i></a>';
@@ -469,9 +509,9 @@ class ProjectController extends Controller
         $project_type = ProjectType::all();
         $event_category = EventCategory::all();
         $clients = Client::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
         $project_status = Status::all();
@@ -503,34 +543,125 @@ class ProjectController extends Controller
         $ws_users = $workspace?->employees;
         // $project = Project::findOrFail($id);
 
-        return response()->json(['project' => $project, 'tag' => $project->tags, 'assigned_to' => $project->employees, 'wsusers' => $ws_users]);
+        return response()->json(['project' => $project, 
+                                 'tag' => $project->tags, 
+                                 'assigned_to' => $project->employees,
+                                 'venues' => $project->venues,
+                                 'functional_areas' => $project->functional_areas,
+                                 'wsusers' => $ws_users]);
+        
     }  // End function getProject
 
-    public function updateProject(Request $request)
+    public function store(Request $request)
     {
         // dd('createEvent');
         $user_id = Auth::user()->id;
-        $event = Project::find($request->id);
+        $project = new Project();
 
-        $event->name = $request->name;
-        $event->category_id = $request->category_id;
-        $event->audience_id = $request->audience_id;
-        $event->client_id = $request->client_id;
-        $event->venue_id = $request->venue_id;
-        $event->location_id = $request->location_id;
-        $event->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date);
-        $event->end_date = Carbon::createFromFormat('d/m/Y', $request->end_date);
-        $event->budget_allocation = $request->budget_allocation;
-        $event->attendance_forcast = $request->attendance_forcast;
-        $event->description = $request->description;
-        $event->color_id = $request->color_id;
-        $event->progress = $request->progress / 100;
-        $event->project_type_id = $request->project_type_id;
-        $event->total_sales = $request->project_sales;
-        $event->fund_category_id = $request->fund_category_id;
-        $event->budget_name_id = $request->budget_name_id;
-        // $event->workspace_id = $request->workspace_id;
-        $event->updated_by = $user_id;
+        $workspace = session()->get('workspace_id');
+
+        // Log::info('workspace: ' . $workspace);
+
+        $project->name = $request->name;
+        $project->category_id = $request->category_id;
+        $project->audience_id = $request->audience_id;
+        $project->client_id = $request->client_id;
+        // $project->venue_id = $request->venue_id;
+        $project->location_id = $request->location_id;
+        if ($request->start_date) {
+            $project->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date);
+        }
+        if ($request->end_date) {
+            $project->end_date = Carbon::createFromFormat('d/m/Y', $request->end_date);
+        }
+        $project->budget_allocation = $request->budget_allocation;
+        $project->attendance_forcast = $request->attendance_forcast;
+        $project->status_id = config('tracki.project_status.inprogress');
+        $project->description = $request->description;
+        $project->color_id = 14; //$request->color_id;
+        $project->progress = $request->progress / 100;
+        $project->project_type_id = $request->project_type_id;
+        $project->total_sales = $request->project_sales;
+        $project->fund_category_id = $request->fund_category_id;
+        $project->budget_name_id = $request->budget_name_id;
+        // $project->workspace_id = (session()->get('workspace_id')) ? session()->get('workspace_id') : $request->workspace_id; //$request->workspace_id;
+        $project->org_id = 1;
+        $project->created_by = $user_id;
+        $project->updated_by = $user_id;
+
+        if ($request->start_date && $request->end_date) {
+            $start_date_d = Carbon::createFromFormat('d/m/Y', $request->start_date);
+            $end_date_d = Carbon::createFromFormat('d/m/Y', $request->end_date);
+            $duration =  $start_date_d->diffInDays($end_date_d, false);
+            $project->duration = $duration;
+        }
+
+        // Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
+
+        // dd($duration);
+
+        $project->save();
+
+        // $task->users()->detach();
+        $project->clients()->attach($request->client_id);
+
+        foreach ($request->venue_id as $key => $data) {
+
+            $project->venues()->attach($request->venue_id[$key]);
+        }
+
+        foreach ($request->functional_areas as $key => $data) {
+
+            $project->functional_areas()->attach($request->functional_area_id[$key]);
+        }
+
+        foreach ($request->tag_id as $key => $data) {
+
+            $project->tags()->attach($request->tag_id[$key]);
+        }
+
+        foreach ($request->assignment_to_id as $key => $data) {
+
+            $project->employees()->attach($request->assignment_to_id[$key]);
+        }
+
+        $notification = array(
+            'message'       => 'Event created successfully',
+            'alert-type'    => 'success'
+        );
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Project ' . $project->name . ' created successfully ',
+        ]);
+        // Toastr::success('Has been add successfully :)','Success');
+        // return Redirect::route('tracki.project.show.card')->with($notification);
+    } // store
+
+    public function update(Request $request)
+    {
+        // dd('createEvent');
+        $user_id = Auth::user()->id;
+        $project = Project::find($request->id);
+
+        $project->name = $request->name;
+        $project->category_id = $request->category_id;
+        $project->audience_id = $request->audience_id;
+        $project->client_id = $request->client_id;
+        $project->location_id = $request->location_id;
+        $project->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date);
+        $project->end_date = Carbon::createFromFormat('d/m/Y', $request->end_date);
+        $project->budget_allocation = $request->budget_allocation;
+        $project->attendance_forcast = $request->attendance_forcast;
+        $project->description = $request->description;
+        $project->color_id = $request->color_id;
+        $project->progress = $request->progress / 100;
+        $project->project_type_id = $request->project_type_id;
+        $project->total_sales = $request->project_sales;
+        $project->fund_category_id = $request->fund_category_id;
+        $project->budget_name_id = $request->budget_name_id;
+        // $project->workspace_id = $request->workspace_id;
+        $project->updated_by = $user_id;
 
         $start_date_d = Carbon::createFromFormat('d/m/Y', $request->start_date);
         $end_date_d = Carbon::createFromFormat('d/m/Y', $request->end_date);
@@ -540,24 +671,30 @@ class ProjectController extends Controller
         Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
 
         // dd($duration);
-        $event->duration = $duration;
+        $project->duration = $duration;
 
-        $event->save();
+        $project->save();
 
         if ($request->tag_id) {
-            $event->tags()->detach();
+            $project->tags()->detach();
             foreach ($request->tag_id as $key => $data) {
-                $event->tags()->attach($request->tag_id[$key]);
+                $project->tags()->attach($request->tag_id[$key]);
             }
         }
 
         if ($request->client_id) {
-            $event->clients()->detach();
-            $event->clients()->attach($request->client_id);
+            $project->clients()->detach();
+            $project->clients()->attach($request->client_id);
         }
 
-        $event->employees()->detach();
-        $event->employees()->attach($request->assignment_to_id);
+        $project->venues()->detach();
+        $project->venues()->attach($request->venue_id);
+
+        $project->functional_areas()->detach();
+        $project->functional_areas()->attach($request->functional_area_id);
+
+        $project->employees()->detach();
+        $project->employees()->attach($request->assignment_to_id);
 
 
         $notification = array(
@@ -567,7 +704,7 @@ class ProjectController extends Controller
 
         return response()->json([
             'error' => false,
-            'message' => 'Project ' . $event->name . ' updated successfully ',
+            'message' => 'Project ' . $project->name . ' updated successfully ',
         ]);
 
         // // Toastr::success('Has been add successfully :)','Success');
@@ -577,6 +714,52 @@ class ProjectController extends Controller
         //     return Redirect::route('tracki.project.show.card')->with($notification);
         // }
     } // updateProject
+
+    public function delete(string $id)
+    {
+        //
+        // Employee::where('id', '=', $id)->delete();
+        // soft delete
+        // dd($id);
+        // Project::where('id', '=', $id)->update(['archived' => 'Y']);
+
+        $project = Project::find($id);
+        $project->archived = 'Y';
+        $project->save();
+
+        $notification = array(
+            'message'       => 'Project archived successfully',
+            'alert-type'    => 'success'
+        );
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Project archived successfully',
+        ]);
+    }
+
+    public function restore(string $id)
+    {
+        //
+        // Employee::where('id', '=', $id)->delete();
+        // soft delete
+        // dd($id);
+        // Project::where('id', '=', $id)->update(['archived' => 'Y']);
+
+        $project = Project::find($id);
+        $project->archived = 'N';
+        $project->save();
+
+        $notification = array(
+            'message'       => 'Project restored successfully',
+            'alert-type'    => 'success'
+        );
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Project restored successfully',
+        ]);
+    }
 
     public function detail(Request $request, $id)
     {
@@ -598,14 +781,16 @@ class ProjectController extends Controller
         $department = Department::all();
         $event_category = EventCategory::all();
         $clients = Client::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $project_type = ProjectType::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
         $employees = Employee::all();
         $tags = Tag::all();
+        $functional_areas = FunctionalArea::all();
+
 
         // foreach ($projectData->clients as $clnt) {
         //     $client_name = $clnt->first_name.' '.$clnt->last_name;
@@ -659,7 +844,7 @@ class ProjectController extends Controller
         $projectType = $projectData->types?->name;
         $AudienceName = $projectData->audiences?->name;
         $PlannerName = $projectData->planners?->name;
-        $VenueName = $projectData->venues?->name;
+        // $VenueName = $projectData->venues?->name;
         $LocationName = $projectData->locations?->name;
         $FundCategory = $projectData->fundCategories?->name;
         $eventNote = $projectData->notes;
@@ -682,7 +867,8 @@ class ProjectController extends Controller
             'eventCategoryName' => $eventCategoryName,
             'audienceName' => $AudienceName,
             'plannerName' => $PlannerName,
-            'venueName' => $VenueName,
+            'functional_areas' => $functional_areas,
+            // 'venueName' => $VenueName,
             'locationName' => $LocationName,
             'fileName' => $FileName,
             'remainingBudget' => $remaining_budget,

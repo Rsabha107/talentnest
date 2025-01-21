@@ -1,5 +1,13 @@
 // import Choices from 'phoenix.js'
 
+function checkModelOpen(e) {
+    if (Element.data("bs.modal").isShown) {
+        return true;
+    }
+
+    return false;
+}
+
 $(document).ready(function () {
     // console.log("all tasksJS file");
 
@@ -17,20 +25,62 @@ $(document).ready(function () {
     //     // alert(modalID);
     // });
 
-    $("#add_project_assigned_to").select2();
-    $(".js-example-basic-multiple2").select2();
-    $(".js-example-basic-multiple").select2();
+    $(document).on("show.bs.modal", ".modal", function (event) {
+        // alert('on show.bs.modal')
+        var zIndex = 1040 + 10 * $(".modal:visible").length;
+        $(this).css("z-index", zIndex);
+        setTimeout(function () {
+            $(".modal-backdrop")
+                .not(".modal-stack")
+                .css("z-index", zIndex - 1)
+                .addClass("modal-stack");
+        }, 0);
+    });
+
+    // $("#add_project_assigned_to").select2();
+    // $(".js-select-tags-multiple").select2();
+
+    $(".js-select-fa-multiple").select2();
+    $(".js-select-tags-multiple").select2();
+    $(".js-select-assign-multiple").select2();
+    $(".js-select-venues-multiple").select2();
 
     // $("#projectCards").html("project cards projectCards");
 
     $("body").on("click", "#add_project", function () {
         console.log("inside #add_project");
-        $(".js-example-basic-multiple2").select2();
+        // $(".js-example-basic-multiple2").select2();
 
         $("#cover-spin").show();
         $("#add_project_modal").modal("show");
         $("#cover-spin").hide();
     });
+
+        // ************************************************** task status
+        $("body").on("click", "#editTaskStatus", function (event) {
+            // console.log("inside sec click edit");
+            // event.preventDefault();
+            var id = $(this).data("id");
+            var table = $(this).data("table");
+            // var route = $(this).data("route");
+            // console.log("id: " + id);
+            // console.log("table: " + table);
+    
+            $.get("/projects/admin/task/status/edit/" + id, function (data) {
+                //  console.log('event name: ' + data);
+                $.each(data, function (index, value) {
+                    // console.log(value[0]);
+                    $("#editTaskId").val(value[0].id);
+                    $("#editTaskEventId").val(value[0].event_id);
+                    $("#editTaskStatusSelection").val(value[0].status_id);
+                    $("#taskStatusParentTable").val(table);
+                    $("#taskStatusModal").modal("show");
+                });
+    
+                // $('#staticBackdropLabel').html("Edit category");
+                // $('#submit').val("Edit category");
+            });
+        });
 
     $("body").on("click", "#test_change_choices_list", function () {
         console.log("inside #test_change_choices_list");
@@ -54,8 +104,6 @@ $(document).ready(function () {
     $("body").on("click", "#edit_project", function () {
         console.log("inside #edit_project");
 
-        // reset all values
-        // $("#add_edit_project_assigned_to").empty();
         $("#add_edit_project_form")[0].reset();
         $("#add_edit_project_tag").val([]).change();
         $("#add_edit_project_assigned_to").val([]).change();
@@ -63,26 +111,11 @@ $(document).ready(function () {
 
         var id = $(this).data("id");
         var table = $(this).data("table");
-        // var action = $(this).data("action");
-        // var source = $(this).data("source");
-        // var type = $(this).data("type");
-        // var redirect = $(this).data("redirect");
         var workspace_id = $(this).data("workspace_id");
-        // var form_action = "/project/" + action;
-
-        // if (!workspace_id) {
-        //     alert("choose a workspace first");
-        //     return;
-        // }
 
         console.log("workspace_id: " + workspace_id);
         is_workspace_set = workspace_id ? true : false;
         console.log("workspace_id: " + is_workspace_set);
-
-        // if (!workspace_id && type == 'add'){
-        //     alert('please choose a workspace first');
-        //     return
-        // }
 
         console.log("id: " + id);
         console.log("table: " + table);
@@ -108,9 +141,10 @@ $(document).ready(function () {
                 console.log(response);
 
                 var project_tags = response.tag.map((tags) => tags.id);
-                var project_users = response.assigned_to.map(
-                    (users) => users.id
-                );
+                var project_users = response.assigned_to.map((users) => users.id);
+                var project_venues = response.venues.map((venues) => venues.id);
+                var project_fas = response.functional_areas.map((fas) => fas.id);
+
                 console.log("project_tags");
                 console.log(project_tags);
                 console.log("project_users");
@@ -142,10 +176,8 @@ $(document).ready(function () {
                 $("#add_edit_project_audience").val(
                     response.project.audience_id
                 );
-                $("#add_edit_project_venue").val(response.project.venue_id);
-                $("#add_edit_project_location").val(
-                    response.project.location_id
-                );
+                // $("#add_edit_project_venue").val(response.project.venue_id);
+                $("#add_edit_project_location").val(response.project.location_id);
                 $("#add_edit_project_fund").val(
                     response.project.fund_category_id
                 );
@@ -168,10 +200,20 @@ $(document).ready(function () {
 
                 $("#add_edit_project_assigned_to").val(project_users);
                 $("#add_edit_project_assigned_to").trigger("change");
-                // $("#add_edit_project_description").val(response.project.description);
-                tinymce
-                    .get("add_edit_project_description")
-                    .setContent(response.project.description);
+
+                $("#add_edit_project_assigned_to").val(project_users);
+                $("#add_edit_project_assigned_to").trigger("change");
+
+                $("#add_edit_project_venue").val(project_venues);
+                $("#add_edit_project_venue").trigger("change");
+
+                $("#add_edit_project_fa").val(project_fas);
+                $("#add_edit_project_fa").trigger("change");
+
+                $("#add_edit_project_description").val(response.project.description);
+                // tinymce
+                //     .get("add_edit_project_description")
+                //     .setContent(response.project.description);
             },
         }).done(function () {
             // $("#offcanvasAddEditProject").offcanvas("show");
@@ -179,37 +221,95 @@ $(document).ready(function () {
         });
     });
 
-    // window.addEventListener("load", function () {
-    //     alert("It's loaded!");
-    // });
+    // delete project
+    $("body").on("click", "#delete_project", function (e) {
+        var id = $(this).data("id");
+        var tableID = $(this).data("table");
+        e.preventDefault();
+        // alert("tableID: "+tableID);
+        var link = $(this).attr("href");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Delete This Data?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/projects/admin/project/delete/" + id,
+                    method: "GET",
+                    success: function (result) {
+                        if (!result["error"]) {
+                            toastr.success(result["message"]);
+                            // divToRemove.remove();
+                            // $("#fileCount").html("File ("+result["count"]+")");
+                            // console.log('before table refrest for #'+tableID);
+                            $("#" + tableID).bootstrapTable("refresh");
+                            // Swal.fire(
+                            //     'Deleted!',
+                            //     'Your file has been deleted.',
+                            //     'success'
+                            //   )
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                        // $("#cover-spin").hide();
+                        toastr.error(thrownError);
+                    },
+                });
+            }
+        });
+    });
 
-    // window.addEventListener("load", function () {
-    //     $("#cover-spin").show();
-    //     console.log("inside #edit_employee");
-    //     // console.log("source: " + x_source);
-    //     // console.log($("#edit_employee").data("id"));
-    //     // reset all values
-
-    //     // $("#taskTabNotes").empty("").append(refreshEmpEdit(taskID));
-    //     id = $(this).data("id");
-    //     console.log("employee_id: " + id);
-
-    //     $.ajax({
-    //         url: "/projects/admin/project/mv",
-    //         method: "GET",
-    //         async: true,
-    //         success: function (response) {
-    //             g_response = response.view;
-    //             $("#project_card_view").empty("").append(g_response);
-    //             $("#cover-spin").hide();
-    //         },
-    //         error: function (xhr, ajaxOptions, thrownError) {
-    //             console.log(xhr.status);
-    //             console.log(thrownError);
-    //             $("#cover-spin").hide();
-    //         },
-    //     });
-    // });
+    // resotre project
+    $("body").on("click", "#restore_project", function (e) {
+        var id = $(this).data("id");
+        var tableID = $(this).data("table");
+        e.preventDefault();
+        // alert("tableID: "+tableID);
+        var link = $(this).attr("href");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Restore This Data?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Restore it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "/projects/admin/project/restore/" + id,
+                    method: "GET",
+                    success: function (result) {
+                        if (!result["error"]) {
+                            toastr.success(result["message"]);
+                            // divToRemove.remove();
+                            // $("#fileCount").html("File ("+result["count"]+")");
+                            // console.log('before table refrest for #'+tableID);
+                            $("#" + tableID).bootstrapTable("refresh");
+                            // Swal.fire(
+                            //     'Deleted!',
+                            //     'Your file has been deleted.',
+                            //     'success'
+                            //   )
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                        // $("#cover-spin").hide();
+                        toastr.error(thrownError);
+                    },
+                });
+            }
+        });
+    });
 
     $("#switchClientOwner").submit(function (event) {
         event.preventDefault();
@@ -225,7 +325,7 @@ $(document).ready(function () {
     $("body").on("click", "#taskCardView", function (event) {
         // event.preventDefault();
         var taskId = $(this).data("id");
-        console.log("click of taskCardView");
+        console.log("click of taskCardView projects.js");
         $(".spinner-border").show();
         // console.log("task id: " + taskId);
 
@@ -421,7 +521,7 @@ $(document).ready(function () {
                         html +=
                             '       <div class="d-flex mb-1"><span class="fa-solid fa-image me-2 text-body-tertiary fs-9"></span>';
                         html +=
-                            '         <p class="text-body-highlight mb-0 lh-1"><a href="../../../storage/upload/event_files/' +
+                            '         <p class="text-body-highlight mb-0 lh-1"><a href="../../../upload/event_files/' +
                             files.file_name +
                             '" target="_blank">' +
                             files.original_file_name +
@@ -464,7 +564,7 @@ $(document).ready(function () {
                     }
 
                     $.ajax({
-                        url: "/tracki/task/files/" + taskId,
+                        url: "/projects/admin/task/files/" + taskId,
                         method: "GET",
                         async: true,
                         success: function (response) {
@@ -490,16 +590,109 @@ $(document).ready(function () {
             }, //tr += '<option value="'+value[0]+'">'+value[1]+'</option>';
         });
     });
+
+    $("body").on("click", "#edit_task", function () {
+        console.log("inside #edit_task projects.js");
+        // console.log("source: " + x_source);
+        // $(".spinner-border").show();
+        console.log($("#edit_task").data("id"));
+        // var id = ($(this).data("id") == 'undefined')?$('#edit_task').data("id"):$(this).data("id");
+        var id = $(this).data("id");
+        // if (typeof id == "undefined") {
+        //     id = $("#edit_task").data("id");
+        // }
+
+        $.ajax({
+            url: "/projects/admin/task/mv/edit/" + id,
+            method: "GET",
+            async: true,
+            success: function (response) {
+                g_response = response.view;
+                $("#edit_task_modal_form").empty("").append(g_response);
+
+                $.ajax({
+                    url: "/projects/admin/task/get/" + id,
+                    type: "get",
+                    headers: {
+                        "X-CSRF-TOKEN": $('input[name="_token"]').attr("value"), // Replace with your method of getting the CSRF token
+                    },
+                    dataType: "json",
+                    success: function (response) {
+                        console.log(response);
+                        console.log(response.asg);
+                        console.log(response.project.employees);
+                        $("#edit_task_assigned_to").empty();
+
+                        var formattedStartDate = moment(
+                            response.task.start_date
+                        ).format("DD/MM/YYYY");
+                        var formattedDueDate = moment(
+                            response.task.due_date
+                        ).format("DD/MM/YYYY");
+
+                        $("#edit_task_start_date").val(formattedStartDate);
+                        $("#edit_task_due_date").val(formattedDueDate);
+
+                        // var wsUsers = response.asg.map((users) => users.id);
+                        $.each(
+                            response.project.employees,
+                            function (index, user) {
+                                var option = $("<option>", {
+                                    value: user.id,
+                                    text: user.full_name,
+                                });
+
+                                $("#edit_task_assigned_to").append(option);
+                            }
+                        );
+
+                        var wsUsers = response.task.employees.map(
+                            (users) => users.id
+                        );
+                        console.log(wsUsers);
+
+                        console.log("Name: " + response.task.description);
+                        // $("#edit_task_modal_label").html(
+                        //     "Edit task (" +
+                        //         response.task.name +
+                        //         ") Project: " +
+                        //         response.project.name
+                        // );
+
+                        console.log("populating edit_task_assigned_to");
+                        console.log(wsUsers);
+                        $("#edit_task_assigned_to").val([]).change();
+                        $("#edit_task_assigned_to").val(wsUsers);
+                        $("#edit_task_assigned_to").trigger("change");
+
+                        $("#edit_task_description").val(
+                            response.task.description
+                        );
+                        // tinymce
+                        //     .get("edit_task_description")
+                        //     .setContent(response.task.description);
+                    },
+                });
+
+                $("#edit_task_modal").modal("show");
+                $("#cover-spin").hide();
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                console.log(xhr.status);
+                console.log(thrownError);
+            },
+        });
+    });
 });
 
 ("use strict");
 
 function queryParams(p) {
     return {
-        status: $("#task_status_filter").val(),
-        person_id: $("#tasks_person_filter").val(),
+        status: $("#project_status_filter").val(),
+        project_id: $("#project_filter").val(),
+        venue_id: $("#project_venue_filter").val(),
         // client_id: $("#tasks_client_filter").val(),
-        project_id: $("#tasks_project_filter").val(),
         department_id: $("#tasks_department_filter").val(),
         show_page: $("#tasks_show_page_hidden").val(),
         show_page_id: $("#tasks_show_page_id_hidden").val(),
@@ -535,6 +728,7 @@ function customViewFormatter(data) {
     $.each(data, function (i, row) {
         view += template
             .replace("%PROJECTID%", row.id)
+            .replace("%DELETEPROJECTID%", row.id)
             .replace("%PROJECTNAME%", row.project_name_card)
             .replace("%PROJECTSTATUS%", row.project_status)
             .replace("%PROJECTFUND%", row.project_fund_category)
@@ -542,9 +736,10 @@ function customViewFormatter(data) {
             .replace("%CLIENT%", row.client)
             .replace("%BALANCE%", row.balance)
             .replace("%PROGRESS%", row.progress)
-            .replace("%PROGRESSBAR%", row.progress_bar)
+            .replace("%PROGRESSBAR%", row.progress_bar_card)
             .replace("%ASSIGNEDTO%", row.assigned_to)
             .replace("%STARTDATE%", row.start_date)
+            .replace("%CARDDELRESTDIV%", row.card_delete_restore_div)
             .replace("%ENDDATE%", row.end_date)
             .replace("%TASKURL%", row.task_url)
             .replace("%TASKCOUNT%", row.task_count);
@@ -555,9 +750,15 @@ function customViewFormatter(data) {
 }
 
 $(
-    "#task_status_filter,#tasks_person_filter,#tasks_project_filter,#tasks_department_filter"
+    "#project_status_filter,#project_filter,#project_venue_filter,#tasks_department_filter"
 ).on("change", function (e) {
     e.preventDefault();
     console.log("tasks.js on change");
     $("#project_table").bootstrapTable("refresh");
+});
+
+$("#add_project_tag").on("select2:close", function (e) {
+    e.preventDefault();
+    console.log("projects.js on change of add_project_tag");
+    console.log($("#add_project_tag").val());
 });

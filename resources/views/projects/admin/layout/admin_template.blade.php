@@ -100,6 +100,9 @@
         <div class="content">
             @yield('main')
             @include('projects.admin.partials.modals')
+            @if ((Request::is('projects/admin/setting/*')))
+                @include('projects.admin.partials.setup-modals')
+            @endif
             @include('projects.admin.partials.labels')
             @include('projects.admin.body.footer')
         </div>
@@ -196,7 +199,7 @@
 
             // showing the offcanvas for the task creation
             // console.log('before select2-with-image')
-    // $(".js-example-basic-multiple2").select2();
+    $(".js-example-basic-multiple2").select2();
 
             $('#statusSelect104').select2({
                 width: "100%",

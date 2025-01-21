@@ -99,6 +99,13 @@ use App\Http\Controllers\PayrollTimesheetController;
 use App\Http\Controllers\PrefixController;
 use App\Http\Controllers\PriorityController;
 use App\Http\Controllers\ProjectMgt\Admin\ProjectController as AdminProjectController;
+use App\Http\Controllers\projectMgt\Admin\Setting\AudienceController as AdminAudienceController;
+use App\Http\Controllers\projectMgt\Admin\Setting\CategoryController as AdminCategoryController;
+use App\Http\Controllers\projectMgt\Admin\Setting\DepartmentController as AdminSettingDepartmentController;
+use App\Http\Controllers\projectMgt\Admin\Setting\FunctionalAreaController as AdminSettingFunctionalAreaController;
+use App\Http\Controllers\projectMgt\Admin\Setting\LocationController as AdminLocationController;
+use App\Http\Controllers\projectMgt\Admin\Setting\ProjectTypetController;
+use App\Http\Controllers\projectMgt\Admin\Setting\VenueController as AdminVenueController;
 use App\Http\Controllers\ProjectMgt\Admin\TaskController as AdminTaskController;
 use App\Http\Controllers\RandomController;
 use App\Http\Controllers\StatusController;
@@ -107,7 +114,6 @@ use App\Http\Controllers\TagsController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TodoController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\VenueController;
 use App\Http\Controllers\WorkspaceController;
 use App\Models\AddressType;
 use App\Models\EmployeeEmergencyContact;
@@ -139,7 +145,7 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
         Route::post('/admin/signup/create', [AdminController::class, 'createUser'])->name('admin.signup.create');
     });  // End group Admin middleware
 
-    // Security Settings all routes
+    // HR Security Settings all routes
     Route::middleware(['auth', 'otp', 'XssSanitizer', 'role:SuperAdmin', 'roles:admin', 'prevent-back-history', 'auth.session'])->group(function () {
 
         Route::controller(SecurityRoleController::class)->group(function () {
@@ -198,19 +204,21 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
     // PROJECT MANAGEMENT ******************************************************************** Admin All Route
     Route::middleware(['auth', 'otp', 'XssSanitizer', 'role:SuperAdmin|PROJECTMGT', 'roles:admin', 'prevent-back-history', 'auth.session'])->group(function () {
 
-        // Project Routes
+        // Projects Routes
         Route::controller(AdminProjectController::class)->group(function () {
             Route::get('/projects/admin/project/', 'index')->name('projects.admin.project')->middleware('permission:project.show');
             Route::get('/projects/admin/project/list/{id?}', 'list')->name('projects.admin.project.list')->middleware('permission:project.show');
             Route::get('/projects/admin/project/employee/list/{id?}', 'employeeList')->name('projects.admin.employee.project.list')->middleware('permission:project.show');
             Route::get('/projects/admin/project/d/{id}', 'detail')->name('projects.admin.project.d')->middleware('permission:project.show');
             Route::get('/projects/admin/project/mv', 'projectCardMV')->name('projects.admin.project.mv');
-            Route::post('/project/store', 'createProject')->name('project.create');
-            Route::post('/project/update', 'updateProject')->name('project.update');
-            Route::get('/projects/admin/project/get/{id}', 'getProject')->name('tracki.project.get');
+            Route::post('/project/store', 'store')->name('project.store');
+            Route::post('/project/update', 'update')->name('project.update');
+            Route::get('/projects/admin/project/get/{id}', 'getProject')->name('projects.admin.project.get');
+            Route::get('/projects/admin/project/delete/{id}', 'delete')->name('projects.admin.project.delete')->middleware('permission:project.delete');
+            Route::get('/projects/admin/project/restore/{id}', 'restore')->name('projects.admin.project.restore')->middleware('permission:project.delete');
         });
 
-        // Task Routes
+        // Tasks Routes
         Route::controller(AdminTaskController::class)->group(function () {
             Route::get('/projects/admin/task/list/{id?}', 'list')->name('projects.admin.task.list')->middleware('permission:project.show');
             Route::get('/projects/admin/task/employee/list/{id?}', 'employeeList')->name('projects.admin.employee.task.list')->middleware('permission:project.show');
@@ -232,9 +240,10 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             //************************************ Subtask Methods *************************************************** */
             Route::post('/projects/admin/task/subtask', 'store')->name('projects.admin.task.subtask.store');
             Route::get('/projects/admin/task/subtask/{id}/overview', 'overview')->name('projects.admin.task.subtask.overview');
-            Route::put('/projects/admin/task/subtask/update_status', 'updateStatus')->name('projects.admin.task.subtask.update_status');
+            Route::post('/projects/admin/task/subtask/update_status', 'updateStatus')->name('projects.admin.task.subtask.update_status');
 
 
+            Route::get('/projects/admin/task/status/edit/{id}', 'editTaskStatus')->name('projects.admin.task.status.edit');
             Route::post('/projects/admin/task/status/update', 'updateTaskStatus')->name('projects.admin.task.status.update');
             Route::post('/projects/admin/task/store', 'updateTaskStatus')->name('projects.admin.task.store');
             Route::get('/projects/admin/task/mv/edit/{id}', 'getTaskView')->name('projects.admin.task.mv.edit');
@@ -242,7 +251,72 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
 
             Route::post('/projects/admin/task/update', 'updateTask')->name('projects.admin.task.update');
         });
+
+        //*****************************************************Project Setting All routes********************************
+
+        //Category route
+        Route::controller(AdminCategoryController::class)->group(function () {
+            Route::get('/projects/admin/setting/category', 'index')->name('projects.admin.setting.category.index');
+            Route::get('/projects/admin/setting/category/list', 'list')->name('projects.admin.setting.category.list');
+            Route::post('/projects/admin/setting/category/update', 'update')->name('projects.admin.setting.category.update');
+            Route::post('/projects/admin/setting/category/store', 'store')->name('projects.admin.setting.category.store');
+            Route::get('/projects/admin/setting/category/edit/{id}', 'edit')->name('projects.admin.setting.category.edit');
+            Route::delete('/projects/admin/setting/category/delete/{id}', 'destroy')->name('projects.admin.setting.category.delete');
+        });
+
+        //Audience route
+        Route::controller(AdminAudienceController::class)->group(function () {
+            Route::get('/projects/admin/setting/audience', 'index')->name('projects.admin.setting.audience.index');
+            Route::get('/projects/admin/setting/audience/list', 'list')->name('projects.admin.setting.audience.list');
+            Route::post('/projects/admin/setting/audience/update', 'update')->name('projects.admin.setting.audience.update');
+            Route::post('/projects/admin/setting/audience/store', 'store')->name('projects.admin.setting.audience.store');
+            Route::get('/projects/admin/setting/audience/edit/{id}', 'edit')->name('projects.admin.setting.audience.edit');
+            Route::delete('/projects/admin/setting/audience/delete/{id}', 'destroy')->name('projects.admin.setting.audience.delete');
+        });
+
+        //Venue route
+        Route::controller(AdminVenueController::class)->group(function () {
+            Route::get('/projects/admin/setting/venue', 'index')->name('projects.admin.setting.venue.index');
+            Route::get('/projects/admin/setting/venue/list', 'list')->name('projects.admin.setting.venue.list');
+            Route::post('/projects/admin/setting/venue/update', 'update')->name('projects.admin.setting.venue.update');
+            Route::post('/projects/admin/setting/venue/store', 'store')->name('projects.admin.setting.venue.store');
+            Route::get('/projects/admin/setting/venue/edit/{id}', 'edit')->name('projects.admin.setting.venue.edit');
+            Route::delete('/projects/admin/setting/venue/delete/{id}', 'destroy')->name('projects.admin.setting.venue.delete');
+        });
+
+
+        //Location  route
+        Route::controller(AdminLocationController::class)->group(function () {
+            Route::get('/projects/admin/setting/location', 'index')->name('projects.admin.setting.location.index');
+            Route::get('/projects/admin/setting/location/list', 'list')->name('projects.admin.setting.location.list');
+            Route::post('/projects/admin/setting/location/update', 'update')->name('projects.admin.setting.location.update');
+            Route::post('/projects/admin/setting/location/store', 'store')->name('projects.admin.setting.location.store');
+            Route::get('/projects/admin/setting/location/edit/{id}', 'edit')->name('projects.admin.setting.location.edit');
+            Route::delete('/projects/admin/setting/location/delete/{id}', 'destroy')->name('projects.admin.setting.location.delete');
+        });
+
+        //Project Type route
+        Route::controller(ProjectTypetController::class)->group(function () {
+            Route::get('/projects/admin/setting/projecttype', 'index')->name('projects.admin.setting.projecttype.index');
+            Route::get('/projects/admin/setting/projecttype/list', 'list')->name('projects.admin.setting.projecttype.list');
+            Route::post('/projects/admin/setting/projecttype/update', 'update')->name('projects.admin.setting.projecttype.update');
+            Route::post('/projects/admin/setting/projecttype/store', 'store')->name('projects.admin.setting.projecttype.store');
+            Route::get('/projects/admin/setting/projecttype/edit/{id}', 'edit')->name('projects.admin.setting.projecttype.edit');
+            Route::delete('/projects/admin/setting/projecttype/delete/{id}', 'destroy')->name('projects.admin.setting.projecttype.delete');
+        });
+
+        ////Department route
+        Route::controller(AdminSettingDepartmentController::class)->group(function () {
+            Route::get('/projects/admin/setting/departments', 'index')->name('projects.admin.setting.departments');
+        });
+
+        ////Functional Area route
+        Route::controller(AdminSettingFunctionalAreaController::class)->group(function () {
+            Route::get('/projects/admin/setting/funcareas', 'index')->name('projects.admin.setting.funcareas');
+        });
     });
+
+
 
     // HRMS ******************************************************************** Admin All Route
     Route::middleware(['auth', 'otp', 'XssSanitizer', 'role:SuperAdmin|HRMSADMIN', 'roles:admin', 'prevent-back-history', 'auth.session'])->group(function () {
@@ -758,18 +832,18 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
 
         //************************************ Setup Methods *************************************************** */
         // Event Category
-        Route::get('/tracki/setup/category-list', [SetupController::class, 'catEvent'])->name('tracki.setup.category');
-        Route::post('updatecat', [SetupController::class, 'updateEventCategory'])->name('tracki.setup.category.update');
-        Route::post('createcat', [SetupController::class, 'createEventCategory'])->name('tracki.setup.category.create');
-        Route::get('/tracki/setup/category/{id}/edit', [SetupController::class, 'editCategory'])->name('tracki.setup.category.show.edit');
-        Route::get('/tracki/setup/category/{id}/delete', [SetupController::class, 'deleteCategory'])->name('tracki.setup.category.delete');
+        // Route::get('/tracki/setup/category-list', [SetupController::class, 'catEvent'])->name('tracki.setup.category');
+        // Route::post('updatecat', [SetupController::class, 'updateEventCategory'])->name('tracki.setup.category.update');
+        // Route::post('createcat', [SetupController::class, 'createEventCategory'])->name('tracki.setup.category.create');
+        // Route::get('/tracki/setup/category/{id}/edit', [SetupController::class, 'editCategory'])->name('tracki.setup.category.show.edit');
+        // Route::get('/tracki/setup/category/{id}/delete', [SetupController::class, 'deleteCategory'])->name('tracki.setup.category.delete');
 
-        // Event Audience
-        Route::get('/tracki/setup/audience-list', [SetupController::class, 'eventAudience'])->name('tracki.setup.audience');
-        Route::post('updateaudience', [SetupController::class, 'updateAudience'])->name('tracki.setup.audience.update');
-        Route::post('createaudience', [SetupController::class, 'createAudience'])->name('tracki.setup.audience.create');
-        Route::get('/tracki/setup/audience/{id}/edit', [SetupController::class, 'editAudience'])->name('tracki.setup.audience.show.edit');
-        Route::get('/tracki/setup/audience/{id}/delete', [SetupController::class, 'deleteAudience'])->name('tracki.setup.audience.delete');
+        // // Event Audience
+        // Route::get('/tracki/setup/audience-list', [SetupController::class, 'eventAudience'])->name('tracki.setup.audience');
+        // Route::post('updateaudience', [SetupController::class, 'updateAudience'])->name('tracki.setup.audience.update');
+        // Route::post('createaudience', [SetupController::class, 'createAudience'])->name('tracki.setup.audience.create');
+        // Route::get('/tracki/setup/audience/{id}/edit', [SetupController::class, 'editAudience'])->name('tracki.setup.audience.show.edit');
+        // Route::get('/tracki/setup/audience/{id}/delete', [SetupController::class, 'deleteAudience'])->name('tracki.setup.audience.delete');
 
         // Event Planner
         Route::get('/tracki/setup/planner-list', [SetupController::class, 'eventPlanner'])->name('tracki.setup.planner');

@@ -316,6 +316,7 @@ class EmployeeController extends Controller
             $message = 'Employee created .' . $op->id;
 
             $op->employee_number = 'ABC' . $op->id;
+            $op->user_id = $id;
             $op->national_identifier_number = $request->national_identifier_number;
             $op->passport_number = $request->passport_number;
             $op->salutation = $request->salutation;

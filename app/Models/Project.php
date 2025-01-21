@@ -42,27 +42,32 @@ class Project extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, 'event_tag');
+        return $this->belongsToMany(Tag::class, 'project_tag');
     }
 
-    public function notes()
+    public function functional_areas()
     {
-        return $this->hasMany(EventNote::class, 'event_id', 'id');
-    }
-
-    public function files()
-    {
-        return $this->hasMany(FileUpload::class, 'event_id', 'id');
+        return $this->belongsToMany(FunctionalArea::class, 'project_funtional_area', 'project_id', 'functional_area_id');
     }
 
     public function venues()
     {
-        return $this->belongsTo(Venue::class, 'venue_id', 'id');
+        return $this->belongsToMany(Venue::class, 'project_venue', 'project_id', 'venue_id');
+    }
+
+    public function notes()
+    {
+        return $this->hasMany(ProjectNote::class, 'project_id', 'id');
+    }
+
+    public function files()
+    {
+        return $this->hasMany(ProjectFileUpload::class, 'project_id', 'id');
     }
 
     public function locations()
     {
-        return $this->belongsTo(Location::class, 'location_id', 'id');
+        return $this->belongsTo(EventLocation::class, 'location_id', 'id');
     }
 
     public function categories()

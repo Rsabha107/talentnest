@@ -22,10 +22,11 @@
                 <h2 class="mb-0">{{ $projectData->name }}</h2>
             </div>
             <div class="col-12 col-md-auto d-flex">
-                <button class="btn btn-phoenix-secondary px-3 px-sm-5 me-2"><span
-                        class="fa-solid fa-edit me-sm-2"></span><span class="d-none d-sm-inline">Edit </span></button>
+                <a href="javascript:void(0);" id="edit_project" data-id="{{ $projectData->id }}"
+                    class="btn btn-phoenix-secondary px-3 px-sm-5 me-2"><span class="fa-solid fa-edit me-sm-2"></span><span
+                        class="d-none d-sm-inline">Edit </span></a>
                 <button class="btn btn-phoenix-danger me-2"><span class="fa-solid fa-trash me-2"></span><span>Delete
-                        Deal</span></button>
+                        Project</span></button>
                 <div>
                     <button class="btn px-3 btn-phoenix-secondary" type="button" data-bs-toggle="dropdown"
                         data-boundary="window" aria-haspopup="true" aria-expanded="false" data-bs-reference="parent"><span
@@ -41,8 +42,8 @@
         </div>
 
         <div class="col-xl-12 col-xxl-12">
-            <ul class="nav nav-underline deal-details scrollbar flex-nowrap w-100 pb-1 mb-3 bg-success bg-opacity-10" id="myTab"
-                role="tablist" style="overflow-y: hidden;">
+            <ul class="nav nav-underline deal-details scrollbar flex-nowrap w-100 pb-1 mb-3 bg-success bg-opacity-10"
+                id="myTab" role="tablist" style="overflow-y: hidden;">
                 <li class="nav-item text-nowrap me-2" role="presentation"><a class="nav-link active" id="project-tab"
                         data-bs-toggle="tab" href="#tab-project" role="tab" aria-controls="tab-project"
                         aria-selected="false" tabindex="-1"> <span
@@ -70,106 +71,6 @@
                 <div class="tab-pane fade active show" id="tab-project" role="tabpanel" aria-labelledby="project-tab">
                     <div class="pb-9">
                         <div class="row g-4 g-xl-6">
-                            <div class="col-xl-7 col-xxl-9">
-                                <div class="card mb-3">
-                                    <!-- <img class="card-img-top" src="../../../assets/img//generic/66.jpg" alt="..." /> -->
-                                    <div class="card-body">
-                                        <h4 class="card-title">Brief</h4>
-                                        <!-- <p class="card-text">Here is the example of the Multiple Container Sortable feature of the </p> -->
-                                        <p class="card-text text-body-secondary mb-4">
-                                            {{ strip_tags($projectData->description) }}</p>
-                                    </div>
-                                </div>
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-2 row-cols-xxl-2 g-3 mb-3">
-                                    <div class="col">
-                                        <div class="card h-100 ">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center mb-3">
-                                                    <h4 class="fw-bolder mb-2 line-clamp-1 mb-1">Project Information</h4>
-                                                    <button class="btn btn-link p-0">
-                                                        <a href="javascript:void(0);" id="add_edit_project"
-                                                            data-action="update" data-source="list" data-type="edit"
-                                                            data-table="none" data-id="{{ $projectData->id }}"
-                                                            data-redirect="list"
-                                                            data-workspace_id="{{ session()->get('workspace_id') }}"
-                                                            role="button" title="edit">
-                                                            <span class="fas fa-pen fs-8 ms-3 text-body-quaternary"></span>
-                                                        </a>
-                                                    </button>
-                                                </div>
-
-                                                <div class="col-12 col-sm-auto flex-1">
-                                                    <table class="lh-sm">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
-                                                                    Location : </td>
-                                                                <td
-                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
-                                                                    {{ $projectData->locations?->name ? $projectData->locations?->name : 'not specified' }}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
-                                                                    Venue : </td>
-                                                                <td
-                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
-                                                                    {{ $projectData->venues?->name ? $projectData->venues?->name : 'not specified' }}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
-                                                                    Project Type :</td>
-                                                                <td
-                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
-                                                                    {{ $projectData->types?->name ? $projectData->types?->name : 'not specified' }}
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
-                                                                    Project Category :</td>
-                                                                <td class="text-warning fw-semibold ps-3">
-                                                                    {{ $projectData->categories?->name ? $projectData->categories?->name : 'not specified' }}
-                                                                </td>
-                                                            </tr>
-                                                            <tr class="mb-3">
-                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
-                                                                    Attendeese :</td>
-                                                                <td
-                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
-                                                                    {{ $projectData->audiences?->name ? $projectData->audiences?->name : 'not specified' }}
-                                                                </td>
-                                                            </tr>
-                                                            <!-- <tr>
-                                                    <td>
-                                                        <div class="d-flex align-items-center mt-3"><span class="fa-solid fa-list-check me-2 text-body-tertiary fs-9"></span>
-                                                            <h5 class="text-body-emphasis mb-0 me-2">{{ $projectData->tasks->count() }}<span class="text-body fw-normal ms-2">tasks</span></h5>
-                                                        </div>
-                                                    </td>
-                                                </tr> -->
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="card h-100 ">
-                                            <div class="card-body">
-                                                <div class="d-flex align-items-center mb-3">
-                                                    <h4 class="fw-bolder mb-2 line-clamp-1 mb-1">Task status
-                                                        ({{ $projectData->tasks->count() }} tasks)</h4>
-                                                </div>
-
-                                                <div class="col-12 col-sm-auto flex-1">
-                                                    <div class="echart-pie-edge-align-chart-example"
-                                                        style="min-height:200px;width:100%"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="col-xl-5 col-xxl-3">
                                 <div class="sticky-leads-sidebar">
                                     <div class="card mb-3">
@@ -179,7 +80,7 @@
                                                     <div class="d-flex align-items-center mb-3">
                                                         <h4 class="fw-bolder mb-2 line-clamp-1 mb-1">Project Details</h4>
                                                         <button class="btn btn-link p-0">
-                                                            <a href="javascript:void(0);" id="add_edit_project"
+                                                            <a href="javascript:void(0);" id="edit_project"
                                                                 data-action="update" data-source="list" data-type="edit"
                                                                 data-table="none" data-id="{{ $projectData->id }}"
                                                                 data-redirect="list"
@@ -203,7 +104,8 @@
                                                             <div class="d-flex justify-content-between">
                                                                 <p class="text-body fw-semibold">Budget :</p>
                                                                 <p class="text-body-emphasis fw-semibold">
-                                                                    {{ number_format($projectData->budget_allocation) }}</p>
+                                                                    {{ number_format($projectData->budget_allocation) }}
+                                                                </p>
                                                             </div>
                                                             <div class="d-flex justify-content-between">
                                                                 <p class="text-body fw-semibold">Used :</p>
@@ -293,8 +195,8 @@
                                                                     style="background-color:{{ $item->color }};">{{ $item->title }}</span>
                                                             @endforeach
                                                             <!-- <span class="badge badge-phoenix badge-phoenix-success me-2">Success</span>
-                                                <span class="badge badge-phoenix badge-phoenix-danger me-2">Lost</span>
-                                                <span class="badge badge-phoenix badge-phoenix-secondary">Close</span> -->
+                                                    <span class="badge badge-phoenix badge-phoenix-danger me-2">Lost</span>
+                                                    <span class="badge badge-phoenix badge-phoenix-secondary">Close</span> -->
                                                         </div>
                                                     </div>
                                                     <div
@@ -319,7 +221,7 @@
                                                 @if (Auth::user()->can('project.edit'))
                                                     <div class="float-end avatar avatar-m  me-1">
                                                         <a class="dropdown-toggle dropdown-caret-none d-inline-block"
-                                                            href="javascript:void(0);" id="add_edit_project"
+                                                            href="javascript:void(0);" id="edit_project"
                                                             data-action="update" data-source="list" data-type="edit"
                                                             data-table="none" data-id="{{ $projectData->id }}"
                                                             data-redirect="list"
@@ -327,7 +229,8 @@
                                                             role="button" title="add">
                                                             <div class="avatar avatar-m  rounded-circle pull-up">
                                                                 <div class="avatar-name rounded-circle me-2 text-warning">
-                                                                    <span>+</span></div>
+                                                                    <span>+</span>
+                                                                </div>
                                                                 <!-- <img class="rounded-circle " src="../../assets/img/team/34.webp" alt=""> -->
                                                             </div>
                                                         </a>
@@ -337,41 +240,41 @@
                                             <div class="row g-3">
                                                 <div class="col-12">
 
-                                                    @foreach ($projectData->employees as $key => $user)
-                                                        @if ($user->emp_files?->file_path)
+                                                    @foreach ($projectData->employees as $key => $emp)
+                                                        @if ($emp->emp_files?->file_path)
                                                             <div class="d-flex align-items-center mb-3"><a href="#!"
-                                                                    role="button" title="{{ $user->full_name }}">
+                                                                    role="button" title="{{ $emp->full_name }}">
                                                                     <div class="avatar avatar-xl me-3 pull-up"><img
                                                                             class="rounded-circle"
-                                                                            src="{{ $user->emp_files->file_path }}{{ $user->emp_files->file_name }}"
+                                                                            src="{{ $emp->emp_files->file_path }}{{ $emp->emp_files->file_name }}"
                                                                             alt="" />
                                                                     </div>
                                                                 </a>
                                                                 <div><a class="fs-8 fw-bold"
-                                                                        href="#!">{{ $user->full_name }}</a>
+                                                                        href="#!">{{ $emp->full_name }}</a>
                                                                     <div class="d-flex align-items-center">
                                                                         <p
                                                                             class="mb-0 text-body-highlight fw-semibold fs-9 me-2">
-                                                                            VP Accounting</p>
+                                                                            {{ $emp->designation->name }}</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         @else
                                                             <div class="d-flex align-items-center mb-3"><a href="#!"
-                                                                    role="button" title="{{ $user->full_name }}">
+                                                                    role="button" title="{{ $emp->full_name }}">
                                                                     <div
                                                                         class="avatar avatar-xl me-3 rounded-circle pull-up">
                                                                         <div class="avatar-name rounded-circle me-2">
-                                                                            <span>{{ generateInitials($user->full_name) }}</span>
+                                                                            <span>{{ generateInitials($emp->full_name) }}</span>
                                                                         </div>
                                                                     </div>
                                                                 </a>
                                                                 <div><a class="fs-8 fw-bold"
-                                                                        href="#!">{{ $user->full_name }}</a>
+                                                                        href="#!">{{ $emp->full_name }}</a>
                                                                     <div class="d-flex align-items-center">
                                                                         <p
                                                                             class="mb-0 text-body-highlight fw-semibold fs-9 me-2">
-                                                                            VP Accounting</p>
+                                                                            {{ $emp->designation->name }}</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -383,6 +286,325 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xl-7 col-xxl-9">
+                                <div class="card mb-3">
+                                    <!-- <img class="card-img-top" src="../../../assets/img//generic/66.jpg" alt="..." /> -->
+                                    <div class="card-body">
+                                        <h4 class="card-title">Brief</h4>
+                                        <!-- <p class="card-text">Here is the example of the Multiple Container Sortable feature of the </p> -->
+                                        <p class="card-text text-body-secondary mb-4">
+                                            {{ strip_tags($projectData->description) }}</p>
+                                    </div>
+                                </div>
+                                <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-2 row-cols-xxl-2 g-3 mb-3">
+                                    <div class="col">
+                                        <div class="card h-100 ">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <h4 class="fw-bolder mb-2 line-clamp-1 mb-1">Project Information</h4>
+                                                    <button class="btn btn-link p-0">
+                                                        <a href="javascript:void(0);" id="edit_project"
+                                                            data-action="update" data-source="list" data-type="edit"
+                                                            data-table="none" data-id="{{ $projectData->id }}"
+                                                            data-redirect="list"
+                                                            data-workspace_id="{{ session()->get('workspace_id') }}"
+                                                            role="button" title="edit">
+                                                            <span class="fas fa-pen fs-8 ms-3 text-body-quaternary"></span>
+                                                        </a>
+                                                    </button>
+                                                </div>
+
+                                                <div class="col-12 col-sm-auto flex-1">
+                                                    <table class="lh-sm">
+                                                        <tbody>
+                                                            <tr>
+                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                    Location : </td>
+                                                                <td
+                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                    {{ $projectData->locations?->name ? $projectData->locations?->name : 'not specified' }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                    Venue : </td>
+                                                                <td
+                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                    @foreach ($projectData->venues as $key => $item)
+                                                                        <span class="badge badge-tag me-2 mb-1 pull-up"
+                                                                            style="background-color:#bedc65;">{{ $item->name }}</span>
+                                                                    @endforeach
+                                                                    {{-- {{ $projectData->venues?->name ? $projectData->venues?->name : 'not specified' }} --}}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                    Project Type :</td>
+                                                                <td
+                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                    {{ $projectData->types?->name ? $projectData->types?->name : 'not specified' }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                    Project Category :</td>
+                                                                <td class="text-warning fw-semibold ps-3">
+                                                                    {{ $projectData->categories?->name ? $projectData->categories?->name : 'not specified' }}
+                                                                </td>
+                                                            </tr>
+                                                            <tr class="mb-3">
+                                                                <td class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                    Attendeese :</td>
+                                                                <td
+                                                                    class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                    {{ $projectData->audiences?->name ? $projectData->audiences?->name : 'not specified' }}
+                                                                </td>
+                                                            </tr>
+                                                            <!-- <tr>
+                                                        <td>
+                                                            <div class="d-flex align-items-center mt-3"><span class="fa-solid fa-list-check me-2 text-body-tertiary fs-9"></span>
+                                                                <h5 class="text-body-emphasis mb-0 me-2">{{ $projectData->tasks->count() }}<span class="text-body fw-normal ms-2">tasks</span></h5>
+                                                            </div>
+                                                        </td>
+                                                    </tr> -->
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="card h-100 ">
+                                            <div class="card-body">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <h4 class="fw-bolder mb-2 line-clamp-1 mb-1">Task status
+                                                        ({{ $projectData->tasks->count() }} tasks)</h4>
+                                                </div>
+
+                                                <div class="col-12 col-sm-auto flex-1">
+                                                    <div class="echart-pie-edge-align-chart-example"
+                                                        style="min-height:200px;width:100%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {{-- <div class="col-xl-5 col-xxl-3">
+                                <div class="sticky-leads-sidebar">
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <div class="row align-items-center g-3">
+                                                <div class="col-12 col-sm-auto flex-1">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <h4 class="fw-bolder mb-2 line-clamp-1 mb-1">Project Details</h4>
+                                                        <button class="btn btn-link p-0">
+                                                            <a href="javascript:void(0);" id="edit_project"
+                                                                data-action="update" data-source="list" data-type="edit"
+                                                                data-table="none" data-id="{{ $projectData->id }}"
+                                                                data-redirect="list"
+                                                                data-workspace_id="{{ session()->get('workspace_id') }}"
+                                                                role="button" title="edit">
+                                                                <span
+                                                                    class="fas fa-pen fs-8 ms-3 text-body-quaternary"></span>
+                                                            </a>
+                                                        </button>
+                                                    </div>
+                                                    <span class="badge badge-phoenix badge-phoenix-warning" role="button"
+                                                        data-bs-toggle="tooltip" data-bs-placement="left"
+                                                        title="Workspace">{{ $projectData->workspaces?->title }}<span
+                                                            class="ms-1 fa-solid fas fa-network-wired"></span></span>
+                                                    <span
+                                                        class="badge badge-phoenix badge-phoenix-{{ $projectData->status->color }} mb-4">{{ $projectData->status->title }}<span
+                                                            class="ms-1 uil uil-stopwatch"></span></span>
+
+                                                    <div class="align-items-center mb-4">
+                                                        <div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <p class="text-body fw-semibold">Budget :</p>
+                                                                <p class="text-body-emphasis fw-semibold">
+                                                                    {{ number_format($projectData->budget_allocation) }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <p class="text-body fw-semibold">Used :</p>
+                                                                <p class="text-danger fw-semibold">
+                                                                    {{ number_format($projectData->budget_allocation - $remainingBudget) }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <p class="text-body fw-semibold">Remaining :</p>
+                                                                <p class="text-body-emphasis fw-semibold">
+                                                                    {{ number_format($remainingBudget) }}</p>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <p class="text-body fw-semibold">Created :</p>
+                                                                <p class="text-body-emphasis fw-semibold">
+                                                                    {{ \Carbon\Carbon::parse($projectData->start_date)->format('d-M-Y') }}
+                                                                </p>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between">
+                                                                <p class="text-body fw-semibold">Deadline :</p>
+                                                                <p class="text-body-emphasis fw-semibold">
+                                                                    {{ \Carbon\Carbon::parse($projectData->end_date)->format('d-M-Y') }}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="d-md-flex d-xl-block align-items-center justify-content-between mb-5">
+                                                        <div class="d-flex align-items-center mb-3 mb-md-0 mb-xl-3">
+                                                            <div class="avatar avatar-xl me-3"><img class="rounded-circle"
+                                                                    src="{{ asset('fnx/assets/img/team/72x72/58.webp') }}"
+                                                                    alt="" /></div>
+                                                            <div>
+                                                                <h5>{{ $projectData->clients->pluck('first_name')->first() . ' ' . $projectData->clients->pluck('last_name')->first() }}
+                                                                </h5>
+                                                                <div class="dropdown"><a
+                                                                        class="text-body-secondary dropdown-toggle text-decoration-none dropdown-caret-none"
+                                                                        href="#!" data-bs-toggle="dropdown"
+                                                                        aria-expanded="false">
+                                                                        Client<span
+                                                                            class="fa-solid fa-caret-down text-body-secondary fs-9 ms-2"></span></a>
+                                                                    <div class="dropdown-menu shadow-sm"
+                                                                        style="min-width:20rem">
+                                                                        <div class="card position-relative border-0">
+                                                                            <div class="card-body p-0">
+                                                                                <div class="mx-3">
+                                                                                    <form id="switchClientOwner"
+                                                                                        class="needs-validation"
+                                                                                        novalidate="" action="#"
+                                                                                        method="POST">
+                                                                                        <h4 class="mb-3 fw-bold">Switch
+                                                                                            ownership</h4>
+                                                                                        <h5 class="mb-3">Project Client
+                                                                                        </h5>
+                                                                                        <select class="form-select mb-3"
+                                                                                            id="project_client_owner_id"
+                                                                                            aria-label="Default select"
+                                                                                            name="project_client_owner">
+                                                                                            <option selected="selected">
+                                                                                                Select</option>
+                                                                                            @foreach ($clients as $key => $client)
+                                                                                                <option
+                                                                                                    value="{{ $client->id }}">
+                                                                                                    {{ $client->first_name . ' ' . $client->last_name }}
+                                                                                                </option>
+                                                                                            @endforeach
+                                                                                        </select>
+                                                                                        <div class="text-end">
+                                                                                            <button
+                                                                                                class="btn btn-link text-danger"
+                                                                                                type="button">Cancel</button>
+                                                                                            <button
+                                                                                                class="btn btn-sm btn-primary px-5"
+                                                                                                type="submit">Save</button>
+                                                                                        </div>
+                                                                                    </form>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div>
+                                                            @foreach ($projectData->tags as $key => $item)
+                                                                <span class="badge badge-tag me-2 mb-1 pull-up"
+                                                                    style="background-color:{{ $item->color }};">{{ $item->title }}</span>
+                                                            @endforeach
+                                                            <!-- <span class="badge badge-phoenix badge-phoenix-success me-2">Success</span>
+                                                    <span class="badge badge-phoenix badge-phoenix-danger me-2">Lost</span>
+                                                    <span class="badge badge-phoenix badge-phoenix-secondary">Close</span> -->
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        class="d-flex justify-content-between text-body-tertiary fw-semibold">
+                                                        <p class="mb-2"> Progress</p>
+                                                        <p class="mb-2 text-1100">{{ $project_progress }}%</p>
+                                                    </div>
+                                                    <div class="progress bg-success-100">
+                                                        <div class="progress-bar rounded bg-{{ $projectData->status->color }}"
+                                                            role="progressbar" aria-label="Success example"
+                                                            style="width: {{ $project_progress }}%" aria-valuenow="25"
+                                                            aria-valuemin="0" aria-valuemax="100"></div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h4 class="fw-bolder mb-2 line-clamp-1 mb-5">Assigned Users
+                                                @if (Auth::user()->can('project.edit'))
+                                                    <div class="float-end avatar avatar-m  me-1">
+                                                        <a class="dropdown-toggle dropdown-caret-none d-inline-block"
+                                                            href="javascript:void(0);" id="edit_project"
+                                                            data-action="update" data-source="list" data-type="edit"
+                                                            data-table="none" data-id="{{ $projectData->id }}"
+                                                            data-redirect="list"
+                                                            data-workspace_id="{{ session()->get('workspace_id') }}"
+                                                            role="button" title="add">
+                                                            <div class="avatar avatar-m  rounded-circle pull-up">
+                                                                <div class="avatar-name rounded-circle me-2 text-warning">
+                                                                    <span>+</span>
+                                                                </div>
+                                                                <!-- <img class="rounded-circle " src="../../assets/img/team/34.webp" alt=""> -->
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                @endif
+                                            </h4>
+                                            <div class="row g-3">
+                                                <div class="col-12">
+
+                                                    @foreach ($projectData->employees as $key => $emp)
+                                                        @if ($emp->emp_files?->file_path)
+                                                            <div class="d-flex align-items-center mb-3"><a href="#!"
+                                                                    role="button" title="{{ $emp->full_name }}">
+                                                                    <div class="avatar avatar-xl me-3 pull-up"><img
+                                                                            class="rounded-circle"
+                                                                            src="{{ $emp->emp_files->file_path }}{{ $emp->emp_files->file_name }}"
+                                                                            alt="" />
+                                                                    </div>
+                                                                </a>
+                                                                <div><a class="fs-8 fw-bold"
+                                                                        href="#!">{{ $emp->full_name }}</a>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <p
+                                                                            class="mb-0 text-body-highlight fw-semibold fs-9 me-2">
+                                                                            {{ $emp->designation->name }}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="d-flex align-items-center mb-3"><a href="#!"
+                                                                    role="button" title="{{ $emp->full_name }}">
+                                                                    <div
+                                                                        class="avatar avatar-xl me-3 rounded-circle pull-up">
+                                                                        <div class="avatar-name rounded-circle me-2">
+                                                                            <span>{{ generateInitials($emp->full_name) }}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </a>
+                                                                <div><a class="fs-8 fw-bold"
+                                                                        href="#!">{{ $emp->full_name }}</a>
+                                                                    <div class="d-flex align-items-center">
+                                                                        <p
+                                                                            class="mb-0 text-body-highlight fw-semibold fs-9 me-2">
+                                                                            {{ $emp->designation->name }}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
                         </div>
                     </div>
                 </div>
@@ -558,7 +780,7 @@
                                                     <tr class="hover-actions-trigger btn-reveal-trigger position-static">
                                                         <!-- <td class="align-middle time white-space-nowrap ps-0 projectName py-4"><a class="fw-bold fs-0" href="#"> {{ $item->name }}</a></td> -->
                                                         <!-- <td class="align-middle time white-space-nowrap ps-0 projectName py-4"><a class="fw-bold fs-0 ms-5" href="#!">{{ $item->first_name }}&nbsp;{{ $item->last_name }}</a>
-                                                            </td> -->
+                                                                </td> -->
                                                         <td class="customer align-middle white-space-nowrap ps-2"><a
                                                                 class="d-flex align-items-center text-900" href="#!">
                                                                 <div class="avatar avatar-m">
@@ -671,13 +893,13 @@
                                                 </div>
                                             </div>
                                             <!-- <div class="mb-4">
-                                            <label class="text-1000 fw-bold mb-2">Status</label>
-                                            <select class="form-select" name="active_flag" id="activeFlag" required>
-                                                <option value="" >Select</option>
-                                                <option value="1" selected>Active</option>
-                                                <option value="2">Inactive</option>
-                                            </select>
-                                        </div> -->
+                                                <label class="text-1000 fw-bold mb-2">Status</label>
+                                                <select class="form-select" name="active_flag" id="activeFlag" required>
+                                                    <option value="" >Select</option>
+                                                    <option value="1" selected>Active</option>
+                                                    <option value="2">Inactive</option>
+                                                </select>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -715,13 +937,13 @@
                                                     name="prorgress_number" id="editPoregessNumber" required />
                                             </div>
                                             <!-- <div class="mb-4">
-                                            <label class="text-1000 fw-bold mb-2">Status</label>
-                                            <select class="form-select" name="active_flag" id="activeFlag" required>
-                                                <option value="" >Select</option>
-                                                <option value="1" selected>Active</option>
-                                                <option value="2">Inactive</option>
-                                            </select>
-                                        </div> -->
+                                                <label class="text-1000 fw-bold mb-2">Status</label>
+                                                <select class="form-select" name="active_flag" id="activeFlag" required>
+                                                    <option value="" >Select</option>
+                                                    <option value="1" selected>Active</option>
+                                                    <option value="2">Inactive</option>
+                                                </select>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -760,13 +982,13 @@
 
                                             </div>
                                             <!-- <div class="mb-4">
-                                            <label class="text-1000 fw-bold mb-2">Status</label>
-                                            <select class="form-select" name="active_flag" id="activeFlag" required>
-                                                <option value="" >Select</option>
-                                                <option value="1" selected>Active</option>
-                                                <option value="2">Inactive</option>
-                                            </select>
-                                        </div> -->
+                                                <label class="text-1000 fw-bold mb-2">Status</label>
+                                                <select class="form-select" name="active_flag" id="activeFlag" required>
+                                                    <option value="" >Select</option>
+                                                    <option value="1" selected>Active</option>
+                                                    <option value="2">Inactive</option>
+                                                </select>
+                                            </div> -->
                                         </div>
                                     </div>
                                 </div>

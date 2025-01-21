@@ -19,15 +19,15 @@
         <div class="col-12 col-sm-auto">
             <div class="btn-group position-static" role="group">
                 <div class="py-0 me-2">
-                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none">
-                        <option value="" selected>Filter by Workspace .... </option>
-                        @foreach ($workspaces as $key => $item)
-                            <option value="{{ $item->id }}">{{ $item->title }}</option>
+                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none" id="project_filter">
+                        <option value="" selected>Filter by Event .... </option>
+                        @foreach ($project_data as $key => $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
                         @endforeach
                     </select>
                 </div>
                 <div class="py-0 me-2">
-                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none">
+                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none" id="project_status_filter">
                         <option value="" selected>Filter by Status .... </option>
                         @foreach ($project_status as $key => $item)
                             <option value="{{ $item->id }}">{{ $item->title }}</option>
@@ -35,8 +35,16 @@
                     </select>
                 </div>
                 <div class="py-0">
-                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none">
-                        <option value="" selected>Venue</option>
+                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none" id="project_venue_filter">
+                        <option value="" selected>Filter by venue</option>
+                        @foreach ($event_venue as $key => $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="py-0">
+                    <select class="form-select form-select-sm py-2 ms-n2 border-0 shadow-none" id="project_venue_filter">
+                        <option value="" selected>Filter by Functional Area</option>
                         @foreach ($event_venue as $key => $item)
                             <option value="{{ $item->id }}">{{ $item->name }}</option>
                         @endforeach

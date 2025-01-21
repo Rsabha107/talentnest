@@ -17,7 +17,6 @@ class DepartmentController extends Controller
     public function index()
     {
         $departments = Department::all();
-
         return view('hr.admin.setting.department.list', compact('departments'));
     }
 
@@ -50,7 +49,7 @@ class DepartmentController extends Controller
             $message = 'Department created.';
 
             $op->name = $request->name;
-            $op->parent_id = $request->parent_id;
+            $op->parent_id = intval($request->parent_id);
             $op->save();
         }
 

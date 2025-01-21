@@ -42,7 +42,7 @@
                         <th data-sortable="true" data-field="client"><?= get_label('client', 'Client') ?></th>
                         <th data-sortable="true" data-field="budget"><?= get_label('budget', 'Budget') ?></th>
                         <th data-sortable="true" data-field="balance"><?= get_label('balance', 'Balance') ?></th>
-                        <th data-sortable="true" data-field="progress"><?= get_label('progress', 'Progress') ?></th>
+                        <th data-sortable="true" data-field="progress_bar"><?= get_label('progress', 'Progress') ?></th>
                         <th data-sortable="true" data-field="start_date"><?= get_label('start_date', 'Start Date') ?></th>
                         <th data-sortable="true" data-field="end_date"><?= get_label('end_date', 'End Date') ?></th>
                         <th data-sortable="true" data-field="assigned_to"><?= get_label('assigned_to', 'Assigned To') ?></th>
@@ -75,13 +75,13 @@
                                     <div class="dropdown-menu dropdown-menu-end py-2">
                                         @if (Auth::user()->can('project.edit'))
                                             <a class="dropdown-item" href="javascript:void(0);" id="edit_project"
-                                                data-action="update" data-source="list" data-type="edit"
-                                                data-table="none" data-id="%PROJECTID%" data-redirect="card"
+                                            data-table="project_table" data-id="%PROJECTID%" data-redirect="card"
                                                 data-workspace_id="{{ session()->get('workspace_id') }}">Edit</a>
                                         @endif
                                         @if (Auth::user()->can('project.delete'))
-                                            <a class="dropdown-item text-danger" href="#!" id="delete"
-                                                data-id="" title="Delete" class="card-link">Delete</a>
+                                            %CARDDELRESTDIV%
+                                            <!-- <a class="dropdown-item text-danger" href="#!" id="delete_project"
+                                                data-id="%DELETEPROJECTID%" title="Delete" class="card-link">Delete</a> -->
                                         @endif
                                     </div>
 
