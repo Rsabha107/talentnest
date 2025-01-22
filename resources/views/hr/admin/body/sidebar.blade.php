@@ -136,12 +136,12 @@
                                     <!-- more inner pages-->
                                 </li>
                                 @if (Auth::user()->can('project.setting.menu'))
-                                {{-- <li class="nav-item">
+                                <li class="nav-item">
                                     <a
-                                        class="nav-link dropdown-indicator {{ Request::is('tracki/project/*') ? '' : 'collapsed' }}"
+                                        class="nav-link dropdown-indicator {{ Request::is('projects/admin/setting*') ? '' : 'collapsed' }}"
                                         href="#nv-settings"
                                         data-bs-toggle="collapse"
-                                        aria-expanded="{{ Request::is('tracki/project/*') ? 'true' : 'false' }}"
+                                        aria-expanded="{{ Request::is('projects/admin/setting*') ? 'true' : 'false' }}"
                                         aria-controls="nv-settings">
                                         <div class="d-flex align-items-center">
                                             <div class="dropdown-indicator-icon-wrapper">
@@ -154,31 +154,30 @@
                                     <!-- more inner pages-->
                                     <div class="parent-wrapper">
                                         <ul
-                                            class="nav collapse parent {{ Request::is('tracki/setup/*') ? 'show' : '' }}"
+                                            class="nav collapse parent {{ Request::is('projects/admin/setting*') ? 'show' : '' }}"
                                             data-bs-parent="#settings"
                                             id="nv-settings">
                                             <li class="nav-item">
                                                 <a
-                                                    class="nav-link {{ Request::is('tracki/setup/category-list') ? 'active' : '' }}"
-                                                    href="{{ route('tracki.setup.category') }}">
+                                                    class="nav-link {{ Request::is('projects/admin/setting/category') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.category.index') }}">
                                                     <div class="d-flex align-items-center">
-                                                        <span class="nav-link-text">Event category</span>
+                                                        <span class="nav-link-text">Category</span>
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->
                                             </li>
                                             <li class="nav-item">
                                                 <a
-                                                    class="nav-link {{ Request::is('tracki/setup/audience-list') ? 'active' : '' }}"
-                                                    href="{{ route('tracki.setup.audience') }}">
+                                                    class="nav-link {{ Request::is('projects/admin/setting/audience') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.audience.index') }}">
                                                     <div class="d-flex align-items-center">
                                                         <span class="nav-link-text">Audience</span>
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->
                                             </li>
-
-                                            <li class="nav-item">
+                                            {{-- <li class="nav-item">
                                                 <a
                                                     class="nav-link {{ Request::is('tracki/setup/planner-list') ? 'active' : '' }}"
                                                     href="{{ route('tracki.setup.planner') }}">
@@ -187,21 +186,21 @@
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->
-                                            </li>
+                                            </li> --}}
                                             <li class="nav-item">
                                                 <a
-                                                    class="nav-link {{ Request::is('tracki/setup/venue') ? 'active' : '' }}"
-                                                    href="{{ route('tracki.setup.venue') }}">
+                                                    class="nav-link {{ Request::is('projects/admin/setting/venue') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.venue.index') }}">
                                                     <div class="d-flex align-items-center">
                                                         <span class="nav-link-text">Venue</span>
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->
                                             </li>
-                                            <li class="nav-item">
+                                           <li class="nav-item">
                                                 <a
-                                                    class="nav-link {{ Request::is('tracki/setup/locations') ? 'active' : '' }}"
-                                                    href="{{ route('tracki.setup.locations') }}">
+                                                    class="nav-link {{ Request::is('projects/admin/setting/location') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.location.index') }}">
                                                     <div class="d-flex align-items-center">
                                                         <span class="nav-link-text">Location</span>
                                                     </div>
@@ -210,14 +209,35 @@
                                             </li>
                                             <li class="nav-item">
                                                 <a
-                                                    class="nav-link {{ Request::is('tracki/setting/departments') ? 'active' : '' }}"
-                                                    href="{{ route('tracki.setting.departments') }}">
+                                                    class="nav-link {{ Request::is('hr/admin/setting/departments')||Request::is('projects/admin/setting/departments') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.departments') }}">
                                                     <div class="d-flex align-items-center">
                                                         <span class="nav-link-text">Departments</span>
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->
                                             </li>
+                                            <li class="nav-item">
+                                                <a
+                                                    class="nav-link {{ Request::is('hr/admin/setting/funcareas')||Request::is('projects/admin/setting/funcareas') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.funcareas') }}">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="nav-link-text">Functional Area</span>
+                                                    </div>
+                                                </a>
+                                                <!-- more inner pages-->
+                                            </li>
+                                            <li class="nav-item">
+                                                <a
+                                                    class="nav-link {{ Request::is('projects/admin/setting/projecttype') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.projecttype.index') }}">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="nav-link-text">Project Type</span>
+                                                    </div>
+                                                </a>
+                                                <!-- more inner pages-->
+                                            </li>
+                                            {{--  
                                             <li class="nav-item">
                                                 <a
                                                     class="nav-link {{ Request::is('tracki/setup/priority/*') ? 'active' : '' }}"
@@ -250,16 +270,6 @@
                                             </li>
                                             <li class="nav-item">
                                                 <a
-                                                    class="nav-link {{ Request::is('tracki/setting/funcareas') ? 'active' : '' }}"
-                                                    href="{{ route('tracki.setting.funcareas') }}">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="nav-link-text">Functional Area</span>
-                                                    </div>
-                                                </a>
-                                                <!-- more inner pages-->
-                                            </li>
-                                            <li class="nav-item">
-                                                <a
                                                     class="nav-link {{ Request::is('tracki/setup/workspace') ? 'active' : '' }}"
                                                     href="{{ route('tracki.setup.workspace') }}">
                                                     <div class="d-flex align-items-center">
@@ -267,10 +277,10 @@
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->
-                                            </li>
+                                            </li> --}}
                                         </ul>
                                     </div>
-                                </li> --}}
+                                </li>
                                 @endif
                             </ul>
                         </div>
