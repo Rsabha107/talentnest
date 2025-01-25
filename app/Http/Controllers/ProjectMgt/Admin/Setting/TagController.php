@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\projectMgt\Admin\Setting;
 
 use App\Http\Controllers\Controller;
-use App\Models\EventCategory;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class CategoryController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-        return view('projects.admin.setting.category.index');
+        return view('projects.admin.setting.tag.index');
     }
 
     /**
@@ -26,13 +25,12 @@ class CategoryController extends Controller
         //
     }
 
-
     public function list()
     {
         $search = request('search');
         $sort = (request('sort')) ? request('sort') : "id";
         $order = (request('order')) ? request('order') : "DESC";
-        $op = EventCategory::orderBy($sort, $order);
+        $op = Tag::orderBy($sort, $order);
 
         // dd($op);
         if ($search) {
@@ -46,19 +44,20 @@ class CategoryController extends Controller
 
             $actions =
             '<div class="font-sans-serif btn-reveal-trigger position-static">' .
-            '<a href="javascript:void(0)" class="btn btn-sm" id="edit_project_category"  data-id=' .
+            '<a href="javascript:void(0)" class="btn btn-sm" id="edit_project_tag"  data-id=' .
             $op->id .
-            ' data-table="project_category_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Update">' .
+            ' data-table="project_tag_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Update">' .
             '<i class="fa-solid fa-pen-to-square text-primary"></i></a>' .
-            '<a href="javascript:void(0)" class="btn btn-sm" data-table="project_category_table" data-id="' .
+            '<a href="javascript:void(0)" class="btn btn-sm" data-table="project_tag_table" data-id="' .
             $op->id .
-            '" id="delete_project_category" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
+            '" id="delete_project_tag" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
             '<i class="bx bx-trash text-danger"></i></a></div></div>';
 
             return [
                 'id' => $op->id,
                 'id1' => '<div class="ms-3">' . $op->id . '</div>',
-                'name' => '<div class="align-middle white-space-wrap fw-bold fs-8 ms-3">' . $op->name . '</div>',
+                'name' => '<div class="align-middle white-space-wrap fw-bold fs-8 ms-3">' . $op->title . '</div>',
+                'color' => '<div class="align-middle white-space-wrap fw-bold fs-8 ms-3">' . $op->color . '</div>',
                 'active_flag' => '<span class="badge badge-phoenix badge-phoenix-' . $op->active_status->color . '">' . $op->active_status->name . '</span>',
                 'actions' => $actions,
                 'created_at' => format_date($op->created_at,  'H:i:s'),
@@ -72,6 +71,14 @@ class CategoryController extends Controller
         ]);
     }
 
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+            $tag = Tag::findOrFail($id);
+            return response()->json(['tag' => $tag]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -79,10 +86,10 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         // dd('mainEvent');
-        $op = new EventCategory();
+        $op = new Tag();
 
         $rules = [
-            'name' => 'required',
+            'title' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -97,16 +104,16 @@ class CategoryController extends Controller
         } else {
 
             $error = false;
-            $message = 'Category created.';
+            $message = 'Tag created successfully.';
 
-            $op->name = $request->name;
+            $op->title = $request->title;
+            $op->color = $request->color;
             $op->active_flag = $request->active_flag;
             $op->save();
         }
 
         return response()->json(['error' => $error, 'message' => $message]);
     }
-
     /**
      * Display the specified resource.
      */
@@ -115,14 +122,6 @@ class CategoryController extends Controller
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-            $category = EventCategory::findOrFail($id);
-            return response()->json(['category' => $category]);
-    }
 
     /**
      * Update the specified resource in storage.
@@ -131,7 +130,7 @@ class CategoryController extends Controller
     {
         $rules = [
             'id' => ['required'],
-            'name' => ['required'],
+            'title' => ['required'],
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -139,12 +138,13 @@ class CategoryController extends Controller
             $error = true;
             $message = implode($validator->errors()->all());
         } else {
-            $op = EventCategory::findOrFail($request->id);
+            $op = Tag::findOrFail($request->id);
 
             $error = false;
-            $message = 'Category updated successfully. '.$request->name;
+            $message = 'Tag updated successfully. '.$request->title;
 
-            $op->name = $request->name;
+            $op->title = $request->title;
+            $op->color = $request->color;
             $op->active_flag = $request->active_flag;
             $op->save();
         }
@@ -157,11 +157,11 @@ class CategoryController extends Controller
      */
     public function destroy(string $id)
     {
-        EventCategory::where('id', '=', $id)->delete();
+        Tag::where('id', '=', $id)->delete();
 
         return response()->json([
             'error' => false,
-            'message' => 'Category deleted successfully',
+            'message' => 'Tag deleted successfully',
         ]);
     }
 }

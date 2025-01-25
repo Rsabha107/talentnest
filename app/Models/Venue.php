@@ -20,6 +20,7 @@ class Venue extends Model
     public function projects()
     {
         return $this->belongsToMany(Project::class, 'project_venue', 'venue_id', 'project_id');
+        // return $this->belongsToMany(Project::class, 'project_venue', 'project_id', 'venue_id');
     }
 
     public function active_status()

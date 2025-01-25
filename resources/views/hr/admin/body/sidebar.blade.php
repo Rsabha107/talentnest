@@ -177,22 +177,22 @@
                                                 </a>
                                                 <!-- more inner pages-->
                                             </li>
-                                            {{-- <li class="nav-item">
-                                                <a
-                                                    class="nav-link {{ Request::is('tracki/setup/planner-list') ? 'active' : '' }}"
-                                                    href="{{ route('tracki.setup.planner') }}">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="nav-link-text">Planner</span>
-                                                    </div>
-                                                </a>
-                                                <!-- more inner pages-->
-                                            </li> --}}
                                             <li class="nav-item">
                                                 <a
                                                     class="nav-link {{ Request::is('projects/admin/setting/venue') ? 'active' : '' }}"
                                                     href="{{ route('projects.admin.setting.venue.index') }}">
                                                     <div class="d-flex align-items-center">
                                                         <span class="nav-link-text">Venue</span>
+                                                    </div>
+                                                </a>
+                                                <!-- more inner pages-->
+                                            </li>
+                                            <li class="nav-item">
+                                                <a
+                                                    class="nav-link {{ Request::is('projects/admin/setting/tag') ? 'active' : '' }}"
+                                                    href="{{ route('projects.admin.setting.tag.index') }}">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="nav-link-text">Tags</span>
                                                     </div>
                                                 </a>
                                                 <!-- more inner pages-->

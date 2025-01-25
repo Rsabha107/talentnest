@@ -38,6 +38,9 @@
     <link href="https://cdn.datatables.net/v/bs5/jq-3.7.0/jszip-3.10.1/dt-1.13.8/b-2.4.2/b-colvis-2.4.2/b-html5-2.4.2/b-print-2.4.2/r-2.5.0/rr-1.4.1/sc-2.3.0/sb-1.6.0/datatables.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.datatables.net/rowgroup/1.4.1/css/rowGroup.dataTables.min.css">
 
+    <link href="{{ asset('fnx/vendors/choices/choices.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('fnx/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
+    
     <link rel='stylesheet' href="{{ asset('assets/vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-table@1.22.4/dist/bootstrap-table.min.css" rel="stylesheet">
     <link rel='stylesheet' href="{{ asset('assets/vendors/fontawesome/5.8.1/css/all.min.css') }}">
@@ -67,9 +70,6 @@
 
     <link href="{{ asset('assets/tracki/css/pace.min.css') }}" rel="stylesheet">
     <script src="{{ asset('assets/jquery/dist/jquery-3.7.0.js') }}"></script>
-
-    <link href="{{ asset('fnx/vendors/choices/choices.min.css') }}" rel="stylesheet">
-    <link href="{{ asset('fnx/vendors/flatpickr/flatpickr.min.css') }}" rel="stylesheet">
 
     <link href="{{ asset('assets/vendors/select2/css/select2.css') }}" rel="stylesheet">
 
@@ -199,29 +199,29 @@
 
             // showing the offcanvas for the task creation
             // console.log('before select2-with-image')
-    $(".js-example-basic-multiple2").select2();
+    // $(".js-example-basic-multiple2").select2();
 
-            $('#statusSelect104').select2({
-                width: "100%",
-                templateSelection: iformat,
-                templateResult: iformat,
-                allowHtml: true
-            });
+            // $('#statusSelect104').select2({
+            //     width: "100%",
+            //     templateSelection: iformat,
+            //     templateResult: iformat,
+            //     allowHtml: true
+            // });
 
             // console.log(optionFormat)
 
             // console.log('after select2-with-image')
             // console.log('select2 ok')
-            $('.select2-with-image').select2({
+            // $('.select2-with-image').select2({
                 templateResult: iformat
             });
-            $('.js-example-templating').select2();
+            // $('.js-example-templating').select2();
             // $('.select2-with-image').select2({
             //     placeholder: "Select coin",
             // });
 
 
-        });
+        // });
 
         var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
         var popoverList = popoverTriggerList.map(function(popoverTriggerEl) {

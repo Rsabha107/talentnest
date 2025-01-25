@@ -105,6 +105,7 @@ use App\Http\Controllers\projectMgt\Admin\Setting\DepartmentController as AdminS
 use App\Http\Controllers\projectMgt\Admin\Setting\FunctionalAreaController as AdminSettingFunctionalAreaController;
 use App\Http\Controllers\projectMgt\Admin\Setting\LocationController as AdminLocationController;
 use App\Http\Controllers\projectMgt\Admin\Setting\ProjectTypetController;
+use App\Http\Controllers\projectMgt\Admin\Setting\TagController as AdminTagController;
 use App\Http\Controllers\projectMgt\Admin\Setting\VenueController as AdminVenueController;
 use App\Http\Controllers\ProjectMgt\Admin\TaskController as AdminTaskController;
 use App\Http\Controllers\RandomController;
@@ -207,6 +208,8 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
         // Projects Routes
         Route::controller(AdminProjectController::class)->group(function () {
             Route::get('/projects/admin/project/', 'index')->name('projects.admin.project')->middleware('permission:project.show');
+            Route::get('/projects/admin/project/create', 'create')->name('projects.admin.project.create')->middleware('permission:project.show');
+            Route::get('/projects/admin/project/duplicate/{id}', 'duplicate')->name('projects.admin.project.duplicate')->middleware('permission:project.show');
             Route::get('/projects/admin/project/list/{id?}', 'list')->name('projects.admin.project.list')->middleware('permission:project.show');
             Route::get('/projects/admin/project/employee/list/{id?}', 'employeeList')->name('projects.admin.employee.project.list')->middleware('permission:project.show');
             Route::get('/projects/admin/project/d/{id}', 'detail')->name('projects.admin.project.d')->middleware('permission:project.show');
@@ -216,6 +219,11 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::get('/projects/admin/project/get/{id}', 'getProject')->name('projects.admin.project.get');
             Route::get('/projects/admin/project/delete/{id}', 'delete')->name('projects.admin.project.delete')->middleware('permission:project.delete');
             Route::get('/projects/admin/project/restore/{id}', 'restore')->name('projects.admin.project.restore')->middleware('permission:project.delete');
+
+            Route::get('/projects/admin/project/member/list/{id?}', 'mlist')->name('projects.admin.project.member.list')->middleware('permission:project.show');
+            Route::get('/projects/admin/project/member/{pid}/delete/{id}', 'mdelete')->name('projects.admin.project.member.delete')->middleware('permission:project.delete');
+            Route::post('/projects/admin/project/member/update', 'mupdate')->name('projects.admin.project.member.update')->middleware('permission:project.delete');
+
         });
 
         // Tasks Routes
@@ -274,6 +282,16 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::post('/projects/admin/setting/audience/store', 'store')->name('projects.admin.setting.audience.store');
             Route::get('/projects/admin/setting/audience/edit/{id}', 'edit')->name('projects.admin.setting.audience.edit');
             Route::delete('/projects/admin/setting/audience/delete/{id}', 'destroy')->name('projects.admin.setting.audience.delete');
+        });
+
+        //Tag route
+        Route::controller(AdminTagController::class)->group(function () {
+            Route::get('/projects/admin/setting/tag', 'index')->name('projects.admin.setting.tag.index');
+            Route::get('/projects/admin/setting/tag/list', 'list')->name('projects.admin.setting.tag.list');
+            Route::post('/projects/admin/setting/tag/update', 'update')->name('projects.admin.setting.tag.update');
+            Route::post('/projects/admin/setting/tag/store', 'store')->name('projects.admin.setting.tag.store');
+            Route::get('/projects/admin/setting/tag/edit/{id}', 'edit')->name('projects.admin.setting.tag.edit');
+            Route::delete('/projects/admin/setting/tag/delete/{id}', 'destroy')->name('projects.admin.setting.tag.delete');
         });
 
         //Venue route

@@ -58,13 +58,59 @@
             </select>
         </div>
     </div>
+    <div class="mb-3 row">
+        <div class="col-md-6">
+            <label class="form-label" for="inputAddress">Venue</label>
+            <select name="venue_id" class="form-select" id="edit_task_venue" required>
+                <option selected="selected" value="">Select...</option>
+                @foreach ($event_venue as $key => $item )
+                @if ($task->venue_id == $item->id )
+                <option value="{{ $item->id  }}" selected>
+                    {{ $item->name }}
+                </option>
+                @else
+                <option value="{{ $item->id  }}">
+                    {{ $item->name }}
+                </option>
+                @endif
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="inputAddress">Functional Areas</label>
+            <select name="department_assignment_id" id="edit_task_department_id" class="form-select" id="floatingSelectRating" required>
+                <option selected="selected" value="">Select...</option>
+                @foreach ($functional_areas as $key => $item )
+                @if ($task->functional_area_id == $item->id )
+                <option value="{{ $item->id  }}" selected>
+                    {{ $item->name }}
+                </option>
+                @else
+                <option value="{{ $item->id  }}">
+                    {{ $item->name }}
+                </option>
+                @endif
+                @endforeach
+            </select>
+        </div>
+    </div>
     <div class="col-12 mb-2">
         <label class="form-label" for="inputAddress2">Assigned to (multiple)</label>
 
-        <select required class="form-select js-example-basic-multiple" id="edit_task_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('type_to_search', 'Type to search') ?>">
+        <select required class="form-select js-select-task-assign-multiple" id="edit_task_assigned_to" name="assignment_to_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('type_to_search', 'Type to search') ?>">
             <!-- <select name="assignment_to_id[]" class="form-select" data-choices="data-choices" size="1" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' id="floatingSelectRating" required> -->
             @foreach ($task->project->employees as $emp)
             <option value="{{ $emp->id }}">{{ $emp->full_name }}</option>
+            @endforeach
+        </select>
+    </div>
+    <div class="col-12 mb-2">
+        <label class="form-label" for="inputAddress2">Tags (multiple)</label>
+
+        <select required class="form-select js-select-task-tags-multiple" id="edit_task_tag" name="tag_id[]" multiple="multiple" data-with="100%" data-placeholder="<?= get_label('type_to_search', 'Type to search') ?>">
+            <!-- <select name="assignment_to_id[]" class="form-select" data-choices="data-choices" size="1" multiple="multiple" data-options='{"removeItemButton":true,"placeholder":true}' id="floatingSelectRating" required> -->
+            @foreach ($task->project->tags as $tag)
+            <option value="{{ $tag->id }}">{{ $tag->title }}</option>
             @endforeach
         </select>
     </div>
@@ -92,19 +138,34 @@
 </div>
 
 @php
-$selected_emp_id = [];
+$selected_emps_id = [];
+$selected_tags_id = [];
 @endphp
+
 @foreach ($task->employees as $selected_emp )
 @php
-array_push($selected_emp_id, $selected_emp->id);
+array_push($selected_emps_id, $selected_emp->id);
+@endphp
+@endforeach
+
+@foreach ($task->tags as $selected_tag )
+@php
+array_push($selected_tags_id, $selected_tag->id);
 @endphp
 @endforeach
 
 <script>
-    $(".js-example-basic-multiple").select2();
-    data = [];
-    data = <?php echo json_encode($selected_emp_id); ?>;
-    console.log(data);
-    $('#edit_task_assigned_to').val(data);
+    $(".js-select-task-assign-multiple").select2();
+    $(".js-select-task-tags-multiple").select2();
+    selected_emp_data = [];
+    selected_tag_data = [];
+    selected_emp_data = <?php echo json_encode($selected_emps_id); ?>;
+    selected_tag_data = <?php echo json_encode($selected_tags_id); ?>;
+    console.log('selected emp data');
+    console.log(selected_emp_data);
+    $('#edit_task_assigned_to').val(selected_emp_data);
     $("#edit_task_assigned_to").trigger("change");
+
+    $('#edit_task_tag').val(selected_tag_data);
+    $("#edit_task_tag").trigger("change");
 </script>

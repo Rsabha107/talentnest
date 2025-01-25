@@ -89,7 +89,15 @@ $(document).ready(function () {
         }, 0);
     });
 
-    $(".js-select-assign-multiple").select2();
+    $(".js-select-task-assign-multiple").select2({
+        closeOnSelect: false,
+        placeholder: "Select ...",
+    });
+    
+    $(".js-select-task-tags-multiple").select2({
+        closeOnSelect: false,
+        placeholder: "Select ...",
+    });
 
     // $(function () {
     //     console.log('tooltip')
@@ -101,7 +109,8 @@ $(document).ready(function () {
 
         // reset all values
         $("#add_task_form")[0].reset();
-        $("#add_task_assigned_to").val([]).change();
+        $("#add_task_assigned_to").val([]).change();        
+        $("#add_task_tag").val([]).change();
         $("#add_task_form")[0].classList.remove("was-validated");
         var id = $(this).data("id");
         var event_id = $(this).data("projectid");

@@ -28,6 +28,8 @@ use App\Models\BudgetFunctionalAreaMapping;
 use App\Models\BudgetName;
 use App\Models\Client;
 use App\Models\Employee;
+use App\Models\EventAudience;
+use App\Models\EventLocation;
 use App\Models\FunctionalArea;
 use App\Models\Operation;
 use App\Models\Segment;
@@ -59,9 +61,9 @@ class ProjectController extends Controller
 
         $event_category = EventCategory::all();
         $event_planner = Planner::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $event_status = EventStatus::all();
         $event_color = Color::all();
         $project_type = ProjectType::all();
@@ -133,9 +135,9 @@ class ProjectController extends Controller
         $workspaces = Workspace::all();
         $event_category = EventCategory::all();
         $clients = Client::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $project_type = ProjectType::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
@@ -209,9 +211,9 @@ class ProjectController extends Controller
 
         $event_category = EventCategory::all();
         $clients = Client::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $project_type = ProjectType::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
@@ -326,9 +328,9 @@ class ProjectController extends Controller
         $workspaces = Workspace::all();
         $event_category = EventCategory::all();
         $clients = Client::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $project_type = ProjectType::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
@@ -428,9 +430,9 @@ class ProjectController extends Controller
 
         $event_category = EventCategory::all();
         $event_planner = Planner::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $project_type = ProjectType::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
@@ -668,9 +670,9 @@ class ProjectController extends Controller
         $eventData = Event::find($id);
         $event_category = EventCategory::all();
         $event_planner = Planner::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $event_status = EventStatus::all();
         $event_color = Color::all();
         $project_type = ProjectType::all();

@@ -6,8 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\UtilController;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\FunctionalArea;
+use App\Models\Venue;
 use App\Models\Project;
 use App\Models\Status;
+use App\Models\Tag;
 use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
@@ -33,6 +36,9 @@ class TaskController extends Controller
         $employees = Employee::all();
         $statuses = Status::all();
         $departments = Department::all();
+        $functional_areas = FunctionalArea::all();
+        $event_venue = Venue::all();
+        $tags = Tag::all();
 
         return view('projects.admin.task.list', [
             'projects' => $projects,
@@ -41,6 +47,9 @@ class TaskController extends Controller
             'departments' => $departments,
             // 'eventData' => $eventData,
             'employees' => $employees,
+            'functional_areas' => $functional_areas,
+            'event_venue' => $event_venue,
+            'tags' => $tags,
         ]);
     } // End index
 
@@ -510,12 +519,12 @@ class TaskController extends Controller
                 'notes' => $task->notes,
                 'files' => $task->files,
                 'subtasks' => $task->subtask,
-                'workspace' => $task->workspaces->title,
+                // 'workspace' => $task->workspaces->title,
                 'attributes' => (($task->notes->count()) ? '<button class="btn p-0 text-body-tertiary fs-10 me-2"><span class="fas fa-sticky-note me-1"></span>' . $task->notes->count() . '</button>' : "") .
                     (($task->files->count()) ? '<button class="btn p-0 text-body-tertiary fs-10 me-2"><span class="fas fa-paperclip me-1"></span>' . $task->files->count() . '</button>' : ""),
                 // 'attributes' => '<div class="ms-3 text-secondary">'.(($task->files->count()) ? '<span class="fas fa-file-alt me-1"></span>':"").' '.(($task->notes->count()) ? '<span class="fas fa-clipboard me-1"></span>':"").'</div>',
                 'status' => '<span class="badge badge-phoenix fs--2 badge-phoenix-' . $task->status->color . ' "><span class="badge-label" data-bs-toggle="modal" data-bs-target="#taskStatusModal" id="editTaskStatus" data-id="' . $task->id . '" data-table="task_table">' . $task->status->title . '</span><span class="ms-1" data-feather="x" style="height:12.8px;width:12.8px;"></span></span>',
-                'workspace_formated' => '<span class="badge badge-phoenix fs--2 badge-phoenix-warning"><span class="badge-label" data-bs-toggle="modal" data-bs-target="#taskStatusModal" id="editTaskStatus" data-id="' . $task->workspaces->id . '" data-table="task_table">' . $task->workspaces->title . '</span><span class="ms-1" data-feather="x" style="height:12.8px;width:12.8px;"></span></span>',
+                // 'workspace_formated' => '<span class="badge badge-phoenix fs--2 badge-phoenix-warning"><span class="badge-label" data-bs-toggle="modal" data-bs-target="#taskStatusModal" id="editTaskStatus" data-id="' . $task->workspaces->id . '" data-table="task_table">' . $task->workspaces->title . '</span><span class="ms-1" data-feather="x" style="height:12.8px;width:12.8px;"></span></span>',
                 'description' => $task->description,
                 // 'description' => '<button class="btn btn-secondary m-1" type="button" data-bs-container="body" data-bs-toggle="popover" data-bs-placement="top" data-bs-content="Top Popover">Top Popover</button>',
                 'created_at' => format_date($task->created_at,  'H:i:s'),
@@ -553,6 +562,9 @@ class TaskController extends Controller
         $project = $task->project()->with('employees')->firstOrFail();
         $departments = Department::all();
         $employees = Employee::all();
+        $functional_areas = $project->functional_areas;
+        $event_venue = $project->venues;
+        $tags = $project->tags;
 
         // dd($project);
 
@@ -563,6 +575,9 @@ class TaskController extends Controller
             'project' => $project,
             'departments' => $departments,
             'employees' => $employees,
+            'functional_areas' => $functional_areas,
+            'event_venue' => $event_venue,
+            'tags' => $tags,
         ])->render();
 
         return response()->json(['view' => $view]);
@@ -570,7 +585,7 @@ class TaskController extends Controller
 
     public function getTask($id)
     {
-        $task = Task::with('employees')->findOrFail($id);
+        $task = Task::with('employees', 'tags')->findOrFail($id);
         $project = $task->project()->with('employees')->firstOrFail();
 
         return response()->json(['task' => $task, 'project' => $project, 'asg' => $task->employees]);
@@ -600,10 +615,13 @@ class TaskController extends Controller
             $task->description = $request->description;
             $task->status_id = $request->status_id;
             $task->project_id = $request->project_id;
+            $task->venue_id = $request->venue_id;
+            $task->functional_area_id = $request->functional_area_id;
             $task->color_id = $request->color_id;
             $task->actual_budget_allocated = $request->actual_budget_allocated;
             $task->progress = $request->progress / 100;
-            $task->assignment_to_id = implode(',', $request->assignment_to_id);
+            // $task->assignment_to_id = implode(',', $request->assignment_to_id);
+            // $task->tag_id = implode(',', $request->tag_id);
             $task->created_by = $user_id;
             $task->updated_by = $user_id;
             $start_date_d = Carbon::createFromFormat('d/m/Y',  $request->start_date);
@@ -639,7 +657,7 @@ class TaskController extends Controller
             }
 
             $task->save();
-
+            
             // Log::info('TaskController::taskStore task count: ' . $projects->tasks->count());
             // Log::info('TaskController::taskStore sum progress: ' . $projects->tasks->sum('progress'));
 
@@ -647,6 +665,12 @@ class TaskController extends Controller
 
                 $task->employees()->attach($request->assignment_to_id[$key]);
             }
+
+            foreach ($request->tag_id as $key => $data) {
+
+                $task->tags()->attach($request->tag_id[$key]);
+            }
+
 
             $util_controller = new UtilController;
             $update_project_status = $util_controller->updateProjectStatus($request->event_id);
@@ -721,7 +745,7 @@ class TaskController extends Controller
         $task->color_id = $request->color_id;
         // $task->event_id = $request->project_id;
         $task->progress = 0; //$request->progress / 100;
-        $task->assignment_to_id = implode(',', $request->assignment_to_id);
+        // $task->assignment_to_id = implode(',', $request->assignment_to_id);
         $task->updated_by = $user_id;
 
         $start_date_d = Carbon::createFromFormat('d/m/Y', $request->start_date);

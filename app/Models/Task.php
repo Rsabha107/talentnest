@@ -55,7 +55,12 @@ class Task extends Model
 
     public function employees() : BelongsToMany
     {
-        return $this->belongsToMany(Employee::class, 'employee_task');
+        return $this->belongsToMany(Employee::class, 'employee_task', 'task_id', 'employee_id');
+    }
+
+    public function tags() : BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'task_tag', 'task_id', 'tag_id');
     }
 
     public function files()

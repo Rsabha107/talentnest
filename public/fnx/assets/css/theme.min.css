@@ -6161,7 +6161,8 @@ textarea.form-control-lg {
   --phoenix-card-subtitle-color: ;
   --phoenix-card-border-width: var(--phoenix-border-width);
   --phoenix-card-border-color: var(--phoenix-border-color-translucent);
-  --phoenix-card-border-radius: 0.5rem;
+  --phoenix-card-border-radius: 0.0rem;
+  /* --phoenix-card-border-radius: 0.5rem; */
   --phoenix-card-box-shadow: ;
   --phoenix-card-inner-border-radius: calc(0.5rem - (var(--phoenix-border-width)));
   --phoenix-card-cap-padding-y: 1.5rem;

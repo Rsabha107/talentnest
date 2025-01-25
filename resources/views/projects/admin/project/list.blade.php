@@ -59,12 +59,18 @@
         <div class="col-12 col-sm-auto">
             <div class="d-flex align-items-center">
                 {{-- <div class="search-box me-3"> --}}
-                <a href="#!" id="add_project" data-table="employee_address_table" data-id="0">
+                    <a href="{{ route('projects.admin.project.create') }}" >
+                        <button type="button" class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
+                            data-bs-original-title=" <?= get_label('add_new_project', 'Add new project') ?>">
+                            <i class="fa-solid fa-plus me-2"></i>Add new project
+                        </button>
+                    </a>
+                {{-- <a href="#!" id="add_project" data-table="employee_address_table" data-id="0">
                     <button type="button" class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
                         data-bs-original-title=" <?= get_label('add_new_project', 'Add new project') ?>">
                         <i class="fa-solid fa-plus me-2"></i>Add new project
                     </button>
-                </a>
+                </a> --}}
 
             </div>
         </div>

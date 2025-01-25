@@ -9,6 +9,25 @@ function checkModelOpen(e) {
 }
 
 $(document).ready(function () {
+
+    $(".js-select-project-fa-multiple").select2();
+    $(".js-select-project-tags-multiple").select2();
+    $(".js-select-project-assign-multiple").select2();
+    $(".js-select-project-venues-multiple").select2();
+
+    $(".js-select-project-member-assign-multiple").select2({
+        closeOnSelect: false,
+        placeholder: "Select ...",
+    });
+
+    $(".js-select-task-assign-multiple").select2({
+        closeOnSelect: false,
+        placeholder: "Select ...",
+    });
+
+    $(".js-select-task-tags-multiple").select2({
+        closeOnSelect: false,
+    });
     // console.log("all tasksJS file");
 
     // showing the offcanvas for the task creation
@@ -40,49 +59,61 @@ $(document).ready(function () {
     // $("#add_project_assigned_to").select2();
     // $(".js-select-tags-multiple").select2();
 
-    $(".js-select-fa-multiple").select2();
-    $(".js-select-tags-multiple").select2();
-    $(".js-select-assign-multiple").select2();
-    $(".js-select-venues-multiple").select2();
-    $(".js-example-basic-multiple").select2();
-
-
     // $("#projectCards").html("project cards projectCards");
 
     $("body").on("click", "#add_project", function () {
         console.log("inside #add_project");
         // $(".js-example-basic-multiple2").select2();
 
+        // $('.js-select-project-fa-multiple').val(null).trigger('change');
+        // $('.js-select-project-tags-multiple').val(null).trigger('change');
+        // $('.js-select-project-assign-multiple').val(null).trigger('change');
+        // $('.js-select-project-venues-multiple').val(null).trigger('change');
+
         $("#cover-spin").show();
         $("#add_project_modal").modal("show");
         $("#cover-spin").hide();
     });
 
-        // ************************************************** task status
-        $("body").on("click", "#editTaskStatus", function (event) {
-            // console.log("inside sec click edit");
-            // event.preventDefault();
-            var id = $(this).data("id");
-            var table = $(this).data("table");
-            // var route = $(this).data("route");
-            // console.log("id: " + id);
-            // console.log("table: " + table);
-    
-            $.get("/projects/admin/task/status/edit/" + id, function (data) {
-                //  console.log('event name: ' + data);
-                $.each(data, function (index, value) {
-                    // console.log(value[0]);
-                    $("#editTaskId").val(value[0].id);
-                    $("#editTaskEventId").val(value[0].event_id);
-                    $("#editTaskStatusSelection").val(value[0].status_id);
-                    $("#taskStatusParentTable").val(table);
-                    $("#taskStatusModal").modal("show");
-                });
-    
-                // $('#staticBackdropLabel').html("Edit category");
-                // $('#submit').val("Edit category");
+    $("body").on("click", "#add_project_member", function () {
+        console.log("inside #add_project_member");
+        // $(".js-example-basic-multiple2").select2();
+
+        var id = $(this).data("id");
+        var table = $(this).data("table");
+
+        $("#add_project_member_projectid").val(id);
+
+        $("#cover-spin").show();
+        $("#add_project_members_modal").modal("show");
+        $("#cover-spin").hide();
+    });
+
+    // ************************************************** task status
+    $("body").on("click", "#editTaskStatus", function (event) {
+        // console.log("inside sec click edit");
+        // event.preventDefault();
+        var id = $(this).data("id");
+        var table = $(this).data("table");
+        // var route = $(this).data("route");
+        // console.log("id: " + id);
+        // console.log("table: " + table);
+
+        $.get("/projects/admin/task/status/edit/" + id, function (data) {
+            //  console.log('event name: ' + data);
+            $.each(data, function (index, value) {
+                // console.log(value[0]);
+                $("#editTaskId").val(value[0].id);
+                $("#editTaskEventId").val(value[0].event_id);
+                $("#editTaskStatusSelection").val(value[0].status_id);
+                $("#taskStatusParentTable").val(table);
+                $("#taskStatusModal").modal("show");
             });
+
+            // $('#staticBackdropLabel').html("Edit category");
+            // $('#submit').val("Edit category");
         });
+    });
 
     $("body").on("click", "#test_change_choices_list", function () {
         console.log("inside #test_change_choices_list");
@@ -143,9 +174,13 @@ $(document).ready(function () {
                 console.log(response);
 
                 var project_tags = response.tag.map((tags) => tags.id);
-                var project_users = response.assigned_to.map((users) => users.id);
+                var project_users = response.assigned_to.map(
+                    (users) => users.id
+                );
                 var project_venues = response.venues.map((venues) => venues.id);
-                var project_fas = response.functional_areas.map((fas) => fas.id);
+                var project_fas = response.functional_areas.map(
+                    (fas) => fas.id
+                );
 
                 console.log("project_tags");
                 console.log(project_tags);
@@ -179,7 +214,9 @@ $(document).ready(function () {
                     response.project.audience_id
                 );
                 // $("#add_edit_project_venue").val(response.project.venue_id);
-                $("#add_edit_project_location").val(response.project.location_id);
+                $("#add_edit_project_location").val(
+                    response.project.location_id
+                );
                 $("#add_edit_project_fund").val(
                     response.project.fund_category_id
                 );
@@ -212,7 +249,9 @@ $(document).ready(function () {
                 $("#add_edit_project_fa").val(project_fas);
                 $("#add_edit_project_fa").trigger("change");
 
-                $("#add_edit_project_description").val(response.project.description);
+                $("#add_edit_project_description").val(
+                    response.project.description
+                );
                 // tinymce
                 //     .get("add_edit_project_description")
                 //     .setContent(response.project.description);
@@ -242,6 +281,56 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 $.ajax({
                     url: "/projects/admin/project/delete/" + id,
+                    method: "GET",
+                    success: function (result) {
+                        if (!result["error"]) {
+                            toastr.success(result["message"]);
+                            // divToRemove.remove();
+                            // $("#fileCount").html("File ("+result["count"]+")");
+                            // console.log('before table refrest for #'+tableID);
+                            $("#" + tableID).bootstrapTable("refresh");
+                            // Swal.fire(
+                            //     'Deleted!',
+                            //     'Your file has been deleted.',
+                            //     'success'
+                            //   )
+                        }
+                    },
+                    error: function (xhr, ajaxOptions, thrownError) {
+                        console.log(xhr.status);
+                        console.log(thrownError);
+                        // $("#cover-spin").hide();
+                        toastr.error(thrownError);
+                    },
+                });
+            }
+        });
+    });
+
+    // delete project
+    $("body").on("click", "#remove_project_member", function (e) {
+        var id = $(this).data("id");
+        var projId = $(this).data("projid");
+        var tableID = $(this).data("table");
+        e.preventDefault();
+        // alert("id: "+id);
+        var link = $(this).attr("href");
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Delete This Member?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url:
+                        "/projects/admin/project/member/" +
+                        projId +
+                        "/delete/" +
+                        id,
                     method: "GET",
                     success: function (result) {
                         if (!result["error"]) {
@@ -693,6 +782,7 @@ $("body").on("click", "#add_task", function () {
     // reset all values
     $("#add_task_form")[0].reset();
     $("#add_task_assigned_to").val([]).change();
+    $("#add_task_tag").val([]).change();
     $("#add_task_form")[0].classList.remove("was-validated");
     var id = $(this).data("id");
     var event_id = $(this).data("projectid");
@@ -786,8 +876,6 @@ $("body").on("click", "#add_task", function () {
 //     console.log("tasks.js on change");
 //     $("#project_table").bootstrapTable("refresh");
 // });
-
-
 
 $("#add_project_tag").on("select2:close", function (e) {
     e.preventDefault();

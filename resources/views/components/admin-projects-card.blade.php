@@ -140,7 +140,7 @@
     return {
         project_status: $("#project_status_filter").val(),
         project_id: $("#project_filter").val(),
-        venue_id: $("#project_venue_filter").val(),
+        venue: $("#project_venue_filter").val(),
         functional_area: $("#project_functional_area").val(),
         person_id: $("#tasks_employee_filter").val(),
         // client_id: $("#tasks_client_filter").val(),

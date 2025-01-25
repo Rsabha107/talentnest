@@ -95,7 +95,7 @@ class ProjectController extends Controller
         $project_id = (request()->project_id) ? request()->project_id : "";
         $status = (request()->project_status) ? request()->project_status : "";
         $functional_area = (request()->functional_area) ? request()->functional_area : "";
-        $venue_id = (request()->venue_id) ? request()->venue_id : "";
+        $venue = (request()->venue) ? request()->venue : "";
         $entity = (request()->entity) ? request()->entity : "";
         $directorate = (request()->directorate) ? request()->directorate : "";
         $active_archived = (request()->active_archived) ? request()->active_archived : "";
@@ -104,15 +104,6 @@ class ProjectController extends Controller
 
         // $ops = Project::orderBy($sort, $order);
 
-        if ($venue_id) {
-            $venue = Venue::find($venue_id);
-            $ops = $venue->projects()->orderBy($sort, $order);
-            // $ops = $ops->where(function ($query) use ($venue_id) {
-            //     $query->where('venue_id', 'like', '%' . $venue_id . '%');
-            // });
-        } else {
-            $ops = Project::orderBy($sort, $order);
-        }
 
         if ($functional_area) {
             // dd($functional_area);
@@ -122,6 +113,20 @@ class ProjectController extends Controller
             //     $query->where('venue_id', 'like', '%' . $venue_id . '%');
             // });
         } else {
+            $ops = Project::orderBy($sort, $order);
+        }
+
+        if ($venue) {
+            
+            $venues = Venue::find($venue);
+            // dd($venues->projects());
+            $ops = $venues->projects()->orderBy($sort, $order);
+            // $ops = Venue::with('projects')->where('id', $venue)->orderBy($sort, $order)->get();
+            // $ops = $ops->where(function ($query) use ($venue_id) {
+            //     $query->where('venue_id', 'like', '%' . $venue_id . '%');
+            // });
+        } else {
+            // dd('here');
             $ops = Project::orderBy($sort, $order);
         }
 
@@ -144,25 +149,6 @@ class ProjectController extends Controller
         }
 
 
-        if ($directorate) {
-            $ops = $ops->where(function ($query) use ($directorate) {
-                $query->where('directorate_id', 'like', '%' . $directorate . '%');
-            });
-        }
-
-        if ($entity) {
-            $ops = $ops->where(function ($query) use ($entity) {
-                $query->where('entity_id', 'like', '%' . $entity . '%');
-            });
-        }
-
-
-        if ($active_archived) {
-            $ops = $ops->where(function ($query) use ($active_archived) {
-                $query->where('archived', 'like', '%' . $active_archived . '%');
-            });
-        }
-
         $total = $ops->count();
 
         $ops = $ops->paginate(request("limit"))->through(function ($op) use ($user) {
@@ -174,6 +160,7 @@ class ProjectController extends Controller
 
             // dd($salary);
 
+            $duplicate_project = route('projects.admin.project.duplicate', $op->id);
 
             $div_action = '<div class="font-sans-serif btn-reveal-trigger position-static">';
             $profile_action =
@@ -186,7 +173,7 @@ class ProjectController extends Controller
                 ' data-table="project_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Update">' .
                 '<i class="fa-solid fa-pen-to-square text-primary"></i></a>';
             $duplicate_action =
-                '<a href="javascript:void(0)" class="btn btn-sm" id="duplicate_employee" data-action="update" data-type="duplicate" data-id=' .
+                '<a href="'.$duplicate_project.'" class="btn btn-sm" id="duplicate_employee" data-action="update" data-type="duplicate" data-id=' .
                 $op->id .
                 ' data-table="project_table" data-bs-toggle="tooltip" data-bs-placement="right" title="Duplicate">' .
                 '<i class="fa-solid fa-copy text-success"></i></a>';
@@ -303,6 +290,87 @@ class ProjectController extends Controller
                             </div>',
                 'actions' => $actions,
                 'card_delete_restore_div' => $card_delete_restore_div,
+                'created_at' => format_date($op->created_at,  'H:i:s'),
+                'updated_at' => format_date($op->updated_at, 'H:i:s'),
+            ];
+        });
+
+        return response()->json([
+            "rows" => $ops->items(),
+            "total" => $total,
+        ]);
+    }
+
+    public function mlist($id = null)
+    {
+        $user = User::findOrFail(auth()->user()->id);
+
+        $search = request('search');
+        $sort = (request('sort')) ? request('sort') : "id";
+        $order = (request('order')) ? request('order') : "DESC";
+
+        // dd(request()->all());
+
+        $project = Project::find($id);
+        // dd($project->employees);
+        
+        // $ops = $project->employees;
+        $ops = $project->employees()->orderBy($sort, $order);
+        // $ops = Employee::has('projects' , '=', $id)->orderBy($sort, $order);
+
+        $total = $ops->count();
+
+        $ops = $ops->paginate(request("limit"))->through(function ($op) use ($user, $id) {
+
+            $full_name = $op->first_name . ' ' . $op->last_name;
+
+            if ($op->emp_files?->file_path) {
+                $image = ' <div class="avatar avatar-m ">
+                                <a  href="#" role="button" title="' . $full_name . '">
+                                    <img class="rounded-circle pull-up" src="' . $op->emp_files->file_path . $op->emp_files->file_name . '" alt="" />
+                                </a>
+                            </div>';
+            } else {
+                $image = '  <div class="avatar avatar-m me-1" id="project_team_members_init">
+                                <a class="dropdown-toggle dropdown-caret-none d-inline-block" href="#" role="button" title="' . $full_name . '">
+                                    <div class="avatar avatar-m  rounded-circle pull-up">
+                                        <div class="avatar-name rounded-circle me-2"><span>' . generateInitials($full_name) . '</span></div>
+                                    </div>
+                                </a>
+                            </div>';
+            }
+
+            $delete_action = '<div class="col-12 col-md-auto d-flex">
+                                <a href="#!" class="btn btn-sm btn-outline-danger px-3 px-sm-5 me-2" data-table="project_members_table" data-projid="'.$id.'" data-id="' .
+                                $op->id .'" id="remove_project_member"><span class="fas fa-trash me-sm-2"></span><span
+                                class="d-none d-sm-inline">Remove</span></a>
+                                </div>';
+
+            $delete_action2 ='<div class="col-12 col-md-auto d-flex"
+            <a href="javascript:void(0);" >
+            <button type="button" class="btn btn-phoenix-danger px-3" data-table="project_table" data-id="' .
+                $op->id .
+                '" id="remove_project_member">
+                <i class="fa-solid fa-trash me-2"></i>Remove
+            </button>
+        </a></div>';
+
+            $delete_action1 =
+                '<a href="javascript:void(0)" class="btn btn-sm" data-table="project_members_table" data-projid="'.$id.'" data-id="' .
+                $op->id .
+                '" id="delete_project" data-bs-toggle="tooltip" data-bs-placement="right" title="Delete">' .
+                '<i class="fa-solid fa-trash text-danger"></i></a></div></div>';
+
+            $actions = $delete_action;
+
+            return [
+                'id1' => '<div class="ms-3" style="width:1%">' . $op->id . '</div>',
+                'id' => $op->id,
+                'image' => $image,
+                'name' => '<div class="align-middle white-space-wrap fw-bold fs-9"><a href="#">' . $full_name . '</a></div>',
+                'designation_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->designation->name . '</div>',
+                'actions' => $actions,
+                // 'card_delete_restore_div' => $card_delete_restore_div,
                 'created_at' => format_date($op->created_at,  'H:i:s'),
                 'updated_at' => format_date($op->updated_at, 'H:i:s'),
             ];
@@ -505,6 +573,7 @@ class ProjectController extends Controller
             "total" => $total,
         ]);
     }
+
     public function projectCardMV()
     {
 
@@ -546,17 +615,17 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
 
-        $ws_id = session()->get('workspace_id') ? session()->get('workspace_id') : $project->workspace_id;
-        $workspace = Workspace::findOrFail($ws_id);
-        $ws_users = $workspace?->employees;
+        // $ws_id = session()->get('workspace_id') ? session()->get('workspace_id') : $project->workspace_id;
+        // $workspace = Workspace::findOrFail($ws_id);
+        // $ws_users = $workspace?->employees;
         // $project = Project::findOrFail($id);
 
         return response()->json(['project' => $project, 
                                  'tag' => $project->tags, 
                                  'assigned_to' => $project->employees,
                                  'venues' => $project->venues,
-                                 'functional_areas' => $project->functional_areas,
-                                 'wsusers' => $ws_users]);
+                                 'functional_areas' => $project->functional_areas
+                                ]);
         
     }  // End function getProject
 
@@ -604,12 +673,10 @@ class ProjectController extends Controller
             $project->duration = $duration;
         }
 
-        // Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
-
-        // dd($duration);
-
         $project->save();
-
+        
+        // Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
+        // dd($duration);
         // $task->users()->detach();
         $project->clients()->attach($request->client_id);
 
@@ -618,7 +685,7 @@ class ProjectController extends Controller
             $project->venues()->attach($request->venue_id[$key]);
         }
 
-        foreach ($request->functional_areas as $key => $data) {
+        foreach ($request->functional_area_id as $key => $data) {
 
             $project->functional_areas()->attach($request->functional_area_id[$key]);
         }
@@ -638,12 +705,12 @@ class ProjectController extends Controller
             'alert-type'    => 'success'
         );
 
-        return response()->json([
-            'error' => false,
-            'message' => 'Project ' . $project->name . ' created successfully ',
-        ]);
+        // return response()->json([
+        //     'error' => false,
+        //     'message' => 'Project ' . $project->name . ' created successfully ',
+        // ]);
         // Toastr::success('Has been add successfully :)','Success');
-        // return Redirect::route('tracki.project.show.card')->with($notification);
+        return redirect()->route('projects.admin.project')->with($notification);
     } // store
 
     public function update(Request $request)
@@ -721,7 +788,84 @@ class ProjectController extends Controller
         // } else {
         //     return Redirect::route('tracki.project.show.card')->with($notification);
         // }
-    } // updateProject
+    } // update
+
+    public function mupdate(Request $request)
+    {
+        // dd('createEvent');
+        $user_id = Auth::user()->id;
+        $project = Project::find($request->id);
+
+        $project->name = $request->name;
+        $project->category_id = $request->category_id;
+        $project->audience_id = $request->audience_id;
+        $project->client_id = $request->client_id;
+        $project->location_id = $request->location_id;
+        $project->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date);
+        $project->end_date = Carbon::createFromFormat('d/m/Y', $request->end_date);
+        $project->budget_allocation = $request->budget_allocation;
+        $project->attendance_forcast = $request->attendance_forcast;
+        $project->description = $request->description;
+        $project->color_id = $request->color_id;
+        $project->progress = $request->progress / 100;
+        $project->project_type_id = $request->project_type_id;
+        $project->total_sales = $request->project_sales;
+        $project->fund_category_id = $request->fund_category_id;
+        $project->budget_name_id = $request->budget_name_id;
+        // $project->workspace_id = $request->workspace_id;
+        $project->updated_by = $user_id;
+
+        $start_date_d = Carbon::createFromFormat('d/m/Y', $request->start_date);
+        $end_date_d = Carbon::createFromFormat('d/m/Y', $request->end_date);
+        $duration =  $start_date_d->diffInDays($end_date_d, false);
+
+
+        Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
+
+        // dd($duration);
+        $project->duration = $duration;
+
+        $project->save();
+
+        if ($request->tag_id) {
+            $project->tags()->detach();
+            foreach ($request->tag_id as $key => $data) {
+                $project->tags()->attach($request->tag_id[$key]);
+            }
+        }
+
+        if ($request->client_id) {
+            $project->clients()->detach();
+            $project->clients()->attach($request->client_id);
+        }
+
+        $project->venues()->detach();
+        $project->venues()->attach($request->venue_id);
+
+        $project->functional_areas()->detach();
+        $project->functional_areas()->attach($request->functional_area_id);
+
+        $project->employees()->detach();
+        $project->employees()->attach($request->assignment_to_id);
+
+
+        $notification = array(
+            'message'       => 'Event updated successfully',
+            'alert-type'    => 'success'
+        );
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Project ' . $project->name . ' updated successfully ',
+        ]);
+
+        // // Toastr::success('Has been add successfully :)','Success');
+        // if ($request->source == 'plist') {
+        //     return Redirect::route('tracki.task.list', $request->id)->with($notification);
+        // } else {
+        //     return Redirect::route('tracki.project.show.card')->with($notification);
+        // }
+    } // mupdate
 
     public function delete(string $id)
     {
@@ -743,6 +887,29 @@ class ProjectController extends Controller
         return response()->json([
             'error' => false,
             'message' => 'Project archived successfully',
+        ]);
+    }
+
+    public function mdelete(string $pid, string $id)
+    {
+        //
+        // Employee::where('id', '=', $id)->delete();
+        // soft delete
+        // dd($id);
+        // Project::where('id', '=', $id)->update(['archived' => 'Y']);
+
+        $project = Project::find($pid);
+        $project->employees()->detach($id);
+        // $project->save();
+
+        $notification = array(
+            'message'       => 'Member removed successfully',
+            'alert-type'    => 'success'
+        );
+
+        return response()->json([
+            'error' => false,
+            'message' => 'Member removed successfully',
         ]);
     }
 
@@ -790,14 +957,18 @@ class ProjectController extends Controller
         $event_category = EventCategory::all();
         $clients = Client::all();
         $event_audience = EventAudience::all();
-        $event_venue = Venue::all();
+        // $event_venue = Venue::all();
+        $event_venue = $projectData->venues;
         $event_location = EventLocation::all();
         $project_type = ProjectType::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();
-        $employees = Employee::all();
-        $tags = Tag::all();
-        $functional_areas = FunctionalArea::all();
+        $employees = $projectData->employees;
+        $emps = Employee::all(); // use for select list
+        $tags = $projectData->tags;
+        // $tags = Tag::all();
+        // $functional_areas = FunctionalArea::all();
+        $functional_areas = $projectData->functional_areas;
 
 
         // foreach ($projectData->clients as $clnt) {
@@ -899,7 +1070,73 @@ class ProjectController extends Controller
             'event_location' => $event_location,
             'fund_category' => $fund_category,
             'budget_name' => $budget_name,
+            'emps' => $emps,
         ]);
     }  // end detail
 
+    public function create(){
+        $projects = Project::all();
+        $department = Department::all();
+        $event_category = EventCategory::all();
+        $clients = Client::all();
+        $event_audience = EventAudience::all();
+        $event_venue = Venue::all();
+        $event_location = EventLocation::all();
+        $project_type = ProjectType::all();
+        $fund_category = FundCategory::all();
+        $budget_name = BudgetName::all();
+        $employees = Employee::all();
+        $tags = Tag::all();
+        $functional_areas = FunctionalArea::all();
+
+        return view('projects.admin.project.create', [
+            'departments' => $department,
+            'event_category' => $event_category,
+            'clients' => $clients,
+            'event_audience' => $event_audience,
+            'event_venue' => $event_venue,
+            'event_location' => $event_location,
+            'project_type' => $project_type,
+            'fund_category' => $fund_category,
+            'budget_name' => $budget_name,
+            'employees' => $employees,
+            'tags' => $tags,
+            'functional_areas' => $functional_areas,
+            'projects' => $projects,
+        ]);
+    }
+
+    public function duplicate($id=null){
+        $project = Project::find($id);
+        $projects = Project::all();
+        $department = Department::all();
+        $event_category = EventCategory::all();
+        $clients = Client::all();
+        $event_audience = EventAudience::all();
+        $event_venue = Venue::all();
+        $event_location = EventLocation::all();
+        $project_type = ProjectType::all();
+        $fund_category = FundCategory::all();
+        $budget_name = BudgetName::all();
+        $employees = Employee::all();
+        $tags = Tag::all();
+        $functional_areas = FunctionalArea::all();
+
+        return view('projects.admin.project.duplicate', [
+            'departments' => $department,
+            'event_category' => $event_category,
+            'clients' => $clients,
+            'event_audience' => $event_audience,
+            'event_venue' => $event_venue,
+            'event_location' => $event_location,
+            'project_type' => $project_type,
+            'fund_category' => $fund_category,
+            'budget_name' => $budget_name,
+            'employees' => $employees,
+            'tags' => $tags,
+            'functional_areas' => $functional_areas,
+            'project' => $project,
+            'projects' => $projects,
+        ]);
+    }
 }

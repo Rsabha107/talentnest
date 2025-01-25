@@ -125,12 +125,12 @@ class Employee extends Model implements Auditable
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'employee_project');
+        return $this->belongsToMany(Project::class, 'employee_project', 'employee_id', 'project_id');
     }
 
     public function tasks()
     {
-        return $this->belongsToMany(Task::class, 'employee_task');
+        return $this->belongsToMany(Task::class, 'employee_task', 'employee_id', 'task_id');
     }
 
     public function workspaces(){

@@ -10,13 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use App\Models\Event;
 use App\Models\EventCategory;
-use App\Models\Planner;
-use App\Models\Audience;
 use App\Models\Venue;
-use App\Models\Location;
 use App\Models\Department;
 // use App\Models\EventStatus;
-use App\Models\Person;
 // use Spatie\Permission\Models\Role;
 // use Spatie\Permission\Models\Permission;
 use App\Models\FileUpload;
@@ -45,6 +41,9 @@ use App\Http\Controllers\UtilController;
 use App\Models\BudgetName;
 use App\Models\Client;
 use App\Models\Employee;
+use App\Models\EventAudience;
+use App\Models\EventLocation;
+use App\Models\FunctionalArea;
 use App\Models\FundCategory;
 use App\Models\Status;
 use App\Models\Subtask;
@@ -74,6 +73,8 @@ class TaskController extends Controller
         $employees = Employee::all();
         $statuses = Status::all();
         $departments = Department::all();
+        $event_venue = Venue::all();
+        $functional_area = FunctionalArea::all();
 
         return view('tracki.task.all', [
             'projects' => $projects,
@@ -82,6 +83,8 @@ class TaskController extends Controller
             'departments' => $departments,
             'eventData' => $eventData,
             'employees' => $employees,
+            'functional_area' => $functional_area,
+            'event_venue' => $event_venue,
         ]);
     }
 
@@ -887,9 +890,9 @@ class TaskController extends Controller
         $department = Department::all();
         $event_category = EventCategory::all();
         $clients = Client::all();
-        $event_audience = Audience::all();
+        $event_audience = EventAudience::all();
         $event_venue = Venue::all();
-        $event_location = Location::all();
+        $event_location = EventLocation::all();
         $project_type = ProjectType::all();
         $fund_category = FundCategory::all();
         $budget_name = BudgetName::all();

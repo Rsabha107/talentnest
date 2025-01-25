@@ -12,7 +12,17 @@ class Tag extends Model
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class, 'project_tag');
+        return $this->belongsToMany(Project::class, 'project_tag', 'tag_id', 'project_id');
+    }
+
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class, 'project_tag', 'tag_id', 'task_id');
+    }
+
+    public function active_status()
+    {
+        return $this->belongsTo(GlobalStatus::class, 'active_flag');
     }
 }
 
