@@ -30,7 +30,7 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
                 data-sort-order="desc"
                 data-mobile-responsive="true"
                 data-buttons-class="secondary"
-                data-query-params="queryParams">
+                data-query-params="taskqueryParams">
                 <thead>
                     <tr>
                         <!-- <th data-checkbox="true"></th> -->
@@ -64,12 +64,10 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
 
 <script>
 
-function queryParams(p) {
+function taskqueryParams(p) {
     return {
-        status: $("#tasks_status_filter").val(),
+        task_status_id: $("#tasks_status_filter").val(),
         person_id: $("#tasks_employee_filter").val(),
-        // client_id: $("#tasks_client_filter").val(),
-        project_id: $("#tasks_project_filter").val(),
         department_id: $("#tasks_department_filter").val(),
         show_page: $("#tasks_show_page_hidden").val(),
         show_page_id: $("#tasks_show_page_id_hidden").val(),
@@ -103,7 +101,7 @@ function loadingTemplate(message) {
         "#tasks_status_filter,#tasks_employee_filter,#tasks_project_filter,#tasks_department_filter"
     ).on("change", function(e) {
         e.preventDefault();
-        console.log("tasks.js on change");
+        // console.log("tasks.js on change");
         $("#task_table").bootstrapTable("refresh");
     });
 </script>

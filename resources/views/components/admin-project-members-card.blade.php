@@ -30,7 +30,7 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
                 data-sort-order="desc"
                 data-mobile-responsive="true"
                 data-buttons-class="secondary"
-                data-query-params="queryParams">
+                data-query-params="memberqueryParams">
                 <thead>
                     <tr>
                         <!-- <th data-checkbox="true"></th> -->
@@ -65,19 +65,9 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
 
 <script>
 
-function queryParams(p) {
+function memberqueryParams(p) {
     return {
-        status: $("#tasks_status_filter").val(),
-        person_id: $("#tasks_employee_filter").val(),
-        // client_id: $("#tasks_client_filter").val(),
-        project_id: $("#tasks_project_filter").val(),
-        department_id: $("#tasks_department_filter").val(),
-        show_page: $("#tasks_show_page_hidden").val(),
-        show_page_id: $("#tasks_show_page_id_hidden").val(),
-        task_start_date_from: $("#task_start_date_from").val(),
-        task_start_date_to: $("#task_start_date_to").val(),
-        task_end_date_from: $("#task_end_date_from").val(),
-        task_end_date_to: $("#task_end_date_to").val(),
+       
         page: p.offset / p.limit + 1,
         limit: p.limit,
         sort: p.sort,
@@ -100,11 +90,11 @@ function loadingTemplate(message) {
     return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
 }
 
-    $(
-        "#tasks_status_filter,#tasks_employee_filter,#tasks_project_filter,#tasks_department_filter"
-    ).on("change", function(e) {
-        e.preventDefault();
-        console.log("tasks.js on change");
-        $("#task_table").bootstrapTable("refresh");
-    });
+    // $(
+    //     "#tasks_status_filter,#tasks_employee_filter,#tasks_project_filter,#tasks_department_filter"
+    // ).on("change", function(e) {
+    //     e.preventDefault();
+    //     // console.log("tasks.js on change");
+    //     $("#task_table").bootstrapTable("refresh");
+    // });
 </script>

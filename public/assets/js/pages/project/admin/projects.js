@@ -82,6 +82,9 @@ $(document).ready(function () {
         var id = $(this).data("id");
         var table = $(this).data("table");
 
+        console.log("id: " + id);
+        console.log("table: " + table);
+        
         $("#add_project_member_projectid").val(id);
 
         $("#cover-spin").show();

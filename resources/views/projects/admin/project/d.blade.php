@@ -519,7 +519,7 @@
                                             <button type="button" class="btn btn-sm btn-primary"
                                                 data-bs-toggle="tooltip" data-bs-placement="right"
                                                 data-bs-original-title=" <?= get_label('create_task', 'Create task') ?>">
-                                                <i class="bx bx-plus"></i>
+                                                <i class="bx bx-plus"></i>Create new task
                                             </button>
                                         </a>
                                     @endif
@@ -527,8 +527,7 @@
                             </div>
                         </div>
                         <div class="mb-0">
-                            <x-admin-tasks-card :users="$users" :projectId="$projectData->id" :statuses="$statuses" :departments="$departments"
-                                source="list" showpage="list" showpageid="list_{{ $projectData->id }}" />
+                            <x-admin-tasks-card :projectId="$projectData->id"  />
                         </div>
                     </div>
                     <div class="tab-pane fade h-100" id="memeberTabContent" role="tabpanel"
@@ -537,7 +536,7 @@
                             {{-- <h5 class="mb-3 text-body-highlight">Memebers</h5> --}}
                             <div class="d-xl-flex justify-content-between mb-3">
                                 <a href="javascript:void(0);" >
-                                    <button type="button" id="add_project_member" class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    <button type="button" id="add_project_member" data-id="{{ $projectData->id }}" class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
                                         data-bs-original-title=" <?= get_label('add_new_project', 'Add project member') ?>">
                                         <i class="fa-solid fa-plus me-2"></i>Add project member
                                     </button>

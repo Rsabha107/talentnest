@@ -64,6 +64,8 @@ class ProjectController extends Controller
         $functional_areas = FunctionalArea::all();
         $users = User::all();
 
+        $emps = Employee::all();
+
         return view('projects.admin.project.list', compact(
             'project_data',
             'projects',
@@ -80,7 +82,8 @@ class ProjectController extends Controller
             'project_status',
             'departments',
             'users',
-            'functional_areas'
+            'functional_areas',
+            'emps'
         ));
     }  // End function index
 
@@ -743,7 +746,7 @@ class ProjectController extends Controller
         $duration =  $start_date_d->diffInDays($end_date_d, false);
 
 
-        Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
+        // Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
 
         // dd($duration);
         $project->duration = $duration;
@@ -794,69 +797,19 @@ class ProjectController extends Controller
     {
         // dd('createEvent');
         $user_id = Auth::user()->id;
-        $project = Project::find($request->id);
-
-        $project->name = $request->name;
-        $project->category_id = $request->category_id;
-        $project->audience_id = $request->audience_id;
-        $project->client_id = $request->client_id;
-        $project->location_id = $request->location_id;
-        $project->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date);
-        $project->end_date = Carbon::createFromFormat('d/m/Y', $request->end_date);
-        $project->budget_allocation = $request->budget_allocation;
-        $project->attendance_forcast = $request->attendance_forcast;
-        $project->description = $request->description;
-        $project->color_id = $request->color_id;
-        $project->progress = $request->progress / 100;
-        $project->project_type_id = $request->project_type_id;
-        $project->total_sales = $request->project_sales;
-        $project->fund_category_id = $request->fund_category_id;
-        $project->budget_name_id = $request->budget_name_id;
-        // $project->workspace_id = $request->workspace_id;
-        $project->updated_by = $user_id;
-
-        $start_date_d = Carbon::createFromFormat('d/m/Y', $request->start_date);
-        $end_date_d = Carbon::createFromFormat('d/m/Y', $request->end_date);
-        $duration =  $start_date_d->diffInDays($end_date_d, false);
+        $project = Project::find($request->project_id);
 
 
-        Log::info('start_date_d: ' . $start_date_d . ' end_date_d: ' . $end_date_d . ' duration: ' . $duration);
-
-        // dd($duration);
-        $project->duration = $duration;
-
-        $project->save();
-
-        if ($request->tag_id) {
-            $project->tags()->detach();
-            foreach ($request->tag_id as $key => $data) {
-                $project->tags()->attach($request->tag_id[$key]);
-            }
-        }
-
-        if ($request->client_id) {
-            $project->clients()->detach();
-            $project->clients()->attach($request->client_id);
-        }
-
-        $project->venues()->detach();
-        $project->venues()->attach($request->venue_id);
-
-        $project->functional_areas()->detach();
-        $project->functional_areas()->attach($request->functional_area_id);
-
-        $project->employees()->detach();
         $project->employees()->attach($request->assignment_to_id);
 
-
         $notification = array(
-            'message'       => 'Event updated successfully',
+            'message'       => 'Member added successfully',
             'alert-type'    => 'success'
         );
 
         return response()->json([
             'error' => false,
-            'message' => 'Project ' . $project->name . ' updated successfully ',
+            'message' => 'Member added successfully ',
         ]);
 
         // // Toastr::success('Has been add successfully :)','Success');
@@ -938,13 +891,14 @@ class ProjectController extends Controller
 
     public function detail(Request $request, $id)
     {
+
         // $hasit = auth()->user()->hasRole('department restricted');
-        Log::alert('TaskController::taskDetails');
+        // Log::alert('TaskController::taskDetails');
         $workspace = session()->get('workspace_id');
 
-        Log::alert('TaskController::workspace' . $workspace);
+        // Log::alert('TaskController::workspace' . $workspace);
 
-        Log::info($request->url());
+        // Log::info($request->url());
         $user_department = auth()->user()->department_assignment_id;
 
         $util_controller = new UtilController;
@@ -970,6 +924,11 @@ class ProjectController extends Controller
         // $functional_areas = FunctionalArea::all();
         $functional_areas = $projectData->functional_areas;
 
+        $emps = Employee::whereDoesntHave('projects', function ($query) use ($id) {
+            return $query->where('project_id', $id);
+        })->get();  // gives all employees not in this project
+
+        // $emps = Employee::whereNotIn('id', $projectData->employees->pluck('id'))->get();  // this works as well
 
         // foreach ($projectData->clients as $clnt) {
         //     $client_name = $clnt->first_name.' '.$clnt->last_name;

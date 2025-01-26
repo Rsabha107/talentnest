@@ -64,7 +64,7 @@ class TaskController extends Controller
         $sort = (request()->sort) ? request()->sort : "id";
         $order = (request()->order) ? request()->order : "DESC";
         $project_id = (request()->project_id) ? request()->project_id : "";
-        $status_id = (request()->task_status) ? request()->task_status : "";
+        $status_id = (request()->task_status_id) ? request()->task_status_id : "";
         $person_id = (request()->person_id) ? request()->person_id : "";
         $department_id = (request()->department_id) ? request()->department_id : "";
 
@@ -75,15 +75,10 @@ class TaskController extends Controller
             $ops = Task::orderBy($sort, $order);
         }
 
-        // Log::alert($request->all());
+        Log::alert(request()->all());
         // Log::info(request());
         // Log::info('request get: '.$request->get('project_id'));
         // Log::info('request(): '.request('project_id'));
-        Log::alert('allTaskDt search: ' . $search);
-        Log::alert('allTaskDt project_id: ' . $project_id);
-        Log::alert('allTaskDt status_id: ' . $status_id);
-        Log::alert('allTaskDt person_id: ' . $person_id);
-        Log::alert('allTaskDt department_id: ' . $department_id);
 
         $where = [];
         // $tasks = Task::when($user_department, function ($query, $user_department) {
@@ -98,8 +93,6 @@ class TaskController extends Controller
         // $user = User::find(4);
         // $tasks = $user->tasks();
 
-        Log::info('workspace: ' . $workspace);
-        Log::info('project_id1: ' . $project_id);
 
         // $tasks = Task::when($workspace, function ($query, $workspace) {
         //     return $query->where('tasks.workspace_id', $workspace);
@@ -118,7 +111,7 @@ class TaskController extends Controller
 
         if ($department_id) {
             $ops = $ops->where(function ($query) use ($department_id) {
-                $query->where('department_assignment_id', 'like', '%' . $department_id . '%');
+                $query->where('department_assignment_id', '=', $department_id);
             });
         }
 
@@ -128,16 +121,16 @@ class TaskController extends Controller
             });
         }
 
-        if ($project_id) {
-            $ops = $ops->where(function ($query) use ($project_id) {
-                $query->where('project_id', 'like', '%' . $project_id . '%');
-            });
-        }
 
         if ($person_id) {
             // dd($person_id);
-            $employee = Employee::find($person_id);
-            $ops = $employee->tasks()->orderBy($sort, $order);
+            // $employee = Employee::find($person_id);
+            // $ops = $employee->tasks()->orderBy($sort, $order);
+
+            $ops = $ops::with('employees', function ($query) use ($person_id) {
+                $query->where('employee_id', $person_id);
+            });
+
             // dd($ops);
             // Log::
         }
@@ -298,15 +291,11 @@ class TaskController extends Controller
             $ops = Task::orderBy($sort, $order);
         }
 
-        // Log::alert($request->all());
+        // Log::alert(request()->all());
         // Log::info(request());
         // Log::info('request get: '.$request->get('project_id'));
         // Log::info('request(): '.request('project_id'));
-        Log::alert('allTaskDt search: ' . $search);
-        Log::alert('allTaskDt project_id: ' . $project_id);
-        Log::alert('allTaskDt status_id: ' . $status_id);
-        Log::alert('allTaskDt person_id: ' . $person_id);
-        Log::alert('allTaskDt department_id: ' . $department_id);
+
 
         $where = [];
         // $tasks = Task::when($user_department, function ($query, $user_department) {
@@ -321,8 +310,6 @@ class TaskController extends Controller
         // $user = User::find(4);
         // $tasks = $user->tasks();
 
-        Log::info('workspace: ' . $workspace);
-        Log::info('project_id1: ' . $project_id);
 
         // $tasks = Task::when($workspace, function ($query, $workspace) {
         //     return $query->where('tasks.workspace_id', $workspace);
@@ -720,17 +707,17 @@ class TaskController extends Controller
 
     public function updateTask(Request $request)
     {
-        Log::info('TaskController::updateTask');
-        Log::info('request id: ' . $request->id);
+        // Log::info('TaskController::updateTask');
+        // Log::info('request id: ' . $request->id);
 
         $user_id = Auth::user()->id;
 
         $task = Task::findOrFail($request->id);
         // $util = new UtilController;
 
-        Log::info($request);
+        // Log::info($request);
         $task->name = $request->name;
-        Log::info('after name');
+        // Log::info('after name');
         $task->start_date = Carbon::createFromFormat('d/m/Y', $request->start_date);
         // $task->start_time = $request->start_time;
         $task->due_date = Carbon::createFromFormat('d/m/Y', $request->due_date);
@@ -757,7 +744,7 @@ class TaskController extends Controller
         // dd($duration);
         $completed_status = false;
 
-        Log::debug('status_id: ' . $request->status_id . ' config completed: ' . config('tracki.task_status.completed') . ' completed_status: ' . $completed_status);
+        // Log::debug('status_id: ' . $request->status_id . ' config completed: ' . config('tracki.task_status.completed') . ' completed_status: ' . $completed_status);
 
         // dd($duration);
         $task->duration = $duration;
@@ -785,11 +772,11 @@ class TaskController extends Controller
 
         $task->duration = $duration;
 
-        Log::debug('status_id: ' . $request->status_id . ' task->progress: ' . $task->progress . ' completed_status: ' . $completed_status);
+        // Log::debug('status_id: ' . $request->status_id . ' task->progress: ' . $task->progress . ' completed_status: ' . $completed_status);
 
         $task->save();
 
-        Log::debug('duration: ' . $duration);
+        // Log::debug('duration: ' . $duration);
 
         $util_controller = new UtilController;
         $update_project_status = $util_controller->updateProjectStatus($request->project_id);
@@ -839,7 +826,7 @@ class TaskController extends Controller
         $task = Task::findOrFail($request->id);
         $status_title = Status::findOrFail($request->status_id);
 
-        Log::info($status_title->title);
+        // Log::info($status_title->title);
         if (($status_title->title == 'Completed') || ($status_title->title == 'Suspended')) {
             $task->update([
                 'status_id' => $request->status_id,
