@@ -1,42 +1,42 @@
 <div class="card mb-4">
     <div class="card-body">
         <div class="table-responsive text-nowrap">
-            
+
             <input type="hidden" id="data_type" value="tags">
-            <table 
+            <table
                 id="project_table"
-                data-toggle="table" 
+                data-toggle="table"
                 data-classes="table table-hover  fs-9 mb-0 border-top border-translucent"
                 data-search="true"
-                data-url="{{ route('projects.admin.project.list') }}" 
+                data-url="{{ route('projects.admin.project.list') }}"
                 data-pagination="true"
                 data-show-custom-view="true"
                 data-custom-view="customViewFormatter"
 
                 data-loading-template="loadingTemplate"
-                data-icons-prefix="bx" 
+                data-icons-prefix="bx"
                 data-icons="icons"
-                data-show-export="true" 
+                data-show-export="true"
                 data-export-types="['csv', 'txt', 'doc', 'excel', 'xlsx', 'pdf']"
                 data-show-refresh="true"
-                data-total-field="total" 
-                data-trim-on-search="false" 
+                data-total-field="total"
+                data-trim-on-search="false"
                 data-data-field="rows"
-                data-page-list="[4, 8, 10, 20, 50, 100, 200]" 
-                data-page-size="8" 
+                data-page-list="[4, 8, 10, 20, 50, 100, 200]"
+                data-page-size="8"
                 data-side-pagination="server"
                 data-query-params="queryParams"
-                data-show-columns="true" 
-                data-pagination="true" 
-                data-sort-name="id" 
+                data-show-columns="true"
+                data-pagination="true"
+                data-sort-name="id"
                 data-sort-order="desc"
-                data-mobile-responsive="true" 
-                data-show-columns-toggle-all="true" 
+                data-mobile-responsive="true"
+                data-show-columns-toggle-all="true"
                 data-show-custom-view-button="true">
 
                 <thead>
                     <tr>
-
+                        <th data-sortable="true" data-field="id1" data-visible="false"><?= get_label('id', 'ID') ?></th>
                         <th data-sortable="true" data-field="name"><?= get_label('project_name', 'Title') ?></th>
                         <th data-sortable="true" data-field="project_status"><?= get_label('status', 'Status') ?></th>
                         <th data-sortable="true" data-field="client"><?= get_label('client', 'Client') ?></th>
@@ -74,13 +74,13 @@
                                             class="fa-solid fa-gear"></span></button>
                                     <div class="dropdown-menu dropdown-menu-end py-2">
                                         @if (Auth::user()->can('project.edit'))
-                                            <a class="dropdown-item" href="javascript:void(0);" id="edit_project"
+                                        <a class="dropdown-item" href="javascript:void(0);" id="edit_project"
                                             data-table="project_table" data-id="%PROJECTID%" data-redirect="card"
-                                                data-workspace_id="{{ session()->get('workspace_id') }}">Edit</a>
+                                            data-workspace_id="{{ session()->get('workspace_id') }}">Edit</a>
                                         @endif
                                         @if (Auth::user()->can('project.delete'))
-                                            %CARDDELRESTDIV%
-                                            <!-- <a class="dropdown-item text-danger" href="#!" id="delete_project"
+                                        %CARDDELRESTDIV%
+                                        <!-- <a class="dropdown-item text-danger" href="#!" id="delete_project"
                                                 data-id="%DELETEPROJECTID%" title="Delete" class="card-link">Delete</a> -->
                                         @endif
                                     </div>
@@ -91,7 +91,7 @@
                             %PROJECTFUND%
                             <div class="d-flex align-items-center mb-2"><span
                                     class="fa-solid fa-user me-2 text-body-tertiary fs-9 fw-extra-bold"></span>
-                                <p class="fw-bold mb-0 text-truncate lh-1">Client : 
+                                <p class="fw-bold mb-0 text-truncate lh-1">Client :
                                     <span class="fw-semibold text-primary ms-1"> %CLIENT%
                                     </span>
                                 </p>
@@ -137,74 +137,74 @@
 
 <script>
     function queryParams(p) {
-    return {
-        project_status: $("#project_status_filter").val(),
-        project_id: $("#project_filter").val(),
-        venue: $("#project_venue_filter").val(),
-        functional_area: $("#project_functional_area").val(),
-        person_id: $("#tasks_employee_filter").val(),
-        // client_id: $("#tasks_client_filter").val(),
-        department_id: $("#tasks_department_filter").val(),
-        show_page: $("#tasks_show_page_hidden").val(),
-        show_page_id: $("#tasks_show_page_id_hidden").val(),
-        task_start_date_from: $("#task_start_date_from").val(),
-        task_start_date_to: $("#task_start_date_to").val(),
-        task_end_date_from: $("#task_end_date_from").val(),
-        task_end_date_to: $("#task_end_date_to").val(),
-        page: p.offset / p.limit + 1,
-        limit: p.limit,
-        sort: p.sort,
-        order: p.order,
-        offset: p.offset,
-        search: p.search,
+        return {
+            project_status: $("#project_status_filter").val(),
+            project_id: $("#project_filter").val(),
+            venue: $("#project_venue_filter").val(),
+            functional_area: $("#project_functional_area").val(),
+            person_id: $("#tasks_employee_filter").val(),
+            // client_id: $("#tasks_client_filter").val(),
+            department_id: $("#tasks_department_filter").val(),
+            show_page: $("#tasks_show_page_hidden").val(),
+            show_page_id: $("#tasks_show_page_id_hidden").val(),
+            task_start_date_from: $("#task_start_date_from").val(),
+            task_start_date_to: $("#task_start_date_to").val(),
+            task_end_date_from: $("#task_end_date_from").val(),
+            task_end_date_to: $("#task_end_date_to").val(),
+            page: p.offset / p.limit + 1,
+            limit: p.limit,
+            sort: p.sort,
+            order: p.order,
+            offset: p.offset,
+            search: p.search,
+        };
+    }
+    window.icons = {
+        refresh: "bx-refresh",
+        toggleOn: "bx-toggle-right",
+        toggleOff: "bx-toggle-left",
+        fullscreen: "bx-fullscreen",
+        columns: "bx-list-ul",
+        export_data: "bx-list-ul",
+        paginationSwitch: "bx-list-ul",
     };
-}
-window.icons = {
-    refresh: "bx-refresh",
-    toggleOn: "bx-toggle-right",
-    toggleOff: "bx-toggle-left",
-    fullscreen: "bx-fullscreen",
-    columns: "bx-list-ul",
-    export_data: "bx-list-ul",
-    paginationSwitch: "bx-list-ul",
-};
 
-function loadingTemplate(message) {
-    return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
-}
+    function loadingTemplate(message) {
+        return '<i class="bx bx-loader-circle bx-spin bx-flip-vertical" ></i>';
+    }
 
-function customViewFormatter(data) {
-    var template = $("#profileTemplate").html();
-    var view = "";
-    $.each(data, function (i, row) {
-        view += template
-            .replace("%PROJECTID%", row.id)
-            .replace("%DELETEPROJECTID%", row.id)
-            .replace("%PROJECTNAME%", row.project_name_card)
-            .replace("%PROJECTSTATUS%", row.project_status)
-            .replace("%PROJECTFUND%", row.project_fund_category)
-            .replace("%BUDGET%", row.budget)
-            .replace("%CLIENT%", row.client)
-            .replace("%BALANCE%", row.balance)
-            .replace("%PROGRESS%", row.progress)
-            .replace("%PROGRESSBAR%", row.progress_bar_card)
-            .replace("%ASSIGNEDTO%", row.assigned_to)
-            .replace("%STARTDATE%", row.start_date)
-            .replace("%CARDDELRESTDIV%", row.card_delete_restore_div)
-            .replace("%ENDDATE%", row.end_date)
-            .replace("%TASKURL%", row.task_url)
-            .replace("%TASKCOUNT%", row.task_count);
+    function customViewFormatter(data) {
+        var template = $("#profileTemplate").html();
+        var view = "";
+        $.each(data, function(i, row) {
+            view += template
+                .replace("%PROJECTID%", row.id)
+                .replace("%DELETEPROJECTID%", row.id)
+                .replace("%PROJECTNAME%", row.project_name_card)
+                .replace("%PROJECTSTATUS%", row.project_status)
+                .replace("%PROJECTFUND%", row.project_fund_category)
+                .replace("%BUDGET%", row.budget)
+                .replace("%CLIENT%", row.client)
+                .replace("%BALANCE%", row.balance)
+                .replace("%PROGRESS%", row.progress)
+                .replace("%PROGRESSBAR%", row.progress_bar_card)
+                .replace("%ASSIGNEDTO%", row.assigned_to)
+                .replace("%STARTDATE%", row.start_date)
+                .replace("%CARDDELRESTDIV%", row.card_delete_restore_div)
+                .replace("%ENDDATE%", row.end_date)
+                .replace("%TASKURL%", row.task_url)
+                .replace("%TASKCOUNT%", row.task_count);
+        });
+
+        return `<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 row-cols-xxl-4 g-3 mb-9">${view}</div>`;
+        // return `<div class="row mx-0">${view}</div>`
+    }
+
+    $(
+        "#project_status_filter,#project_filter,#project_venue_filter,#tasks_department_filter, #project_functional_area"
+    ).on("change", function(e) {
+        e.preventDefault();
+        console.log("tasks.js on change");
+        $("#project_table").bootstrapTable("refresh");
     });
-
-    return `<div class="row row-cols-1 row-cols-sm-2 row-cols-xl-3 row-cols-xxl-4 g-3 mb-9">${view}</div>`;
-    // return `<div class="row mx-0">${view}</div>`
-}
-
-$(
-    "#project_status_filter,#project_filter,#project_venue_filter,#tasks_department_filter, #project_functional_area"
-).on("change", function (e) {
-    e.preventDefault();
-    console.log("tasks.js on change");
-    $("#project_table").bootstrapTable("refresh");
-});
 </script>

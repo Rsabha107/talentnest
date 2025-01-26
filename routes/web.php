@@ -224,6 +224,10 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::get('/projects/admin/project/member/{pid}/delete/{id}', 'mdelete')->name('projects.admin.project.member.delete')->middleware('permission:project.delete');
             Route::post('/projects/admin/project/member/update', 'mupdate')->name('projects.admin.project.member.update')->middleware('permission:project.delete');
 
+            Route::get('/gantt', function () {
+                    return view('gantt');
+            })->name('gantt');
+
         });
 
         // Tasks Routes

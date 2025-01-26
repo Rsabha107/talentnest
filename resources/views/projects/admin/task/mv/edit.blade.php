@@ -78,7 +78,7 @@
         </div>
         <div class="col-md-6">
             <label class="form-label" for="inputAddress">Functional Areas</label>
-            <select name="department_assignment_id" id="edit_task_department_id" class="form-select" id="floatingSelectRating" required>
+            <select name="functional_area_id" id="edit_task_functional_area_id" class="form-select" id="floatingSelectRating" required>
                 <option selected="selected" value="">Select...</option>
                 @foreach ($functional_areas as $key => $item )
                 @if ($task->functional_area_id == $item->id )

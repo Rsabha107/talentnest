@@ -320,6 +320,104 @@
             echarts
         } = window;
 
+
+                /* -------------------------------------------------------------------------- */
+        /*                        Echarts budget Utilizatization                      */
+        /* -------------------------------------------------------------------------- */
+
+        const budgetUtilizationtInit = () => {
+            const {
+                getData,
+                getColor
+            } = window.phoenix.utils;
+            const $chartEl = document.querySelector('.echarts-budget-utilization');
+            // var percent = $(this).data('percent');
+            const percent = getData($chartEl, 'percent');
+            console.log('inside echarts-budget-utilization');
+            console.log('percent: ' + percent);
+
+            if ($chartEl) {
+                const userOptions = getData($chartEl, 'options');
+                const chart = echarts$2.init($chartEl);
+                console.log('inside chartEl: ' + $chartEl);
+
+                const getDefaultOptions = () => ({
+                    tooltip: {
+                        trigger: 'item',
+                        padding: [2, 3],
+                        backgroundColor: getColor('body-highlight-bg'),
+                        borderColor: getColor('border-color'),
+                        textStyle: {
+                            color: getColor('light-text-emphasis')
+                        },
+                        borderWidth: 1,
+                        position: (...params) => handleTooltipPosition(params),
+                        transitionDuration: 0,
+                        formatter: params => {
+                            return `<strong>${params.seriesName}:</strong> ${params.value}%`;
+                        }
+                    },
+                    legend: {
+                        show: false
+                    },
+                    series: [{
+                        type: 'gauge',
+                        center: ['50%', '60%'],
+                        name: 'Utilized Budget',
+                        startAngle: 180,
+                        endAngle: 0,
+                        min: 0,
+                        max: 100,
+                        splitNumber: 12,
+                        itemStyle: {
+                            color: getColor('primary')
+                        },
+                        progress: {
+                            show: true,
+                            roundCap: true,
+                            width: 12,
+                            itemStyle: {
+                                shadowBlur: 0,
+                                shadowColor: '#0000'
+                            }
+                        },
+                        pointer: {
+                            show: false
+                        },
+                        axisLine: {
+                            roundCap: true,
+                            lineStyle: {
+                                width: 12,
+                                color: [
+                                    [1, getColor('primary-bg-subtle')]
+                                ]
+                            }
+                        },
+                        axisTick: {
+                            show: false
+                        },
+                        splitLine: {
+                            show: false
+                        },
+                        axisLabel: {
+                            show: false
+                        },
+                        title: {
+                            show: false
+                        },
+                        detail: {
+                            show: true
+                        },
+                        data: [{
+                            value: percent,
+                            // name: 'raafat',
+                        }, ]
+                    }]
+                });
+
+                echartSetOption(chart, userOptions, getDefaultOptions);
+            }
+        };
         /* -------------------------------------------------------------------------- */
         /*                                Market Share                                */
         /* -------------------------------------------------------------------------- */
@@ -601,6 +699,7 @@
         docReady(completedTaskChartInit);
         docReady(topCouponsChartInit);
         docReady(pieEdgeAlignChartInit);
-
+        docReady(budgetUtilizationtInit);
+        
     }));
 </script>

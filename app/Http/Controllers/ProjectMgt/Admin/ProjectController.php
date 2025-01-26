@@ -107,6 +107,7 @@ class ProjectController extends Controller
 
         // $ops = Project::orderBy($sort, $order);
 
+        Log::info(request()->all());
 
         if ($functional_area) {
             // dd($functional_area);
@@ -128,9 +129,6 @@ class ProjectController extends Controller
             // $ops = $ops->where(function ($query) use ($venue_id) {
             //     $query->where('venue_id', 'like', '%' . $venue_id . '%');
             // });
-        } else {
-            // dd('here');
-            $ops = Project::orderBy($sort, $order);
         }
 
         if ($search) {
@@ -923,6 +921,7 @@ class ProjectController extends Controller
         // $tags = Tag::all();
         // $functional_areas = FunctionalArea::all();
         $functional_areas = $projectData->functional_areas;
+        $total_budget_spent = $projectData->tasks->sum('actual_budget_allocated');
 
         $emps = Employee::whereDoesntHave('projects', function ($query) use ($id) {
             return $query->where('project_id', $id);
@@ -988,6 +987,8 @@ class ProjectController extends Controller
         $eventNote = $projectData->notes;
         $FileName = $projectData->files;
 
+        $budget_percentage_used = ($total_budget_spent / $projectData->budget_allocation) * 100;
+
 
         // ******************************* this is for the x-card
         $projects = Project::find($id);
@@ -1030,6 +1031,8 @@ class ProjectController extends Controller
             'fund_category' => $fund_category,
             'budget_name' => $budget_name,
             'emps' => $emps,
+            'total_budget_spent' => $total_budget_spent,
+            'budget_percentage_used' => $budget_percentage_used,
         ]);
     }  // end detail
 

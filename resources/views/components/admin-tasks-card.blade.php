@@ -39,7 +39,9 @@ $workspace_id = session()->get('workspace_id') ? session()->get('workspace_id') 
                         <!-- <th data-field="attributes"></th> -->
                         <th class="name align-middle white-space-nowrap ps-0" data-sortable="true" data-field="name"><?= get_label('task', 'Task') ?></th>
                         <th data-sortable="true" data-field="project_id"><?= get_label('project', 'Project') ?></th>
-                        <th class="align-middle white-space-nowrap fs-9 text-body" data-sortable="true" data-field="workspace_id"><?= get_label('workspace', 'Workspace') ?></th>
+                        <!-- <th class="align-middle white-space-nowrap fs-9 text-body" data-sortable="true" data-field="workspace_id"><?= get_label('workspace', 'Workspace') ?></th> -->
+                        <th class="align-middle white-space-nowrap fs-9 text-body" data-sortable="true" data-field="venue_id"><?= get_label('Venue', 'Venue') ?></th>
+                        <th class="align-middle white-space-nowrap fs-9 text-body" data-sortable="true" data-field="functional_area_id"><?= get_label('FA', 'Functional Area') ?></th>
                         <th class="align-middle white-space-nowrap fs-9 text-body" data-sortable="true" data-field="department_assignment_id"><?= get_label('department', 'Department') ?></th>
                         <th data-sortable="false" data-field="status"><?= get_label('status', 'Status') ?></th>
                         <th data-sortable="false" data-field="assigned_by" data-visible="false"><?= get_label('assigned_by', 'Assigned by') ?></th>

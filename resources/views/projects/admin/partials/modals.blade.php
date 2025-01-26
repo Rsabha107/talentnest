@@ -566,7 +566,7 @@
                         class="fas fa-times fs--1 text-danger"></span></button>
             </div>
             <form class="needs-validation form-submit-event" novalidate=""
-                action="{{ route('projects.admin.project.member.update') }}" method="POST" id="task_status">
+                action="{{ route('projects.admin.project.member.update') }}" method="POST" id="project_members">
                 @csrf
                 <div class="modal-body">
                     <div class="modal-body px-0">
@@ -1117,7 +1117,7 @@
 
     <!-- Modals for change status in project and task -->
     <div class="modal fade" id="taskStatusModal" tabindex="-1" data-bs-backdrop="static"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        aria-labelledby="staticBackdropLabel">
         <div class="modal-dialog modal-dialog-top">
             <div class="modal-content bg-100">
                 <div class="modal-header bg-modal-header">
@@ -1127,7 +1127,6 @@
                 </div>
                 <form class="needs-validation form-submit-event" novalidate=""
                     action="{{ route('projects.admin.task.status.update') }}" method="POST" id="task_status">
-                    <!-- <form class="needs-validation" novalidate="" action="{{ url('/tracki/task/status/update') }}" method="POST" id="task_status"> -->
                     @csrf
                     <div class="modal-body">
                         <div class="modal-body px-0">

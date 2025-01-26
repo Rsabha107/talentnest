@@ -239,8 +239,10 @@ class TaskController extends Controller
                 'project_id' => '<div class="d-flex align-items-center"><div><a class="fw-bold mb-0 line-clamp-3" href="' . $details_url . '">' . $op->project?->name . '</a>',
                 'name' => '<a class="fw-bold mb-0 line-clamp-3" id="taskCardView" href="javascript:void(0);"  data-id="' . $op->id . '" data-table="task_table">' . $op->name . '</a><div class="d-flex align-items-center">' .
                     '<p class="mb-0 text-body-highlight fw-semibold fs-10 me-2">' . $icons . '</p></div></div></div>',
-                'workspace_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->workspaces?->title . '</div>',
-                'department_assignment_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->department->name . '</div>',
+                // 'workspace_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->workspaces?->title . '</div>',
+                'venue_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->venue?->name . '</div>',
+                'functional_area_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->functional_area?->name . '</div>',
+                'department_assignment_id' => '<div class="align-middle white-space-wrap fw-bold fs-9">' . $op->department?->name . '</div>',
                 'assigned_by' => $op->assigned_by?->name,
                 'assigned_to' => $assign_to,
                 // 'assigned_to' => $op->employees,
@@ -787,6 +789,13 @@ class TaskController extends Controller
         foreach ($request->assignment_to_id as $key => $data) {
 
             $task->employees()->attach($request->assignment_to_id[$key]);
+        }
+
+        $task->tags()->detach();
+
+        foreach ($request->tag_id as $key => $data) {
+
+            $task->tags()->attach($request->tag_id[$key]);
         }
 
 

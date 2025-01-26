@@ -120,7 +120,7 @@ $(document).ready(function () {
         // console.log("*****************************************");
 
         if (!name.checkValidity()) {
-            // console.log("inside checkValidity stop");
+            console.log("inside checkValidity stop");
             event.preventDefault();
             event.stopPropagation();
             $("#cover-spin").hide();

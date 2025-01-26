@@ -48,6 +48,16 @@ class Task extends Model
         return $this->belongsTo(Employee::class, 'assignment_id');
     }
 
+    public function venue()
+    {
+        return $this->belongsTo(venue::class, 'venue_id');
+    }
+
+    public function functional_area()
+    {
+        return $this->belongsTo(FunctionalArea::class, 'functional_area_id');
+    }
+
     public function status()
     {
         return $this->belongsTo(Status::class, 'status_id');

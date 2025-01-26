@@ -51,14 +51,9 @@
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="fa-solid fa-chart-line me-2 tab-icon-color">
 
-                    </svg><span class="d-none d-sm-inline">Overview</span></a>
-                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
-                    id="taskTab" data-bs-toggle="tab" data-bs-target="#taskTabContent" role="tab"
-                    aria-controls="taskTabContent" aria-selected="false" tabindex="-1"> <svg
-                        xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="fa-solid fa-chart-line me-2 tab-icon-color">
-                    </svg><span class="d-none d-sm-inline">Tasks</span></a><a
+                    </svg><span class="d-none d-sm-inline">Overview</span>
+                </a>
+                <a
                     class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
                     id="memeberTab" data-bs-toggle="tab" data-bs-target="#memeberTabContent" role="tab"
                     aria-controls="memeberTabContent" aria-selected="false" tabindex="-1"> <svg
@@ -69,7 +64,15 @@
                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
                         <circle cx="5.5" cy="18.5" r="2.5"></circle>
                         <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                    </svg><span class="d-none d-sm-inline">Memebers</span></a><a
+                    </svg><span class="d-none d-sm-inline">Memebers</span></a>
+                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                    id="taskTab" data-bs-toggle="tab" data-bs-target="#taskTabContent" role="tab"
+                    aria-controls="taskTabContent" aria-selected="false" tabindex="-1"> <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="fa-solid fa-chart-line me-2 tab-icon-color">
+                    </svg><span class="d-none d-sm-inline">Tasks</span></a>
+                    <a
                     class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
                     id="notesTab" data-bs-toggle="tab" data-bs-target="#notesTabContent" role="tab"
                     aria-controls="notesTabContent" aria-selected="false" tabindex="-1"> <svg
@@ -122,11 +125,12 @@
                                                                 </a>
                                                             </button>
                                                         </div>
-                                                        <span class="badge badge-phoenix badge-phoenix-warning"
+                                                        {{-- <span class="badge badge-phoenix badge-phoenix-warning"
                                                             role="button" data-bs-toggle="tooltip"
                                                             data-bs-placement="left"
                                                             title="Workspace">{{ $projectData->workspaces?->title }}<span
-                                                                class="ms-1 fa-solid fas fa-network-wired"></span></span>
+                                                                class="ms-1 fa-solid fas fa-network-wired"></span>
+                                                        </span> --}}
                                                         <span
                                                             class="badge badge-phoenix badge-phoenix-{{ $projectData->status->color }} mb-4">{{ $projectData->status->title }}<span
                                                                 class="ms-1 uil uil-stopwatch"></span></span>
@@ -448,6 +452,132 @@
                                                     <div class="col-12 col-sm-auto flex-1">
                                                         <div class="echart-pie-edge-align-chart-example"
                                                             style="min-height:200px;width:100%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row row-cols-1 row-cols-sm-2 row-cols-xl-2 row-cols-xxl-2 g-3 mb-3">
+                                        <div class="col">
+                                            <div class="card h-100 ">
+                                                <div class="card-body">
+                                                    <div class="d-flex align-items-center mb-3">
+                                                        <h4 class="fw-bolder mb-2 line-clamp-1 mb-1">Project Information
+                                                        </h4>
+                                                        <button class="btn btn-link p-0">
+                                                            <a href="javascript:void(0);" id="edit_project"
+                                                                data-action="update" data-source="list" data-type="edit"
+                                                                data-table="none" data-id="{{ $projectData->id }}"
+                                                                data-redirect="list"
+                                                                data-workspace_id="{{ session()->get('workspace_id') }}"
+                                                                role="button" title="edit">
+                                                                <span
+                                                                    class="fas fa-pen fs-8 ms-3 text-body-quaternary"></span>
+                                                            </a>
+                                                        </button>
+                                                    </div>
+
+                                                    <div class="col-12 col-sm-auto flex-1">
+                                                        <table class="lh-sm">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td
+                                                                        class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                        Location : </td>
+                                                                    <td
+                                                                        class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                        {{ $projectData->locations?->name ? $projectData->locations?->name : 'not specified' }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td
+                                                                        class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                        Venue : </td>
+                                                                    <td
+                                                                        class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                        @foreach ($projectData->venues as $key => $item)
+                                                                            <span class="badge badge-tag me-2 mb-1 pull-up"
+                                                                                style="background-color:#bedc65;">{{ $item->name }}</span>
+                                                                        @endforeach
+                                                                        {{-- {{ $projectData->venues?->name ? $projectData->venues?->name : 'not specified' }} --}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td
+                                                                        class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                        Functional Area : </td>
+                                                                    <td
+                                                                        class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                        @foreach ($projectData->functional_areas as $key => $item)
+                                                                            <span class="badge badge-tag me-2 mb-1 pull-up"
+                                                                                style="background-color:#bedc65;">{{ $item->name }}</span>
+                                                                        @endforeach
+                                                                        {{-- {{ $projectData->venues?->name ? $projectData->venues?->name : 'not specified' }} --}}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td
+                                                                        class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                        Project Type :</td>
+                                                                    <td
+                                                                        class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                        {{ $projectData->types?->name ? $projectData->types?->name : 'not specified' }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td
+                                                                        class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                        Project Category :</td>
+                                                                    <td class="text-warning fw-semibold ps-3">
+                                                                        {{ $projectData->categories?->name ? $projectData->categories?->name : 'not specified' }}
+                                                                    </td>
+                                                                </tr>
+                                                                <tr class="mb-3">
+                                                                    <td
+                                                                        class="align-top py-1 text-body text-nowrap fw-bold">
+                                                                        Attendeese :</td>
+                                                                    <td
+                                                                        class="text-body-tertiary text-opacity-85 fw-semibold ps-3">
+                                                                        {{ $projectData->audiences?->name ? $projectData->audiences?->name : 'not specified' }}
+                                                                    </td>
+                                                                </tr>
+                                                                <!-- <tr>
+                                                                            <td>
+                                                                                <div class="d-flex align-items-center mt-3"><span class="fa-solid fa-list-check me-2 text-body-tertiary fs-9"></span>
+                                                                                    <h5 class="text-body-emphasis mb-0 me-2">{{ $projectData->tasks->count() }}<span class="text-body fw-normal ms-2">tasks</span></h5>
+                                                                                </div>
+                                                                            </td>
+                                                                        </tr> -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            <div class="card h-100">
+                                                <div class="card-body d-flex flex-column">
+                                                    <div class="d-flex justify-content-between">
+                                                        <div>
+                                                            <h5 class="mb-2">Total Spent</h5>
+                                                            <h6 class="text-body-tertiary">Budget: {{ number_format($projectData->budget_allocation) }}</h6>
+                                                        </div>
+                                                        <h4>{{ number_format($total_budget_spent) }}</h4>
+                                                    </div>
+                                                    <div class="d-flex justify-content-center pt-3 flex-1">
+                                                        <div class="echarts-budget-utilization" style="height:100%;width:100%;" data-percent="{{ number_format($budget_percentage_used, 2) }}"></div>
+                                                    </div>
+                                                    <div class="mt-3">
+                                                        <div class="d-flex align-items-center mb-2">
+                                                            <div class="bullet-item bg-primary me-2"></div>
+                                                            <h6 class="text-body fw-semibold flex-1 mb-0">Budget Uitlization</h6>
+                                                            <h6 class="text-body fw-semibold mb-0">{{ number_format($budget_percentage_used, 2)}}%</h6>
+                                                        </div>
+                                                        <!-- <div class="d-flex align-items-center">
+                                                            <div class="bullet-item bg-primary-subtle me-2"></div>
+                                                            <h6 class="text-body fw-semibold flex-1 mb-0">Non-paying customer</h6>
+                                                            <h6 class="text-body fw-semibold mb-0">70%</h6>
+                                                        </div> -->
                                                     </div>
                                                 </div>
                                             </div>
