@@ -344,7 +344,7 @@
                 const getDefaultOptions = () => ({
                     tooltip: {
                         trigger: 'item',
-                        padding: [2, 3],
+                        padding: [7, 10],
                         backgroundColor: getColor('body-highlight-bg'),
                         borderColor: getColor('border-color'),
                         textStyle: {
@@ -355,7 +355,8 @@
                         transitionDuration: 0,
                         formatter: params => {
                             return `<strong>${params.seriesName}:</strong> ${params.value}%`;
-                        }
+                        },
+                        extraCssText: 'z-index: 1000'
                     },
                     legend: {
                         show: false
@@ -406,7 +407,7 @@
                             show: false
                         },
                         detail: {
-                            show: true
+                            show: false
                         },
                         data: [{
                             value: percent,

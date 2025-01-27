@@ -987,8 +987,12 @@ class ProjectController extends Controller
         $eventNote = $projectData->notes;
         $FileName = $projectData->files;
 
-        $budget_percentage_used = ($total_budget_spent / $projectData->budget_allocation) * 100;
-
+        if ($projectData->budget_allocation == 0) {
+            $budget_percentage_used = 0;
+        } else {
+            $budget_percentage_used = ($total_budget_spent / $projectData->budget_allocation) * 100;
+        }
+        
 
         // ******************************* this is for the x-card
         $projects = Project::find($id);

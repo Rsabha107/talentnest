@@ -662,7 +662,7 @@ class TaskController extends Controller
 
 
             $util_controller = new UtilController;
-            $update_project_status = $util_controller->updateProjectStatus($request->event_id);
+            $update_project_status = $util_controller->updateProjectStatus($request->project_id);
 
             $details = [
                 'subject' => 'Tracki Notification Center. New task assignment',

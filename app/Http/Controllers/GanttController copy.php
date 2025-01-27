@@ -16,27 +16,24 @@ class GanttController extends Controller
     public function get($id)
     {
 
-        // $eventData = Event::join('colors', 'colors.id', '=', 'events.color_id')
-        //     ->whereNull('archived')
-        //     // ->where('events.id','=', $id)
-        //     ->get(([
-        //         'events.id',
-        //         'events.name',
-        //         'events.duration',
-        //         'events.progress',
-        //         'events.start_date',
-        //         'events.end_date',
-        //         'events.parent',
-        //         'colors.name as color',
-        //     ]));
+        $eventData = Event::join('colors', 'colors.id', '=', 'events.color_id')
+            ->whereNull('archived')
+            // ->where('events.id','=', $id)
+            ->get(([
+                'events.id',
+                'events.name',
+                'events.duration',
+                'events.progress',
+                'events.start_date',
+                'events.end_date',
+                'events.parent',
+                'colors.name as color',
+            ]));
 
-        $projectData = DB::table('projects')
-            ->select('id', 'name', 'duration', 'progress', 'start_date', 'end_date', 'parent', 'color_id')
-            // ->where('id', '=', $id)
-            ->get();
-// dd($projectData);
+        // $eventData = Event::all();
+
         $data_arr = [];
-        foreach ($projectData as $key => $record) {
+        foreach ($eventData as $key => $record) {
             $data_arr[] = [
                 "id"      => $record->id,
                 "text"    => $record->name,
@@ -46,7 +43,7 @@ class GanttController extends Controller
                 "start_date"    => $record->start_date,
                 "end_date"    => $record->end_date,
                 "parent"    => $record->parent,
-                "color"     => '#d8f9f5',
+                "color"     => '#3db9d3',
                 // "color"     => $record->color,
                 "type"      => 'event',
                 "open"      => true,
@@ -55,21 +52,21 @@ class GanttController extends Controller
 
             $taskData = DB::table('tasks')
                 ->leftjoin('colors', 'colors.id', '=', 'tasks.color_id')
-                ->join('departments', 'departments.id', '=', 'tasks.department_assignment_id')
+                ->join('department', 'department.id', '=', 'tasks.department_assignment_id')
                 ->select(
                     "tasks.id",
-                    DB::raw("concat(departments.name, ' / ', tasks.name) as name"),
-                    "departments.name as dept",
+                    DB::raw("concat(department.name, ' / ', tasks.name) as name"),
+                    "department.name as dept",
                     "tasks.name as task_name",
                     "duration",
                     "progress",
                     "status_id",
                     "start_date",
                     "due_date",
-                    "project_id as parent",
+                    "event_id as parent",
                     "colors.name as color"
                 )
-                ->where('project_id', '=', $record->id)
+                ->where('event_id', '=', $record->id)
                 ->orderBy('tasks.start_date', 'asc')
                 ->get();
 
@@ -81,9 +78,9 @@ class GanttController extends Controller
 
                 $color = null;
                 if ($record->status_id == config('tracki.task_status.completed')) {
-                    $color = '#DAF7A6';
+                    $color = 'green';
                 } else {
-                    $color = '#E5E4E2';
+                    $color = 'orange';
                 }
                 array_push($data_arr, [
                     "id"      => $record->id,
@@ -130,7 +127,7 @@ class GanttController extends Controller
         //             ->where('event_id', '=', $id)->get();
 
         $linkData = DB::table('tasks')
-            ->select('id', 'project_id as source', 'id as target', 'type')
+            ->select('id', 'event_id as source', 'id as target', 'type')
             ->get();
 
         $tasks = Taskx::all();

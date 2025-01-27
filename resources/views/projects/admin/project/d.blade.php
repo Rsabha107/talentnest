@@ -554,7 +554,7 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col">
+                                        <div class="col-12 col-md-6">
                                             <div class="card h-100">
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="d-flex justify-content-between">

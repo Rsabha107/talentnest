@@ -22,6 +22,9 @@
             /* overflow: hidden; */
         }
 
+        .gantt_task_content{
+            color: #0c0c0c;
+        }
         .status_line {
             background-color: #0ca30a;
         }
@@ -48,21 +51,22 @@
             line-height: 29px;
             display: inline-block;
             border-radius: 15px;
-            color: #FFF;
+            /* color: #FFF; */
+            color: #1b1b1b;
             margin: 3px;
         }
 
         .gantt_task_line.gantt_task_inline_color .gantt_task_progress {
             background-color: rgb(54, 54, 54);
-            opacity: 0.2;
+            /* opacity: 0.2; */
         }
 
         .gantt_task_progress {
             text-align: left;
             padding-left: 10px;
             box-sizing: border-box;
-            color: white;
-            font-weight: bold;
+            color: black;
+            font-weight: normal;
         }
 
         .resource_marker.workday_ok div {
@@ -191,26 +195,38 @@
         })
 
         gantt.plugins({
-            tooltip: true
+            tooltip: true,
+            marker: true,
+            keyboard_navigation: true,
         });
         gantt.attachEvent("onGanttReady", function() {
             var tooltips = gantt.ext.tooltips;
             tooltips.tooltip.setViewport(gantt.$task_data);
         });
 
+        gantt.config.order_branch = false;
+        gantt.config.open_tree_initially = false;
+
+        gantt.config.columns = [
+        { name: "text",  align: "left", tree: true, width: 200, resize: true,  },
+        { name: "start_date", align: "center", width: 80, resize: true },
+        { name: "duration", width: 60, align: "center" }
+    ];
+
         gantt.templates.tooltip_text = function(start, end, task) {
             $tp = "<b>name:</b> " + task.text +
                 "<br/><b>Department:</b> " + task.department +
                 "<br/><b>Start:</b> " + task.start_date +
                 "<br/><b>End:</b> " + task.end_date +
-                "<br/><b>Duration:</b> " + task.duration;
+                // "<br/><b>Duration:</b> " + task.duration;
+                "<br/><b>Progress:</b> " + task.progress + "%";
             return $tp;
             // "<b>Taskxxx:</b> " + task.text + "<br/><b>Duration:</b> " + task.duration;
         };
 
-        gantt.plugins({
-            marker: true
-        });
+        // gantt.plugins({
+        //     marker: true
+        // });
 
         var dateToStr = gantt.date.date_to_str(gantt.config.task_date);
         var today = new Date;
@@ -238,9 +254,24 @@
         };
 
         gantt.templates.progress_text = function(start, end, task) {
-            return "<span style='text-align:left;'>" + Math.round(task.progress * 100) + "% </span>";
+            return "<span style='text-align:left;'>" + Math.round(task.progress ) + "% </span>";
         };
 
+        var resourcesStore = gantt.createDatastore({
+		name: gantt.config.resource_store,
+		type: "treeDatastore",
+		initItem: function (item) {
+			item.parent = item.parent || gantt.config.root_id;
+			item[gantt.config.resource_property] = item.parent;
+			item.open = true;
+			return item;
+		}
+	});
+
+    gantt.attachEvent("onTaskCreated", function(task){
+        task[gantt.config.resource_property] = [];
+        return true;
+    });
 
         gantt.init("gantt_here", new Date(2022, 8, 1), new Date(2030, 10, 1));
         gantt.load("/api/data/8");
@@ -248,6 +279,27 @@
         var dp = new gantt.dataProcessor("/api");
 
         console.log(dp);
+
+        gantt.config.layout = {
+        css: "gantt_container",
+        rows: [
+            {
+                cols: [
+                    { view: "grid", group: "grids", scrollY: "scrollVer" },
+                    { resizer: true, width: 1 },
+                    { view: "timeline", scrollX: "scrollHor", scrollY: "scrollVer" },
+                    { view: "scrollbar", id: "scrollVer", group: "vertical" }
+                ],
+                gravity: 2
+            },
+            { resizer: true, width: 1 },
+           
+            { view: "scrollbar", id: "scrollHor" }
+        ]
+    };
+
+    gantt.config.drag_progress = false;
+    gantt.config.details_on_dblclick = false;
 
         // gantt.config.layout = without_grids_layout;
         // ********************* initiate **********************//
