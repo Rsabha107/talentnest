@@ -54,6 +54,7 @@ use App\Http\Controllers\EmployeeTimeSheetEntryController;
 use App\Http\Controllers\EmployeeTimeSheetInvoice;
 use App\Http\Controllers\EntityController;
 use App\Http\Controllers\FunctionalAreaController;
+use App\Http\Controllers\GanttController;
 use App\Http\Controllers\GenderController;
 use App\Http\Controllers\hr\Admin\EmployeeAttachmentController as AdminEmployeeAttachmentController;
 use App\Http\Controllers\hr\Manager\ManagerController as ManagerManagerController;
@@ -224,11 +225,14 @@ Route::group(['middleware' => 'prevent-back-history', 'XssSanitizer'], function 
             Route::get('/projects/admin/project/member/{pid}/delete/{id}', 'mdelete')->name('projects.admin.project.member.delete')->middleware('permission:project.delete');
             Route::post('/projects/admin/project/member/update', 'mupdate')->name('projects.admin.project.member.update')->middleware('permission:project.delete');
 
-            Route::get('/gantt', function () {
+
+            Route::get('/ganttxx/{id}', function () {
                     return view('/projects/admin/project/gantt/gantt');
-            })->name('gantt');
+            })->name('ganttxxx');
 
         });
+
+        Route::get('/gantt/{id}', [GanttController::class, 'index'])->name('project.gantt.index');
 
         // Tasks Routes
         Route::controller(AdminTaskController::class)->group(function () {

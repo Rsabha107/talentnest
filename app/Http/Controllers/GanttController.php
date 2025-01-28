@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Linkx;
 use App\Models\Taskx;
 use App\Models\Event;
+use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Support\Facades\DB;
 
@@ -13,6 +14,12 @@ use Illuminate\Support\Facades\DB;
 class GanttController extends Controller
 {
     //
+    public function index($id=null)
+    {
+        $project = Project::find($id);
+        return view('projects/admin/project/gantt/gantt', ['project_id' => $project->id]);
+    }
+
     public function get($id)
     {
 
@@ -32,17 +39,19 @@ class GanttController extends Controller
 
         $projectData = DB::table('projects')
             ->select('id', 'name', 'duration', 'progress', 'start_date', 'end_date', 'parent', 'color_id')
-            // ->where('id', '=', $id)
+            ->where('id', '=', $id)
             ->get();
-// dd($projectData);
+        //  dd($id);
         $data_arr = [];
         foreach ($projectData as $key => $record) {
+            $progress = get_project_progress($record->id)/100;
+
             $data_arr[] = [
                 "id"      => $record->id,
                 "text"    => $record->name,
                 "department"      => 'see tasks',
                 "duration"    => $record->duration,
-                "progress"    => $record->progress,
+                "progress"    => $progress,
                 "start_date"    => $record->start_date,
                 "end_date"    => $record->end_date,
                 "parent"    => $record->parent,
@@ -51,7 +60,6 @@ class GanttController extends Controller
                 "type"      => 'event',
                 "open"      => true,
             ];
-
 
             $taskData = DB::table('tasks')
                 ->leftjoin('colors', 'colors.id', '=', 'tasks.color_id')
@@ -80,11 +88,11 @@ class GanttController extends Controller
             foreach ($taskData as $key => $record) {
 
                 $color = null;
-                if ($record->status_id == config('tracki.task_status.completed')) {
-                    $color = '#DAF7A6';
-                } else {
-                    $color = '#E5E4E2';
-                }
+                // if ($record->status_id == config('tracki.task_status.completed')) {
+                //     $color = '#DAF7A6';
+                // } else {
+                //     $color = '#E5E4E2';
+                // }
                 array_push($data_arr, [
                     "id"      => $record->id,
                     "text"    => $record->task_name,
@@ -136,6 +144,7 @@ class GanttController extends Controller
         $tasks = Taskx::all();
         $links = new Linkx();
 
+        // dd($data_arr);
         return response()->json([
             "data" => $data_arr,
             "links" => $linkData

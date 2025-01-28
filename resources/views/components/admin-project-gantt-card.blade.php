@@ -1,17 +1,4 @@
-<!DOCTYPE html>
-
-<head>
-    <!-- <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <!-- <script src="https://docs.dhtmlx.com/gantt/codebase/dhtmlxgantt.js?v=6.0.0"></script>
-    <link rel="stylesheet" href="https://docs.dhtmlx.com/gantt/codebase/dhtmlxgantt.css?v=6.0.0"> -->
-
-    <script src="{{ asset ('assets/js/dhtmlxgantt.js?v=8.0.6') }}"></script>
-    <link href="{{ asset ('assets/css/dhtmlxgantt.css?v=8.0.6') }}" type="text/css" rel="stylesheet" id="user-style-rtl">
-    <link href="{{ asset ('assets/css/controls_styles.css?v=8.0.6') }}" type="text/css" rel="stylesheet" id="user-style-rtl">
-
-
-    <style type="text/css">
+<style type="text/css">
         html,
         body {
             height: 90%;
@@ -22,9 +9,10 @@
             /* overflow: hidden; */
         }
 
-        .gantt_task_content{
+        .gantt_task_content {
             color: #0c0c0c;
         }
+
         .status_line {
             background-color: #0ca30a;
         }
@@ -56,8 +44,13 @@
             margin: 3px;
         }
 
-        .gantt_task_line.gantt_task_inline_color .gantt_task_progress {
-            background-color: rgb(54, 54, 54);
+        .gantt_task_line  {
+            background-color: rgb(195, 197, 195);
+            /* opacity: 0.2; */
+        }
+
+        .gantt_task_line.gantt_task_inline_color  {
+            background-color: rgb(169, 241, 181);
             /* opacity: 0.2; */
         }
 
@@ -66,7 +59,7 @@
             padding-left: 10px;
             box-sizing: border-box;
             color: black;
-            font-weight: normal;
+            font-weight: bold;
         }
 
         .resource_marker.workday_ok div {
@@ -81,10 +74,8 @@
             background: #f4f7f4 !important;
         }
     </style>
-</head>
-
-<body>
-    <form class="gantt_control">
+<div class="card">
+<form class="gantt_control">
         <input type="button" value="Zoom In" onclick="zoomIn()">
         <input type="button" value="Zoom Out" onclick="zoomOut()">
 
@@ -208,11 +199,26 @@
         gantt.config.order_branch = false;
         gantt.config.open_tree_initially = false;
 
-        gantt.config.columns = [
-        { name: "text",  align: "left", tree: true, width: 200, resize: true,  },
-        { name: "start_date", align: "center", width: 80, resize: true },
-        { name: "duration", width: 60, align: "center" }
-    ];
+        gantt.config.columns = [{
+                name: "text",
+                align: "left",
+                tree: true,
+                width: 200,
+                resize: true,
+            },
+            {
+                name: "start_date",
+                align: "center",
+                width: 80,
+                resize: true
+            },
+            {
+                name: "duration",
+                width: 60,
+                align: "center"
+            }
+        ];
+
 
         gantt.templates.tooltip_text = function(start, end, task) {
             $tp = "<b>name:</b> " + task.text +
@@ -220,7 +226,7 @@
                 "<br/><b>Start:</b> " + task.start_date +
                 "<br/><b>End:</b> " + task.end_date +
                 // "<br/><b>Duration:</b> " + task.duration;
-                "<br/><b>Progress:</b> " + task.progress + "%";
+                "<br/><b>Progress:</b> " + task.progress*100 + "%";
             return $tp;
             // "<b>Taskxxx:</b> " + task.text + "<br/><b>Duration:</b> " + task.duration;
         };
@@ -255,30 +261,31 @@
         };
 
         gantt.templates.progress_text = function(start, end, task) {
-            return "<span style='text-align:left;'>" + Math.round(task.progress ) + "% </span>";
+            return "<span style='text-align:left;'>" + Math.round(task.progress*100) + "% </span>";
         };
 
         var resourcesStore = gantt.createDatastore({
-		name: gantt.config.resource_store,
-		type: "treeDatastore",
-		initItem: function (item) {
-			item.parent = item.parent || gantt.config.root_id;
-			item[gantt.config.resource_property] = item.parent;
-			item.open = true;
-			return item;
-		}
-	});
+            name: gantt.config.resource_store,
+            type: "treeDatastore",
+            initItem: function(item) {
+                item.parent = item.parent || gantt.config.root_id;
+                item[gantt.config.resource_property] = item.parent;
+                item.open = true;
+                return item;
+            }
+        });
 
-    gantt.attachEvent("onTaskCreated", function(task){
-        task[gantt.config.resource_property] = [];
-        return true;
-    });
+        gantt.attachEvent("onTaskCreated", function(task) {
+            task[gantt.config.resource_property] = [];
+            return true;
+        });
 
-console.log('before projectId');
+        // console.log('before projectId');
 
-    projectId = <?php echo json_encode($project_id); ?>
+        projectId = <?php echo json_encode($project->id); ?>
 
-console.log(projectId);
+
+        // console.log(projectId);
 
         gantt.init("gantt_here", new Date(2022, 8, 1), new Date(2030, 10, 1));
         gantt.load("/api/data/" + projectId);
@@ -286,28 +293,47 @@ console.log(projectId);
 
         var dp = new gantt.dataProcessor("/api");
 
-        console.log(dp);
+        // console.log(dp);
 
         gantt.config.layout = {
-        css: "gantt_container",
-        rows: [
-            {
-                cols: [
-                    { view: "grid", group: "grids", scrollY: "scrollVer" },
-                    { resizer: true, width: 1 },
-                    { view: "timeline", scrollX: "scrollHor", scrollY: "scrollVer" },
-                    { view: "scrollbar", id: "scrollVer", group: "vertical" }
-                ],
-                gravity: 2
-            },
-            { resizer: true, width: 1 },
-           
-            { view: "scrollbar", id: "scrollHor" }
-        ]
-    };
+            css: "gantt_container",
+            rows: [{
+                    cols: [{
+                            view: "grid",
+                            group: "grids",
+                            scrollY: "scrollVer"
+                        },
+                        {
+                            resizer: true,
+                            width: 1
+                        },
+                        {
+                            view: "timeline",
+                            scrollX: "scrollHor",
+                            scrollY: "scrollVer"
+                        },
+                        {
+                            view: "scrollbar",
+                            id: "scrollVer",
+                            group: "vertical"
+                        }
+                    ],
+                    gravity: 2
+                },
+                {
+                    resizer: true,
+                    width: 1
+                },
 
-    gantt.config.drag_progress = false;
-    gantt.config.details_on_dblclick = false;
+                {
+                    view: "scrollbar",
+                    id: "scrollHor"
+                }
+            ]
+        };
+
+        gantt.config.drag_progress = false;
+        gantt.config.details_on_dblclick = false;
 
         // gantt.config.layout = without_grids_layout;
         // ********************* initiate **********************//
@@ -330,4 +356,4 @@ console.log(projectId);
             };
         }
     </script>
-</body>
+</div>

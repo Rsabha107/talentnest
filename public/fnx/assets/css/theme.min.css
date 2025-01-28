@@ -36204,7 +36204,8 @@ a[href].bg-body-secondary:hover, a[href].bg-body-secondary:focus {
 }
 
 .kanban-content {
-  position: fixed;
+  position: relative;
+  /* position: fixed;  changed RS */
   padding-top: var(--phoenix-navbar-top-height);
   padding-left: 0 !important;
   padding-right: 0 !important;

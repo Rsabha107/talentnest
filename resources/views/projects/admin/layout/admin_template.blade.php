@@ -77,7 +77,14 @@
     <link rel="stylesheet" href="{{ asset('assets/vendors/fonts/boxicons.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
 
-    <link href="{{ asset('fnx/vendors/dhtmlx-gantt/dhtmlxgantt.css') }}" rel="stylesheet">
+    <!-- <link href="{{ asset('fnx/vendors/dhtmlx-gantt/dhtmlxgantt.css') }}" rel="stylesheet"> -->
+     <!-- dhtmlxgantt -->
+    <script src="{{ asset ('assets/vendors/dhtmlx-gantt/dhtmlxgantt.js') }}"></script>
+    <link href="{{ asset ('assets/vendors/dhtmlx-gantt/dhtmlxgantt.css') }}" type="text/css" rel="stylesheet" id="user-style-rtl">
+    <link href="{{ asset ('assets/vendors/dhtmlx-gantt/controls_styles.css') }}" type="text/css" rel="stylesheet" id="user-style-rtl">
+    <!-- <link href="{{ asset ('assets/css/controls_styles.css?v=8.0.6') }}" type="text/css" rel="stylesheet" id="user-style-rtl"> -->
+    <!-- end dhtmlxgantt -->
+
     <link href="{{ asset('fnx/vendors/glightbox/glightbox.min.css') }}" rel="stylesheet">
     <link href="{{ asset('fnx/vendors/dropzone/dropzone.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/long_text.css') }}" rel="stylesheet">
@@ -164,7 +171,7 @@
     <script src="{{ asset ('fnx/assets/js/phoenix.js') }}"></script>
     <script src="{{ asset ('fnx/vendors/echarts/echarts.min.js') }}"></script>
 
-    <script src="{{ asset ('fnx/vendors/dhtmlx-gantt/dhtmlxgantt.js') }}"></script>
+    <!-- <script src="{{ asset ('fnx/vendors/dhtmlx-gantt/dhtmlxgantt.js') }}"></script> -->
     <script src="{{ asset ('fnx/vendors/glightbox/glightbox.min.js') }}"> </script>
     <script src="{{ asset ('fnx/vendors/tinymce/tinymce.min.js') }}"></script>
     <script src="{{ asset ('fnx/vendors/dropzone/dropzone-min.js') }}"></script>

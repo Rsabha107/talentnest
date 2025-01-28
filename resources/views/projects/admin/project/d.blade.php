@@ -43,8 +43,8 @@
 
         <div class="row g-0 border-top">
             <div class="nav flex-sm-row border-bottom border-bottom-sm-0 fs-9 vertical-tab h-100 justify-content-between"
-                role="tablist" aria-orientation="horizontal"><a
-                    class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center active"
+                role="tablist" aria-orientation="horizontal">
+                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center active"
                     id="overviewTab" data-bs-toggle="tab" data-bs-target="#overviewTabContent" role="tab"
                     aria-controls="overviewTabContent" aria-selected="true"> <svg xmlns="http://www.w3.org/2000/svg"
                         width="16px" height="16px" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -53,8 +53,7 @@
 
                     </svg><span class="d-none d-sm-inline">Overview</span>
                 </a>
-                <a
-                    class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
                     id="memeberTab" data-bs-toggle="tab" data-bs-target="#memeberTabContent" role="tab"
                     aria-controls="memeberTabContent" aria-selected="false" tabindex="-1"> <svg
                         xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none"
@@ -64,30 +63,49 @@
                         <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
                         <circle cx="5.5" cy="18.5" r="2.5"></circle>
                         <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                    </svg><span class="d-none d-sm-inline">Memebers</span></a>
+                    </svg><span class="d-none d-sm-inline">Memebers</span>
+                </a>
                 <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
                     id="taskTab" data-bs-toggle="tab" data-bs-target="#taskTabContent" role="tab"
                     aria-controls="taskTabContent" aria-selected="false" tabindex="-1"> <svg
                         xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="fa-solid fa-chart-line me-2 tab-icon-color">
-                    </svg><span class="d-none d-sm-inline">Tasks</span></a>
-                    <a
-                    class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                    </svg><span class="d-none d-sm-inline">Tasks</span>
+                </a>
+                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                    id="kanbanTab" data-bs-toggle="tab" data-bs-target="#kanbanTabContent" role="tab"
+                    aria-controls="kanbanTabContent" aria-selected="false" tabindex="-1"> <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="fa-solid fa-chart-line me-2 tab-icon-color">
+                    </svg><span class="d-none d-sm-inline">Task Board</span>
+                </a>
+                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                    id="ganttTab" data-bs-toggle="tab" data-bs-target="#ganttTabContent" role="tab"
+                    aria-controls="ganttTabContent" aria-selected="false" tabindex="-1"> <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="fa-solid fa-chart-line me-2 tab-icon-color">
+                    </svg><span class="d-none d-sm-inline">Gantt</span>
+                </a>
+                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
                     id="notesTab" data-bs-toggle="tab" data-bs-target="#notesTabContent" role="tab"
                     aria-controls="notesTabContent" aria-selected="false" tabindex="-1"> <svg
                         xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="fa-solid fa-clipboard me-2 tab-icon-color">
-                    </svg><span class="d-none d-sm-inline">Notes</span></a><a
-                    class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                    </svg><span class="d-none d-sm-inline">Notes</span>
+                </a>
+                <a class="nav-link border-end border-end-sm border-bottom-sm text-center text-sm-start cursor-pointer outline-none d-sm-flex align-items-sm-center"
                     id="filesTab" data-bs-toggle="tab" data-bs-target="#filesTabContent" role="tab"
                     aria-controls="filesTabContent" aria-selected="false" tabindex="-1"> <svg
                         xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="fa-solid fa-paperclip me-2 tab-icon-color">
-                    </svg><span class="d-none d-sm-inline">Files</span></a><a
-                    class="nav-link text-center text-sm-start border-bottom-sm cursor-pointer outline-none d-sm-flex align-items-sm-center"
+                    </svg><span class="d-none d-sm-inline">Files</span>
+                </a>
+                <a class="nav-link text-center text-sm-start border-bottom-sm cursor-pointer outline-none d-sm-flex align-items-sm-center"
                     id="advancedTab" data-bs-toggle="tab" data-bs-target="#advancedTabContent" role="tab"
                     aria-controls="advancedTabContent" aria-selected="false" tabindex="-1"> <svg
                         xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" viewBox="0 0 24 24"
@@ -95,10 +113,14 @@
                         stroke-linejoin="round" class="feather feather-lock me-sm-2 fs-4 nav-icons">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                         <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-                    </svg><span class="d-none d-sm-inline">Advanced</span></a>
+                    </svg><span class="d-none d-sm-inline">Advanced</span>
+                </a>
             </div>
             <div class="col-sm-12 mt-1">
                 <div class="tab-content py-3 h-100">
+                    <!--======================================
+                        OVERVIEW TAB AREA
+                    ======================================-->
                     <div class="tab-pane fade active show" id="overviewTabContent" role="tabpanel"
                         aria-labelledby="overviewTab">
                         <h4 class="mb-3 d-sm-none">Overview</h4>
@@ -129,8 +151,8 @@
                                                             role="button" data-bs-toggle="tooltip"
                                                             data-bs-placement="left"
                                                             title="Workspace">{{ $projectData->workspaces?->title }}<span
-                                                                class="ms-1 fa-solid fas fa-network-wired"></span>
-                                                        </span> --}}
+                                                        class="ms-1 fa-solid fas fa-network-wired"></span>
+                                                    </span> --}}
                                                         <span
                                                             class="badge badge-phoenix badge-phoenix-{{ $projectData->status->color }} mb-4">{{ $projectData->status->title }}<span
                                                                 class="ms-1 uil uil-stopwatch"></span></span>
@@ -236,8 +258,8 @@
                                                                         style="background-color:{{ $item->color }};">{{ $item->title }}</span>
                                                                 @endforeach
                                                                 <!-- <span class="badge badge-phoenix badge-phoenix-success me-2">Success</span>
-                                                                        <span class="badge badge-phoenix badge-phoenix-danger me-2">Lost</span>
-                                                                        <span class="badge badge-phoenix badge-phoenix-secondary">Close</span> -->
+                                                                            <span class="badge badge-phoenix badge-phoenix-danger me-2">Lost</span>
+                                                                            <span class="badge badge-phoenix badge-phoenix-secondary">Close</span> -->
                                                             </div>
                                                         </div>
                                                         <div
@@ -429,12 +451,12 @@
                                                                     </td>
                                                                 </tr>
                                                                 <!-- <tr>
-                                                                            <td>
-                                                                                <div class="d-flex align-items-center mt-3"><span class="fa-solid fa-list-check me-2 text-body-tertiary fs-9"></span>
-                                                                                    <h5 class="text-body-emphasis mb-0 me-2">{{ $projectData->tasks->count() }}<span class="text-body fw-normal ms-2">tasks</span></h5>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr> -->
+                                                                                <td>
+                                                                                    <div class="d-flex align-items-center mt-3"><span class="fa-solid fa-list-check me-2 text-body-tertiary fs-9"></span>
+                                                                                        <h5 class="text-body-emphasis mb-0 me-2">{{ $projectData->tasks->count() }}<span class="text-body fw-normal ms-2">tasks</span></h5>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr> -->
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -542,12 +564,12 @@
                                                                     </td>
                                                                 </tr>
                                                                 <!-- <tr>
-                                                                            <td>
-                                                                                <div class="d-flex align-items-center mt-3"><span class="fa-solid fa-list-check me-2 text-body-tertiary fs-9"></span>
-                                                                                    <h5 class="text-body-emphasis mb-0 me-2">{{ $projectData->tasks->count() }}<span class="text-body fw-normal ms-2">tasks</span></h5>
-                                                                                </div>
-                                                                            </td>
-                                                                        </tr> -->
+                                                                                <td>
+                                                                                    <div class="d-flex align-items-center mt-3"><span class="fa-solid fa-list-check me-2 text-body-tertiary fs-9"></span>
+                                                                                        <h5 class="text-body-emphasis mb-0 me-2">{{ $projectData->tasks->count() }}<span class="text-body fw-normal ms-2">tasks</span></h5>
+                                                                                    </div>
+                                                                                </td>
+                                                                            </tr> -->
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -560,24 +582,30 @@
                                                     <div class="d-flex justify-content-between">
                                                         <div>
                                                             <h5 class="mb-2">Total Spent</h5>
-                                                            <h6 class="text-body-tertiary">Budget: {{ number_format($projectData->budget_allocation) }}</h6>
+                                                            <h6 class="text-body-tertiary">Budget:
+                                                                {{ number_format($projectData->budget_allocation) }}</h6>
                                                         </div>
                                                         <h4>{{ number_format($total_budget_spent) }}</h4>
                                                     </div>
                                                     <div class="d-flex justify-content-center pt-3 flex-1">
-                                                        <div class="echarts-budget-utilization" style="height:100%;width:100%;" data-percent="{{ number_format($budget_percentage_used, 2) }}"></div>
+                                                        <div class="echarts-budget-utilization"
+                                                            style="height:100%;width:100%;"
+                                                            data-percent="{{ number_format($budget_percentage_used, 2) }}">
+                                                        </div>
                                                     </div>
                                                     <div class="mt-3">
                                                         <div class="d-flex align-items-center mb-2">
                                                             <div class="bullet-item bg-primary me-2"></div>
-                                                            <h6 class="text-body fw-semibold flex-1 mb-0">Budget Uitlization</h6>
-                                                            <h6 class="text-body fw-semibold mb-0">{{ number_format($budget_percentage_used, 2)}}%</h6>
+                                                            <h6 class="text-body fw-semibold flex-1 mb-0">Budget
+                                                                Uitlization</h6>
+                                                            <h6 class="text-body fw-semibold mb-0">
+                                                                {{ number_format($budget_percentage_used, 2) }}%</h6>
                                                         </div>
                                                         <!-- <div class="d-flex align-items-center">
-                                                            <div class="bullet-item bg-primary-subtle me-2"></div>
-                                                            <h6 class="text-body fw-semibold flex-1 mb-0">Non-paying customer</h6>
-                                                            <h6 class="text-body fw-semibold mb-0">70%</h6>
-                                                        </div> -->
+                                                                <div class="bullet-item bg-primary-subtle me-2"></div>
+                                                                <h6 class="text-body fw-semibold flex-1 mb-0">Non-paying customer</h6>
+                                                                <h6 class="text-body fw-semibold mb-0">70%</h6>
+                                                            </div> -->
                                                     </div>
                                                 </div>
                                             </div>
@@ -588,17 +616,24 @@
                             </div>
                         </div>
                     </div>
+                    <!--======================================
+                        END OVERVIEW TAB AREA
+                    ======================================-->
+
+                    <!--======================================
+                        TASKS AREA
+                    ======================================-->
                     <div class="tab-pane fade h-100" id="taskTabContent" role="tabpanel" aria-labelledby="taskTab">
                         <h5 class="mb-3 text-body-highlight">Tasks</h5>
                         <div class="mb-4 mt-4">
                             <div class="d-flex flex-wrap gap-3">
                                 <!-- <div class="search-box">
-                                        <form class="position-relative">
-                                            <input class="form-control search-input search" type="search" placeholder="Search products" aria-label="Search" />
-                                            <span class="fas fa-search search-box-icon"></span>
-        
-                                        </form>
-                                    </div> -->
+                                            <form class="position-relative">
+                                                <input class="form-control search-input search" type="search" placeholder="Search products" aria-label="Search" />
+                                                <span class="fas fa-search search-box-icon"></span>
+            
+                                            </form>
+                                        </div> -->
                                 <div>
                                     <select class="form-select select-appearance" id="tasks_department_filter"
                                         aria-label="Default select example">
@@ -633,12 +668,12 @@
                                     </select>
                                 </div>
                                 <!-- <div >
-                                        <select class="form-select select-appearance" id="active_archived_filter" aria-label="Default select example">
-                                            <option value=""><?= get_label('active_archived', 'Select Active or Archived') ?></option>
-                                            <option value="N" $selected>Active</option>
-                                            <option value="Y" >Archived</option>
-                                        </select>
-                                    </div> -->
+                                            <select class="form-select select-appearance" id="active_archived_filter" aria-label="Default select example">
+                                                <option value=""><?= get_label('active_archived', 'Select Active or Archived') ?></option>
+                                                <option value="N" $selected>Active</option>
+                                                <option value="Y" >Archived</option>
+                                            </select>
+                                        </div> -->
 
                                 <div class="ms-xxl-auto">
                                     <!-- <button class="btn btn-link text-body me-4 px-0"><span class="fa-solid fa-file-export fs-9 me-2"></span>Export</button> -->
@@ -657,40 +692,73 @@
                             </div>
                         </div>
                         <div class="mb-0">
-                            <x-admin-tasks-card :projectId="$projectData->id"  />
+                            <x-admin-tasks-card :projectId="$projectData->id" />
                         </div>
                     </div>
+                    <!--======================================
+                        END TASKS AREA
+                    ======================================-->
+
+                    <!--======================================
+                        GANTT AREA
+                    ======================================-->
+                    <div class="tab-pane fade h-100" id="ganttTabContent" role="tabpanel" aria-labelledby="ganttTab">
+                            {{-- <h5 class="mb-3 text-body-highlight">gantts</h5> --}}
+                            <div class="d-xl-flex justify-content-between mb-3">
+                                <a href="javascript:void(0);">
+                                    <button type="button" id="add_project_member" data-id="{{ $projectData->id }}"
+                                        class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
+                                        data-bs-original-title=" <?= get_label('add_new_project', 'Add project member') ?>">
+                                        <i class="fa-solid fa-plus me-2"></i>Add GAntt
+                                    </button>
+                                </a>
+                            </div>
+                        <div>
+                            <x-admin-project-gantt-card :project="$projectData" />
+                        </div>
+                    </div>
+                    <!--======================================
+                        End GANTT AREA
+                    ======================================-->
+
+                    <!--======================================
+                        Kanban AREA
+                    ======================================-->
+                    <div class="tab-pane fade h-100" id="kanbanTabContent" role="tabpanel" aria-labelledby="kanbanTab">
+                        {{-- <h5 class="mb-3 text-body-highlight">kanbans</h5> --}}
+                        <div class="d-xl-flex justify-content-between mb-3">
+                            <a href="javascript:void(0);">
+                                <button type="button" id="add_project_member" data-id="{{ $projectData->id }}"
+                                    class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
+                                    data-bs-original-title=" <?= get_label('add_new_project', 'Add project member') ?>">
+                                    <i class="fa-solid fa-plus me-2"></i>Add kanban
+                                </button>
+                            </a>
+                        </div>
+                    <div>
+                        <x-admin-project-kanban-card :project="$projectData" />
+                    </div>
+                </div>
+                <!--======================================
+                    End Kanban AREA
+                ======================================-->
+
+                    <!--======================================
+                        MEMEBER AREA
+                    ======================================-->
                     <div class="tab-pane fade h-100" id="memeberTabContent" role="tabpanel"
                         aria-labelledby="memeberTab">
                         <div class="d-flex flex-column h-100">
                             {{-- <h5 class="mb-3 text-body-highlight">Memebers</h5> --}}
                             <div class="d-xl-flex justify-content-between mb-3">
-                                <a href="javascript:void(0);" >
-                                    <button type="button" id="add_project_member" data-id="{{ $projectData->id }}" class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
+                                <a href="javascript:void(0);">
+                                    <button type="button" id="add_project_member" data-id="{{ $projectData->id }}"
+                                        class="btn btn-primary px-5" data-bs-toggle="tooltip" data-bs-placement="right"
                                         data-bs-original-title=" <?= get_label('add_new_project', 'Add project member') ?>">
                                         <i class="fa-solid fa-plus me-2"></i>Add project member
                                     </button>
                                 </a>
                             </div>
-                            {{-- <div class="mb-4 mt-2">
-                                <div class="d-flex flex-wrap gap-3">
-
-                                    <div class="ms-xxl-auto">
-                                        <!-- <button class="btn btn-link text-body me-4 px-0"><span class="fa-solid fa-file-export fs-9 me-2"></span>Export</button> -->
-                                        <!-- <button class="btn btn-primary" id="addBtn"><span class="fas fa-plus me-2"></span>Add product</button> -->
-                                        @if (Auth::user()->can('task.create'))
-                                            <a href="#!" id="add_task" data-action="store" data-source="manage"
-                                                data-type="add" data-table="task_table" data-id="0">
-                                                <button type="button" class="btn btn-sm btn-primary"
-                                                    data-bs-toggle="tooltip" data-bs-placement="right"
-                                                    data-bs-original-title=" <?= get_label('add_project_members', 'Add Project Members task') ?>">
-                                                    <i class="bx bx-plus"></i>
-                                                </button>
-                                            </a>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div> --}}
                             <div class="mb-0">
                                 <x-admin-project-members-card :users="$users" :projectId="$projectData->id" :statuses="$statuses"
                                     :departments="$departments" source="list" showpage="list"
@@ -698,6 +766,13 @@
                             </div>
                         </div>
                     </div>
+                    <!--======================================
+                        End Member Memebers
+                    ======================================-->
+
+                    <!--======================================
+                        Notes AREA
+                    ======================================-->
                     <div class="tab-pane fade" id="notesTabContent" role="tabpanel" aria-labelledby="notesTab">
                         <h5 class="mb-3 text-body-highlight">Notes</h5>
                         <div class="card mb-5">
@@ -750,6 +825,12 @@
                             </div>
                         </div>
                     </div>
+                    <!--======================================
+                        End Notes AREA
+                    ======================================-->
+                    <!--======================================
+                        Files AREA
+                    ======================================-->
                     <div class="tab-pane fade" id="filesTabContent" role="tabpanel" aria-labelledby="filesTab">
                         <h5 class="mb-3 text-body-highlight">Files</h5>
                         <div class="card mb-5">
@@ -799,6 +880,12 @@
                             @endforeach
                         </div>
                     </div>
+                    <!--======================================
+                        End Files AREA
+                    ======================================-->
+                    <!--======================================
+                        Advanced AREA
+                    ======================================-->
                     <div class="tab-pane fade" id="advancedTabContent" role="tabpanel" aria-labelledby="advancedTab">
                         <h5 class="mb-3 text-body-highlight">Advanced</h5>
                         <div class="row g-3">
@@ -817,6 +904,9 @@
                             </div>
                         </div>
                     </div>
+                    <!--======================================
+                        End Advanced AREA
+                    ======================================-->
                 </div>
             </div>
         </div>
@@ -855,13 +945,13 @@
                                                 </div>
                                             </div>
                                             <!-- <div class="mb-4">
-                                                                <label class="text-1000 fw-bold mb-2">Status</label>
-                                                                <select class="form-select" name="active_flag" id="activeFlag" required>
-                                                                    <option value="" >Select</option>
-                                                                    <option value="1" selected>Active</option>
-                                                                    <option value="2">Inactive</option>
-                                                                </select>
-                                                            </div> -->
+                                                                    <label class="text-1000 fw-bold mb-2">Status</label>
+                                                                    <select class="form-select" name="active_flag" id="activeFlag" required>
+                                                                        <option value="" >Select</option>
+                                                                        <option value="1" selected>Active</option>
+                                                                        <option value="2">Inactive</option>
+                                                                    </select>
+                                                                </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -899,13 +989,13 @@
                                                     name="prorgress_number" id="editPoregessNumber" required />
                                             </div>
                                             <!-- <div class="mb-4">
-                                                                <label class="text-1000 fw-bold mb-2">Status</label>
-                                                                <select class="form-select" name="active_flag" id="activeFlag" required>
-                                                                    <option value="" >Select</option>
-                                                                    <option value="1" selected>Active</option>
-                                                                    <option value="2">Inactive</option>
-                                                                </select>
-                                                            </div> -->
+                                                                    <label class="text-1000 fw-bold mb-2">Status</label>
+                                                                    <select class="form-select" name="active_flag" id="activeFlag" required>
+                                                                        <option value="" >Select</option>
+                                                                        <option value="1" selected>Active</option>
+                                                                        <option value="2">Inactive</option>
+                                                                    </select>
+                                                                </div> -->
                                         </div>
                                     </div>
                                 </div>
@@ -944,13 +1034,13 @@
 
                                             </div>
                                             <!-- <div class="mb-4">
-                                                                <label class="text-1000 fw-bold mb-2">Status</label>
-                                                                <select class="form-select" name="active_flag" id="activeFlag" required>
-                                                                    <option value="" >Select</option>
-                                                                    <option value="1" selected>Active</option>
-                                                                    <option value="2">Inactive</option>
-                                                                </select>
-                                                            </div> -->
+                                                                    <label class="text-1000 fw-bold mb-2">Status</label>
+                                                                    <select class="form-select" name="active_flag" id="activeFlag" required>
+                                                                        <option value="" >Select</option>
+                                                                        <option value="1" selected>Active</option>
+                                                                        <option value="2">Inactive</option>
+                                                                    </select>
+                                                                </div> -->
                                         </div>
                                     </div>
                                 </div>
